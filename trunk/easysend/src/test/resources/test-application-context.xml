@@ -80,10 +80,6 @@
     
     <bean id="userService" class="it.av.es.service.impl.UserServiceHibernate"/>
     
-<!--     <bean id="wicketApplication" class="it.av.youeat.web.EasySendApplication">
-        <property name="applicationURL" value="http://www.youeat.org" />
-        <property name="gmapKey" value="" />
-    </bean> -->
-
+    <bean id="projectService" class="it.av.es.service.impl.ProjectServiceHibernate"/>
 
 </beans>

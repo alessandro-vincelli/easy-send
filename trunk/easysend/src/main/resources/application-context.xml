@@ -19,7 +19,6 @@
     
     <bean id="passwordEncoder"  class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></bean>
     
-
     <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
         <property name="locations">
             <list>
@@ -85,7 +84,7 @@
         </property>
     </bean>
 
-    <bean id="authenticationProvider" class="it.av.es.web.AuthenticationProvider">
+    <bean id="authenticationProvider" class="it.av.es.web.security.AuthenticationProvider">
         <constructor-arg ref="daoAuthenticationProvider"/>
     </bean>
 
@@ -94,6 +93,8 @@
     <bean id="userProfileService" class="it.av.es.service.impl.UserProfileServiceHibernate"/>
     
     <bean id="userService" class="it.av.es.service.impl.UserServiceHibernate"/>
+    
+    <bean id="projectService" class="it.av.es.service.impl.ProjectServiceHibernate"/>
     
     <bean id="wicketApplication" class="it.av.es.web.WicketApplication">
     </bean>

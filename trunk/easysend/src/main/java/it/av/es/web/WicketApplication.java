@@ -1,5 +1,7 @@
 package it.av.es.web;
 
+import it.av.es.web.security.SecuritySession;
+
 import org.apache.wicket.Page;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;

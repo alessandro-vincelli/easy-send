@@ -1,9 +1,10 @@
 /**
  * 
  */
-package it.av.es.web;
+package it.av.es.web.security;
 
 import it.av.es.model.User;
+import it.av.es.web.UserDetailsImpl;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
