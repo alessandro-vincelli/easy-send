@@ -38,7 +38,7 @@ public class UserProfileServiceHibernate extends ApplicationServiceHibernate<Use
      */
     @Override
     public UserProfile getRegolarUserProfile() {
-        return getByName(UserProfile.USER);
+        return getByName(UserProfile.VENDOR);
     }
 
     /**

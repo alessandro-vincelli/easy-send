@@ -13,39 +13,25 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package it.av.es;
+package it.av.es.web;
 
+import org.apache.wicket.protocol.https.RequireHttps;
 
-
-public class EasySendConcurrentModificationException extends EasySendException {
+/**
+ * Performs the logout
+ * 
+ * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
+ * 
+ */
+@RequireHttps
+public class SignOut extends BasePageSimple {
 
     /**
-     * 
+     * Constructor
      */
-    public EasySendConcurrentModificationException() {
+    public SignOut() {
         super();
-    }
-
-    /**
-     * @param s
-     * @param throwable
-     */
-    public EasySendConcurrentModificationException(String s, Throwable throwable) {
-        super(s, throwable);
-    }
-
-    /**
-     * @param s
-     */
-    public EasySendConcurrentModificationException(String s) {
-        super(s);
-    }
-
-    /**
-     * @param throwable
-     */
-    public EasySendConcurrentModificationException(Throwable throwable) {
-        super(throwable);
+        getSession().invalidate();
     }
 
 }
