@@ -13,39 +13,27 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package it.av.es;
+package it.av.es.web;
 
 
+/**
+ * The page provides user sign up panel.
+ * 
+ * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
+ * 
+ */
+public class SignUpPage extends BasePageSimple {
 
-public class EasySendConcurrentModificationException extends EasySendException {
-
+    private static final long serialVersionUID = 1L;
+    
     /**
+     * Constructor that is invoked when page is invoked without a session.
      * 
+     * @throws YoueatException
      */
-    public EasySendConcurrentModificationException() {
-        super();
-    }
-
-    /**
-     * @param s
-     * @param throwable
-     */
-    public EasySendConcurrentModificationException(String s, Throwable throwable) {
-        super(s, throwable);
-    }
-
-    /**
-     * @param s
-     */
-    public EasySendConcurrentModificationException(String s) {
-        super(s);
-    }
-
-    /**
-     * @param throwable
-     */
-    public EasySendConcurrentModificationException(Throwable throwable) {
-        super(throwable);
+    public SignUpPage() {
+        SignUpPanel signUpPanel = new SignUpPanel("userSignUpPanel", getFeedbackPanel());
+        add(signUpPanel);
     }
 
 }

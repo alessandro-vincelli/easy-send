@@ -1,0 +1,39 @@
+<wicket:panel>
+       <form wicket:id="signUpForm">
+       	<fieldset>
+       	 <table class="form-signup">
+        	<tr>
+        	<th><label for="firstname"><wicket:message key="firstname"/></label></th>
+        	<td><input type="text" wicket:id="firstname" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"/></td>
+            </tr>
+            <tr>
+            <th><label for="lastname"><wicket:message key="lastname"/></label></th>
+            <td><input type="text" wicket:id="lastname" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"/></td>
+        	</tr>
+        	<tr>
+        	<th><label for="email"><wicket:message key="email"/></label></th>
+        	<td><input type="text" wicket:id="email" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"/></td>
+            </tr>
+            <tr>
+                <th><label for="language"><wicket:message key="userLanguage"/></label></th>
+                <td><select wicket:id="language"></select></td>
+            </tr>
+   			<tr>
+        	<th><label for="password"><wicket:message key="password"/></label></th>
+        	<td><input type="password" wicket:id="password" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"/></td>
+        	</tr>
+            <tr>
+            <th><label for="password-confirm"><wicket:message key="password-confirm"/></label></th>
+            <td><input type="password" wicket:id="password-confirm" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"/></td>
+            </tr>
+        </table>
+       	</fieldset>
+       </form>
+       <p class="buttons">
+            <a wicket:id="buttonCreateNewAccount" wicket:message="title:signUp.buttonCreateNewAccount,value:signUp.buttonCreateNewAccount" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="signUp.buttonCreateNewAccount"></wicket:message></span></a>
+            <!-- <button wicket:id="buttonClearForm"><wicket:message key="button.clean"/></button>
+            -->
+            <a href="#" wicket:id="goSignInAfterSignUp" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="goSignInAfterSignUp"/></span></a>
+        </p>       
+	
+</wicket:panel>
