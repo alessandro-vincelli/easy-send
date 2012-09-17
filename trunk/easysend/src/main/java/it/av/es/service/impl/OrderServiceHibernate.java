@@ -16,8 +16,16 @@
 package it.av.es.service.impl;
 
 import it.av.es.model.Order;
+import it.av.es.model.Project;
+import it.av.es.model.User;
 import it.av.es.service.OrderService;
+import it.av.es.service.ProductService;
+import it.av.es.service.ProjectService;
+import it.av.es.service.UserService;
 
+import java.util.Date;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +36,25 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 @Transactional(readOnly = true)
 public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> implements OrderService {
+
+    @Autowired
+    private ProjectService projectService;
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private ProductService productService;
+    
+    @Override
+    @Transactional
+    public Order placeNewOrder(Order order, Project project, User user) {
+        order.setCreationTime(new Date());
+        project.addOrder(order);
+        user.addOrder(order);
+        order = this.save(order);
+        userService.update(user);
+        projectService.save(project);
+        return order;
+    }
 
 
 }

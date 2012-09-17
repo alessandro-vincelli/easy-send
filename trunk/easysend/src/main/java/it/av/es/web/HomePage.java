@@ -16,6 +16,14 @@ public class HomePage extends BasePageSimple{
                         .isInstantiationAuthorized(UserManagerPage.class)));
             }
         });
+        add(new BookmarkablePageLink<String>("goProjectManagerPage", ProjectManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(ProjectManagerPage.class)));
+            }
+        });
     }
     
 

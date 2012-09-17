@@ -83,7 +83,7 @@ public class User extends BasicEntity implements Comparable<User> {
     private int version;
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch=FetchType.EAGER )
     private Set<Project> projects;
-    @OneToMany(mappedBy="orders")
+    @OneToMany
     public Set<Order> orders;
 
     public User() {

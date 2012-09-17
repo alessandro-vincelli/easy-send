@@ -11,6 +11,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import it.av.es.EasySendException;
+import it.av.es.model.Order;
+import it.av.es.model.Product;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.OrderService;
@@ -181,8 +183,68 @@ public class ProjectServiceTest extends EasySendTest {
         Collection<Project> all = projectService.getAll();
         assertNotNull(all);
         assertTrue(all.size() > 0);
-
+        
+        Product product = new Product();
+        product.setName("nome prodotto");
+        productService.save(product);
+        a.addProduct(product);
+        a = projectService.save(a);
+        assertEquals( product.getName(), a.getProducts().iterator().next().getName());
         projectService.remove(a);
+
+    }
+    
+    @Test
+    public void testProjectwithOrders() throws EasySendException {
+        // Basic Test
+        User u = new User();
+        u.setFirstname("Alessandro");
+        u.setLastname("Vincelli");
+        u.setPassword("secret");
+        u.setEmail("userServiceTest@test");
+        u.setUserProfile(getProfile());
+        u.setLanguage(getLanguage());
+
+        userService.add(u);
+        
+        Project a = new Project();
+        a.setName("ProfileTest");
+
+        projectService.save(a);
+
+        assertNotNull("A is null", a);
+        assertEquals("Invalid value for test", "ProfileTest", a.getName());
+
+        Collection<Project> all = projectService.getAll();
+        assertNotNull(all);
+        assertTrue(all.size() > 0);
+        
+        Product product = new Product();
+        product.setName("nome prodotto");
+        productService.save(product);
+        a.addProduct(product);
+        a = projectService.save(a);
+        assertEquals(product.getName(), a.getProducts().iterator().next().getName());
+        
+        Order order = new Order();
+        order.setName("nome prodotto");
+        order.setProduct(product);
+        order.setProject(a);
+        
+        order = orderService.placeNewOrder(order, a, u);
+        
+        assertEquals(product.getName(), a.getProducts().iterator().next().getName());
+        assertEquals(order.getName(), a.getOrders().iterator().next().getName());
+        assertEquals(order.getName(), u.getOrders().iterator().next().getName());
+        assertNotNull(order.getCreationTime());
+        
+        a.getOrders().remove(order);
+        u.getOrders().remove(order);
+        projectService.save(a);
+        userService.update(u);
+        orderService.remove(order);
+        projectService.remove(a);
+        userService.remove(u);
 
     }
 

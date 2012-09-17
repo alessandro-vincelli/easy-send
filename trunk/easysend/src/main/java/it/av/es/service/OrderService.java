@@ -16,6 +16,8 @@
 package it.av.es.service;
 
 import it.av.es.model.Order;
+import it.av.es.model.Project;
+import it.av.es.model.User;
 
 import java.util.Collection;
 
@@ -54,5 +56,15 @@ public interface OrderService {
      * @return user with the passed email
      */
     Order getByID(String id);
+    
+    /**
+     * place a new order
+     * 
+     * @param order the new order to insert
+     * @param project project relates to order
+     * @param user user that place the order
+     * @return
+     */
+    Order placeNewOrder(Order order, Project project, User user);
 
 }
