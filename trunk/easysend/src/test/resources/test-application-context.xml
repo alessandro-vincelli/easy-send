@@ -73,5 +73,9 @@
     <bean id="userService" class="it.av.es.service.impl.UserServiceHibernate"/>
     
     <bean id="projectService" class="it.av.es.service.impl.ProjectServiceHibernate"/>
+    
+    <bean id="orderService" class="it.av.es.service.impl.OrderServiceHibernate"/>
+    
+    <bean id="productService" class="it.av.es.service.impl.ProductServiceHibernate"/>
 
 </beans>

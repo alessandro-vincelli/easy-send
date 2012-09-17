@@ -13,6 +13,8 @@ import static org.junit.Assert.assertTrue;
 import it.av.es.EasySendException;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.service.OrderService;
+import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserService;
 
@@ -38,6 +40,11 @@ public class ProjectServiceTest extends EasySendTest {
     private ProjectService projectService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private ProductService productService;
+    @Autowired
+    private OrderService orderService;
+    
     
     @Before
     @Transactional
@@ -67,7 +74,6 @@ public class ProjectServiceTest extends EasySendTest {
         assertTrue(all.size() > 0);
 
         projectService.remove(a);
-
     }
     
     @Test
@@ -158,6 +164,25 @@ public class ProjectServiceTest extends EasySendTest {
 
         userService.remove(a);
         projectService.remove(p);
+
+    }
+    
+    
+    @Test
+    public void testProjectwithProduct() throws EasySendException {
+        Project a = new Project();
+        a.setName("ProfileTest");
+
+        projectService.save(a);
+
+        assertNotNull("A is null", a);
+        assertEquals("Invalid value for test", "ProfileTest", a.getName());
+
+        Collection<Project> all = projectService.getAll();
+        assertNotNull(all);
+        assertTrue(all.size() > 0);
+
+        projectService.remove(a);
 
     }
 

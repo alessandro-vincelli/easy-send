@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -82,6 +83,8 @@ public class User extends BasicEntity implements Comparable<User> {
     private int version;
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch=FetchType.EAGER )
     private Set<Project> projects;
+    @OneToMany(mappedBy="orders")
+    public Set<Order> orders;
 
     public User() {
         super();
@@ -183,11 +186,26 @@ public class User extends BasicEntity implements Comparable<User> {
         this.projects = projects;
     }
 
+    public Set<Order> getOrders() {
+        return orders;
+    }
+
+    public void setOrders(Set<Order> orders) {
+        this.orders = orders;
+    }
+
     public void addProject(Project prj){
         if(projects ==null){
             projects = new HashSet<Project>();
         }
         projects.add(prj);
+    }
+    
+    public void addOrder(Order order) {
+        if (orders == null) {
+            orders = new HashSet<Order>();
+        }
+        this.orders.add(order);
     }
 
     @Override
