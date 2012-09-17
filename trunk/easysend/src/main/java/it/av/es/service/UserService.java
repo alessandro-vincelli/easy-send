@@ -15,6 +15,7 @@
  */
 package it.av.es.service;
 
+import it.av.es.model.Project;
 import it.av.es.model.User;
 
 import java.util.Collection;
@@ -33,15 +34,15 @@ public interface UserService {
     /**
      * Update a user
      * 
-     * @param vendor
+     * @param user
      * @return just updated user
      */
-    User update(User vendor);
+    User update(User user);
 
     /**
      * Add a new user, if the role is empty, it's used the USER role
      * 
-     * @param vendor
+     * @param user
      * @return just added user
      */
     User add(User vendor);
@@ -49,10 +50,10 @@ public interface UserService {
     /**
      * Insert a new user, during the insert is also encrypted the users's password
      * 
-     * @param vendor
+     * @param user
      * @return just inserted user
      */
-    User addRegolarUser(User vendor);
+    User addRegolarUser(User user);
 
     /**
      * <b>Don't use it</b> Insert a new admin user, during the insert is also encrypted the users's password
@@ -95,7 +96,7 @@ public interface UserService {
      * @param isAscending is ascending sort
      * @return found users
      */
-    List<User> find(String pattern, int first, int maxResults, String sortField, boolean isAscending);
+    List<User> find(String pattern, long first, long maxResults, String sortField, boolean isAscending);
 
     /**
      * Remove the given user
@@ -172,4 +173,20 @@ public interface UserService {
      * @return number of users
      */
     int count(String pattern);
+    
+    /**
+     * Assign a user to a Project
+     * 
+     * @param user
+     * @param prj
+     */
+    void assignUserToProject(User user, Project prj);
+    
+    /**
+     * DeAssign a user to a Project
+     * 
+     * @param user
+     * @param prj
+     */
+    void removeUserFromProject(User user, Project prj);
 }

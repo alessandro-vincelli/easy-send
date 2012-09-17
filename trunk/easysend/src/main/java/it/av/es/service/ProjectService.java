@@ -46,5 +46,13 @@ public interface ProjectService {
      * @param profile
      */
     void remove(Project profile);
+    
+    /**
+     * Return the project by id
+     * 
+     * @param id
+     * @return user with the passed email
+     */
+    Project getByID(String id);
 
 }

@@ -20,7 +20,6 @@ import java.util.Collection;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,8 +48,8 @@ public class ProjectServiceTest extends EasySendTest {
     @After
     @Transactional
     public void tearDown() {
+        super.tearDown();
     }
-
     
 
     @Test
@@ -71,7 +70,7 @@ public class ProjectServiceTest extends EasySendTest {
 
     }
     
-    @Ignore
+    @Test
     public void testProjectWithUser() throws EasySendException {
         Project p = new Project();
         p.setName("ProfileTest");
@@ -97,20 +96,69 @@ public class ProjectServiceTest extends EasySendTest {
         userService.add(a);
         
         p.addUser(a);
+        a.addProject(p);
         projectService.save(p);
         userService.update(a);
         
         assertEquals("user not added to project", 1, p.getUsers().size());
         
         a = userService.getByID(a.getId());
-        
-        assertEquals("Invalid value for test", "ProfileTest", a.getProject().getName());
+        assertEquals("user not added to project", 1, a.getProjects().size());
+        //assertEquals("Invalid value for test", "ProfileTest", a.getProjects().getName());
        
+        p.getUsers().remove(a);
+        userService.update(a);
+
+        userService.remove(a);
         projectService.remove(p);
 
     }
     
     
+    @Test
+    public void testProjectWithUser2() throws EasySendException {
+        Project p = new Project();
+        p.setName("ProfileTest");
 
+        projectService.save(p);
+
+        assertNotNull("A is null", p);
+        assertEquals("Invalid value for test", "ProfileTest", p.getName());
+
+        Collection<Project> all = projectService.getAll();
+        assertNotNull(all);
+        assertTrue(all.size() > 0);
+
+        // Basic Test
+        User a = new User();
+        a.setFirstname("Alessandro");
+        a.setLastname("Vincelli");
+        a.setPassword("secret");
+        a.setEmail("userServiceTest@test");
+        a.setUserProfile(getProfile());
+        a.setLanguage(getLanguage());
+
+        userService.add(a);
+        
+        
+        userService.assignUserToProject(a, p);
+        
+        assertEquals("user not added to project", 1, p.getUsers().size());
+        
+        a = userService.getByID(a.getId());
+        assertEquals("user not added to project", 1, a.getProjects().size());
+        //assertEquals("Invalid value for test", "ProfileTest", a.getProjects().getName());
+       
+        userService.removeUserFromProject(a, p);
+        
+        assertEquals("user not added to project", 0, p.getUsers().size());
+        
+        a = userService.getByID(a.getId());
+        assertEquals("user not added to project", 0, a.getProjects().size());
+
+        userService.remove(a);
+        projectService.remove(p);
+
+    }
 
 }

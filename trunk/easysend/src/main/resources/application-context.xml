@@ -47,7 +47,7 @@
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
         <property name="persistenceUnitName" value="easySendPersistence" />
-        <property name="persistenceXmlLocation" value="classpath:META-INF/persistence.xml" />
+        <property name="persistenceXmlLocation" value="" />
         <property name="dataSource" ref="dataSourceMain"/>
     </bean>
 

@@ -22,21 +22,13 @@
     <bean id="passwordEncoder" class="org.springframework.security.authentication.encoding.MessageDigestPasswordEncoder">
         <constructor-arg value="MD5" />
     </bean>
-
-    <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
-        <property name="locations">
-            <list>
-                <value>${springPropertiesLocation}</value>
-            </list>
-        </property>
-    </bean>
         
     <bean id="dataSourceMain" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
         <property name="driverClass" value="org.postgresql.Driver" />
-        <property name="jdbcUrl" value="" />
-        <property name="user" value="" />
-        <property name="password" value="" />
+        <property name="jdbcUrl" value="jdbc:postgresql://localhost:5432/easysend_test" />
+        <property name="user" value="easysend" />
+        <property name="password" value="easysend" />
 
         <property name="initialPoolSize" value="3" />
         <property name="minPoolSize" value="3" />

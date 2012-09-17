@@ -1,10 +1,14 @@
 package it.av.es.model;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -23,7 +27,7 @@ import org.hibernate.search.annotations.Store;
  * 
  */
 @Entity
-@Table(name="users", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
+@Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
 @Indexed
 @org.hibernate.annotations.Table(appliesTo = "users", indexes = { @org.hibernate.annotations.Index(name = "idx_user_id", columnNames = { "id" }) })
 public class User extends BasicEntity implements Comparable<User> {
@@ -68,18 +72,17 @@ public class User extends BasicEntity implements Comparable<User> {
     private boolean blocked;
 
     @ManyToOne(optional = false)
-    @ForeignKey(name = "vendor_to_language_fk")
+    @ForeignKey(name = "user_to_language_fk")
     private Language language;
     @ManyToOne(optional = false)
-    @ForeignKey(name = "vendor_to_profile_fk")
+    @ForeignKey(name = "user_to_profile_fk")
     @IndexedEmbedded
     private UserProfile userProfile;
     @Version
     private int version;
-    @ManyToOne
-    @JoinColumn(name="project_fk", insertable=false, updatable=false)
-    private Project project;
-    
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch=FetchType.EAGER )
+    private Set<Project> projects;
+
     public User() {
         super();
     }
@@ -171,13 +174,20 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setVersion(int version) {
         this.version = version;
     }
-
-    public Project getProject() {
-        return project;
+    
+    public Set<Project> getProjects() {
+        return projects;
     }
 
-    public void setProject(Project project) {
-        this.project = project;
+    public void setProjects(Set<Project> projects) {
+        this.projects = projects;
+    }
+
+    public void addProject(Project prj){
+        if(projects ==null){
+            projects = new HashSet<Project>();
+        }
+        projects.add(prj);
     }
 
     @Override
