@@ -6,6 +6,9 @@ import it.av.es.model.UserProfile;
 import it.av.es.service.LanguageService;
 import it.av.es.service.UserProfileService;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 public abstract class EasySendTest {
@@ -34,6 +37,18 @@ public abstract class EasySendTest {
             languageService.save(new Language("en", "usa"));
         }
         language = languageService.getAll().get(0);
+    }
+    
+    public void tearDown() throws EasySendException {
+        Collection<UserProfile> all2 = userProfileService.getAll();
+        for (UserProfile userProfile : all2) {
+            userProfileService.remove(userProfile);
+        }
+        List<Language> all = languageService.getAll();
+        for (Language language : all) {
+            languageService.remove(language);
+        }
+        
     }
 
     public UserProfile getProfile() {

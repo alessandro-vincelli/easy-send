@@ -17,8 +17,10 @@ package it.av.es.service.impl;
 
 import it.av.es.EasySendException;
 import it.av.es.UserAlreadyExistsException;
+import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.model.UserProfile;
+import it.av.es.service.ProjectService;
 import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
 import it.av.es.util.DateUtil;
@@ -52,6 +54,8 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
     private MessageDigestPasswordEncoder passwordEncoder;
     @Autowired
     private UserProfileService userProfileService;
+    @Autowired
+    private ProjectService projectService;
 
     /**
      * {@inheritDoc}
@@ -204,19 +208,21 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
      * {@inheritDoc}
      */
     @Override
-    public List<User> find(String pattern, int firstResult, int maxResults, String sortField, boolean isAscending) {
+    public List<User> find(String pattern, long firstResult, long maxResults, String sortField, boolean isAscending) {
         Criterion critByName = null;
         if(StringUtils.isNotBlank(pattern)){
             critByName = Restrictions.ilike(User.LASTNAME, pattern);
         }
         Order order = null;
-        if(isAscending){
-            order = Order.asc(sortField);
+        if(StringUtils.isNotBlank(sortField)){
+            if(isAscending){
+                order = Order.asc(sortField);
+            }
+            else{
+                order = Order.desc(sortField);
+            }            
         }
-        else{
-            order = Order.desc(sortField);
-        }
-        return findByCriteria(order, firstResult, maxResults, critByName);
+        return findByCriteria(order, (int)firstResult, (int)maxResults, critByName);
     }
 
     @Override
@@ -228,5 +234,27 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
             criteria.add(critByName);
         }
         return ((Long) criteria.uniqueResult()).intValue();
+    }
+
+    @Override
+    @Transactional
+    public void assignUserToProject(User user, Project prj) {
+        user = getByID(user.getId());
+        prj = projectService.getByID(prj.getId());
+        user.addProject(prj);
+        prj.addUser(user);
+        update(user);
+        projectService.save(prj);
+    }
+
+    @Override
+    @Transactional
+    public void removeUserFromProject(User user, Project prj) {
+        user = getByID(user.getId());
+        prj = projectService.getByID(prj.getId());
+        user.getProjects().remove(prj);
+        prj.getUsers().remove(user);
+        update(user);
+        projectService.save(prj);
     }
 }
