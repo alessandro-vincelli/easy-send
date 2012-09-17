@@ -11,15 +11,20 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class Project extends BasicEntity {
+    
+    public static final String NAME_FIELD = "name";
+    public static final String USERS_FIELD = "users";
+    public static final String ORDERS_FIELD = "order";
+    public static final String PRODUCTS_FIELD = "products";
 
     private String name;
     @ManyToMany(targetEntity = User.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch=FetchType.EAGER)
     //@JoinTable(joinColumns = @JoinColumn(name = "EMPER_ID"), inverseJoinColumns = @JoinColumn(name = "EMPEE_ID"))
     private Set<User> users;
-    @OneToMany(mappedBy="orders")
+    @OneToMany
     public Set<Order> orders;
-    @OneToMany(mappedBy="products")
-    public Set<Product> products;
+    @OneToMany
+    private Set<Product> products;
 
     public String getName() {
         return name;
@@ -43,6 +48,21 @@ public class Project extends BasicEntity {
 
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
+    }
+    
+    public Set<Product> getProducts() {
+        return products;
+    }
+
+    public void setProducts(Set<Product> products) {
+        this.products = products;
+    }
+
+    public void addProduct(Product prj) {
+        if (products == null) {
+            products = new HashSet<Product>();
+        }
+        this.products.add(prj);
     }
     
     public void addOrder(Order order) {
