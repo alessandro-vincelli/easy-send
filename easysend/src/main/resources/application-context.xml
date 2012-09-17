@@ -96,8 +96,11 @@
     
     <bean id="projectService" class="it.av.es.service.impl.ProjectServiceHibernate"/>
     
-    <bean id="wicketApplication" class="it.av.es.web.WicketApplication">
-    </bean>
+    <bean id="orderService" class="it.av.es.service.impl.OrderServiceHibernate"/>
+    
+    <bean id="productService" class="it.av.es.service.impl.ProductServiceHibernate"/>
+    
+    <bean id="wicketApplication" class="it.av.es.web.WicketApplication"/>
 
 
 </beans>

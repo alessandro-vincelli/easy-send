@@ -7,8 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
+import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.hibernate.annotations.Entity;
 import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.BeanUtils;
 
 @MappedSuperclass
 @Entity
@@ -42,4 +45,10 @@ public class BasicEntity implements Serializable {
     public int hashCode() {
         return getId() == null ? super.hashCode() : getId().hashCode();
     }
+
+    @Override
+    public String toString() {
+        return ToStringBuilder.reflectionToString(this);
+    }
+    
 }
