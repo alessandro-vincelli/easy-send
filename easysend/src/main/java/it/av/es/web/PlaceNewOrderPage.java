@@ -73,7 +73,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Recipient rcp = recipient.getModelObject();
-                model.getObject().setRecipient(rcp);
+                model.getObject().setRecipient(recipientService.getByID(rcp.getId()));
                 target.add(formNewOrder);
             }
         });
@@ -81,7 +81,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         formNewOrder.add(new TextField<String>("recipient.name").setRequired(true));
         formNewOrder.add(new TextField<String>("recipient.address").setRequired(true));
         province = new DropDownChoice<String>("recipient.province", new ArrayList<String>());
-        province.setRequired(true);
+        province.setRequired(true).setOutputMarkupId(true);
         formNewOrder.add(province);
         
         final Select2Choice<City> city = new Select2Choice<City>("recipient.city", new PropertyModel<City>(model, "recipient.city"),
@@ -91,16 +91,16 @@ public class PlaceNewOrderPage extends BasePageSimple {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                System.out.println(city.getModelObject().getName());
                 zipCode.setChoices(cittaService.findCapByComune(city.getModelObject().getName(), 0));
+                province.setChoices(cittaService.findProvinciaByComune(city.getModelObject().getName(), 0));
                 target.add(zipCode);
+                target.add(province);
             }
         });
         city.setRequired(true);
         formNewOrder.add(city);
         zipCode = new DropDownChoice<String>("recipient.zipcode", new ArrayList<String>());
-        zipCode.setOutputMarkupId(true);
-        zipCode.setRequired(true);
+        zipCode.setRequired(true).setOutputMarkupId(true);
         formNewOrder.add(zipCode);
         ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
         formNewOrder.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer()).setRequired(true));
@@ -112,10 +112,15 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 super.onSubmit(target, form);
                 Order p = (Order) form.getModelObject();
                 if(p.getRecipient().getId() == null){
-                    p.setRecipient(recipientService.save(p.getRecipient()));
+                    p.setRecipient(recipientService.save(p.getRecipient(), getSecuritySession().getLoggedInUser()));
                 }
                 orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
                 formNewOrder.setModelObject(new Order());
+            }
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                getFeedbackPanel().anyErrorMessage();
+                target.add(getFeedbackPanel());
             }
         });
 
@@ -139,7 +144,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         @Override
         public void query(String term, int page, Response<Recipient> response) {
-            response.addAll(recipientService.find(term, 0));
+            response.addAll(getSecuritySession().getLoggedInUser().getRecipients());
         }
 
         @Override

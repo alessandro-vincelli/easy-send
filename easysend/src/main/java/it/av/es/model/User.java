@@ -88,7 +88,8 @@ public class User extends BasicEntity implements Comparable<User> {
     private Set<Project> projects;
     @OneToMany
     public Set<Order> orders;
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER )
+    @Fetch(FetchMode.SUBSELECT)
     public Set<Recipient> recipients;
 
     public User() {

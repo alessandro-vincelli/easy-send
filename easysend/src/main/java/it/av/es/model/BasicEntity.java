@@ -42,9 +42,9 @@ public class BasicEntity implements Serializable {
         return getId() == null ? super.hashCode() : getId().hashCode();
     }
 
-    @Override
-    public String toString() {
-        return ToStringBuilder.reflectionToString(this);
-    }
+//    @Override
+//    public String toString() {
+//        return ToStringBuilder.reflectionToString(this);
+//    }
     
 }

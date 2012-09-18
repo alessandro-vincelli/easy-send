@@ -16,13 +16,16 @@
 package it.av.es.service.impl;
 
 import it.av.es.model.Recipient;
+import it.av.es.model.User;
 import it.av.es.service.RecipientService;
+import it.av.es.service.UserService;
 
 import java.util.List;
 
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,6 +39,9 @@ import org.springframework.transaction.annotation.Transactional;
 @Repository
 public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recipient> implements RecipientService {
 
+    @Autowired
+    private UserService userService;
+    
     /**
      * {@inheritDoc}
      */
@@ -53,6 +59,15 @@ public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recip
         Criterion critByName = Restrictions.ilike("name", string + "%");
         Order orderByName = Order.asc(Recipient.NAME_FIELD);
         return findByCriteria(orderByName, 0, maxResults, critByName);
+    }
+
+    @Override
+    public Recipient save(Recipient recipient, User user) {
+        recipient.setUser(user);
+        save(recipient);
+        user.addRecipient(recipient);
+        userService.update(user);
+        return recipient;
     }
 
 }
