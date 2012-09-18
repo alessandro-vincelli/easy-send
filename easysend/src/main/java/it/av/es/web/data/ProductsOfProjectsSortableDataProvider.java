@@ -69,7 +69,7 @@ public class ProductsOfProjectsSortableDataProvider extends SortableDataProvider
      */
     @Override
     public void detach() {
-        results = null;
+        //results = null;
     }
 
     @Override
@@ -77,4 +77,7 @@ public class ProductsOfProjectsSortableDataProvider extends SortableDataProvider
         return Collections.synchronizedList(new ArrayList<Product>(results)).iterator();
     }
 
+    public void setData(List<Product> products){
+        this.results = products;
+    }
 }

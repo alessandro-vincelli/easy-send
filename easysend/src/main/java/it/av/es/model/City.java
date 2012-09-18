@@ -11,6 +11,7 @@ import org.hibernate.annotations.ForeignKey;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
 @Entity
+@org.hibernate.annotations.Table(appliesTo = "city", indexes = { @org.hibernate.annotations.Index(name = "idx_city_country", columnNames = { "country" }), @org.hibernate.annotations.Index(name = "idx_city_name", columnNames = { "name" }) })
 public class City extends BasicEntity implements Comparable<City> {
 
     public final static String NAME_FIELD = "name";

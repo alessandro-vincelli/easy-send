@@ -56,7 +56,7 @@ public class ProductPanel extends Panel {
                 productService.save(p);
                 Project project2 = projectService.save(project.getObject());
                 project.setObject(project2);
-                dataProvider = new ProductsOfProjectsSortableDataProvider(new ArrayList<Product>(project2.getProducts()));
+                dataProvider.setData(new ArrayList<Product>(project2.getProducts()));
                 target.add(dataTable);
                 formPrj.setModelObject(new Product());
             }

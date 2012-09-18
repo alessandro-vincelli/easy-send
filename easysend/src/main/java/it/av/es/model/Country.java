@@ -8,6 +8,7 @@ import javax.persistence.Entity;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
 @Entity
+@org.hibernate.annotations.Table(appliesTo = "country", indexes = { @org.hibernate.annotations.Index(name = "idx_country_name", columnNames = { "name" }), @org.hibernate.annotations.Index(name = "idx_country_iso2", columnNames = { "iso2" }) })
 public class Country extends BasicEntity implements Comparable<Country> {
 
     public static final String NAME = "name";

@@ -48,7 +48,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Transactional
     public Order placeNewOrder(Order order, Project project, User user) {
         order.setCreationTime(new Date());
+        project = projectService.getByID(project.getId());
         project.addOrder(order);
+        user = userService.getByID(user.getId());
         user.addOrder(order);
         order = this.save(order);
         userService.update(user);
