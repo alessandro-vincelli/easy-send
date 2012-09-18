@@ -1,6 +1,5 @@
 package it.av.es.web;
 
-import it.av.es.model.Product;
 import it.av.es.model.Project;
 import it.av.es.service.ProjectService;
 import it.av.es.web.data.ProjectSortableDataProvider;
@@ -15,7 +14,6 @@ import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFal
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;

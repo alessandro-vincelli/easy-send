@@ -46,6 +46,22 @@ public class HomePage extends BasePageSimple{
                         .isInstantiationAuthorized(SelectProjectPage.class)));
             }
         });
+        add(new BookmarkablePageLink<String>("goPlaceNewOrderPage", PlaceNewOrderPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(PlaceNewOrderPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goSignOut", SignOut.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(SignOut.class)));
+            }
+        });
     }
     
 

@@ -27,7 +27,8 @@ public class Project extends BasicEntity {
     private Set<User> users;
     @OneToMany
     public Set<Order> orders;
-    @OneToMany
+    @OneToMany(fetch=FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Product> products;
 
     public String getName() {

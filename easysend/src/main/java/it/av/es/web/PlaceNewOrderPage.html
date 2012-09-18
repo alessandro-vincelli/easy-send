@@ -1,10 +1,45 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
     <div id="wrapper">
 	<div id="content">
-        <table class="datatable" wicket:id="dataTable">[table]</table>
-        <form wicket:id="prj">
-           <input wicket:id="name"/>
-           <button wicket:id="submit"/>
+        <form wicket:id="newOrder">
+           <fieldset>
+             <table class="form-risto">
+                <tr>
+                <th><label for="recipient"><wicket:message key="recipient"/></label></th>
+                <td><input type="hidden" style="width: 300px;" wicket:id="recipient"></input></td>
+                </tr>
+                <tr>
+                <th><label for="recipient.name"><wicket:message key="recipient.name"/></label></th>
+                <td><input type="text" wicket:id="recipient.name" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
+                </tr>
+                <tr>
+                <th><label for="recipient.address"><wicket:message key="recipient.address"/></label></th>
+                <td><input type="text" wicket:id="recipient.address" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
+                </tr>
+                <tr>
+                <th><label for="recipient.city"><wicket:message key="recipient.city"/></label></th>
+                <td><input type="hidden" style="width: 300px;" wicket:id="recipient.city"></input></td>
+                </tr>    
+                <tr>
+                <th><label for="recipient.zipcode"><wicket:message key="recipient.zipcode"/></label></th>
+                <td><select wicket:id="recipient.zipcode"></select ></td>
+                </tr>
+                <tr>
+                <th><label for="product"><wicket:message key="product"/></label></th>
+                <td><select  ut type="hidden" style="width: 300px;" wicket:id="product"></select ></td>
+                </tr>
+                <tr>
+                <th><label for="productNumber"><wicket:message key="productNumber"/></label></th>
+                <td><select wicket:id="productNumber"></select ></td>
+                </tr>
+                <tr>
+                <td colspan="2" class="submitarea buttons">
+                    <a wicket:message="value:button.create" wicket:id="submit" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="button.create"/></span></a> 
+                    <!-- <a wicket:id="buttonClearForm" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="button.clean"/></span></a> -->
+                </td>
+                </tr>
+            </table>
+           </fieldset>
         </form>
 	</div>
 	</div>
