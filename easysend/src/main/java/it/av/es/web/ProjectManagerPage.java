@@ -11,11 +11,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -37,6 +41,12 @@ public class ProjectManagerPage extends BasePageSimple {
         super();
 
         List<IColumn<Project, String>> columns = new ArrayList<IColumn<Project, String>>();
+        
+        columns.add(new AbstractColumn<Project, String>(new Model<String>("Assign Products")) {
+            public void populateItem(Item<ICellPopulator<Project>> cellItem, String componentId, IModel<Project> model) {
+                cellItem.add(new ProductPanel(componentId, model));
+            }
+        });
 
         columns.add(new PropertyColumn<Project, String>(new Model<String>("Project Name"), Project.NAME_FIELD, Project.NAME_FIELD));
 
