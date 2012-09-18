@@ -20,8 +20,10 @@ public class Order extends BasicEntity {
     public static final String PRODUCT_FIELD = "product";
     public static final String CREATIONTIME_FIELD = "creationTime";
     public static final String PRODUCTNUMBER_FIELD = "productNumber";
-    
 
+    @ManyToOne
+    @JoinColumn(name = "recipient_fk")
+    private Recipient recipient;
     private String name;
     @ManyToOne
     @JoinColumn(name = "user_fk")
@@ -87,6 +89,14 @@ public class Order extends BasicEntity {
 
     public void setCreationTime(Date creationTime) {
         this.creationTime = creationTime;
+    }
+
+    public Recipient getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(Recipient recipient) {
+        this.recipient = recipient;
     }
 
 }

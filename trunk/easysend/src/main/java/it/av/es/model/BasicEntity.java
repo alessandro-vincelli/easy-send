@@ -8,11 +8,9 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
 import org.apache.commons.lang.builder.ToStringBuilder;
-import org.hibernate.annotations.Entity;
 import org.hibernate.annotations.GenericGenerator;
 
 @MappedSuperclass
-@Entity
 public class BasicEntity implements Serializable {
 
     @Id

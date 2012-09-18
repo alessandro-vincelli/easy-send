@@ -73,7 +73,7 @@ public class BasePageSimple extends WebPage {
         titlePage.setDefaultModelObject(titlePage.getDefaultModelObjectAsString().concat(title));
     }
 
-    public SecuritySession getSession() {
+    public SecuritySession getSecuritySession() {
         return session;
     }
     

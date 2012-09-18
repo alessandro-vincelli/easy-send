@@ -28,14 +28,14 @@ public class SelectProjectPage extends BasePageSimple {
 
     public SelectProjectPage() {
         super();
-        User user = getSession().getLoggedInUser();
+        User user = getSecuritySession().getLoggedInUser();
 
         final DropDownChoice<Project> choice = new DropDownChoice<Project>("selectProject", new Model<Project>(new Project()),
                 new ArrayList<Project>(user.getProjects()), new ProjectChoiceRenderer());
         choice.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                getSession().setCurrentProject(choice.getModelObject());
+                getSecuritySession().setCurrentProject(choice.getModelObject());
             }
         });
         add(choice);
