@@ -45,6 +45,15 @@ public interface CittaService  {
     List<String> findCapByComune(String comune, int maxResults);
     
     /**
+     * Finds provincia on using the given pattern on comune
+     * 
+     * @param comune
+     * @param maxResults
+     * @return found cities
+     */
+    List<String> findProvinciaByComune(String comune, int maxResults);
+    
+    /**
      * Finds the citta using the given pattern on provincia
      * 
      * @param provincia

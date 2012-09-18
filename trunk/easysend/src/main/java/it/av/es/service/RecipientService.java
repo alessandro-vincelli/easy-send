@@ -16,6 +16,7 @@
 package it.av.es.service;
 
 import it.av.es.model.Recipient;
+import it.av.es.model.User;
 
 import java.util.List;
 
@@ -38,10 +39,11 @@ public interface RecipientService extends ApplicationService<Recipient> {
     /**
      * Save a Recipient
      * 
-     * @param object
+     * @param recipient
+     * @param user user that relates to the recipient
      * @return just saved profile
      */
-    Recipient save(Recipient object);
+    Recipient save(Recipient recipient, User user);
 
     /**
      * Get all the user profile
