@@ -52,7 +52,7 @@ public class UserManagerPage extends BasePageSimple {
         columns.add(new PropertyColumn<User, String>(new Model<String>("Email"), User.EMAIL, User.EMAIL));
 
         AjaxFallbackDefaultDataTable<User, String> dataTable = new AjaxFallbackDefaultDataTable<User, String>("dataTable",
-                columns, new UserSortableDataProvider(), 5);
+                columns, new UserSortableDataProvider(), 50);
         add(dataTable);
 
     }

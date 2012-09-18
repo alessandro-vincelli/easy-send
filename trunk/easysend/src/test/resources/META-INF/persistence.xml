@@ -18,6 +18,9 @@
 		<class>it.av.es.model.Project</class>
         <class>it.av.es.model.Product</class>
         <class>it.av.es.model.Order</class>
+        <class>it.av.es.model.Recipient</class>
+        <class>it.av.es.model.City</class>
+        <class>it.av.es.model.Country</class>
 			
 		<properties>
 			<!-- Scan for annotated classes  -->

@@ -15,6 +15,8 @@
  */
 package it.av.es.web;
 
+import it.av.es.web.security.SecuritySession;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -32,6 +34,7 @@ public class BasePageSimple extends WebPage {
     
     private CustomFeedbackPanel feedbackPanel;
     private Label titlePage;
+    private SecuritySession session;
 
     /**
      * Construct.
@@ -45,6 +48,7 @@ public class BasePageSimple extends WebPage {
         feedbackPanel.setOutputMarkupId(true);
         feedbackPanel.setOutputMarkupPlaceholderTag(true);
         add(feedbackPanel);
+        session = ((SecuritySession)getSession());
         
 //        BookmarkablePageLink goInfo = new BookmarkablePageLink("goInfo", AboutPage.class);
 //        add(goInfo);
@@ -67,6 +71,10 @@ public class BasePageSimple extends WebPage {
     
     protected void appendToPageTile(String title){
         titlePage.setDefaultModelObject(titlePage.getDefaultModelObjectAsString().concat(title));
+    }
+
+    public SecuritySession getSession() {
+        return session;
     }
     
 //    @Override

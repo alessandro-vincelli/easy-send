@@ -1,9 +1,8 @@
 package it.av.es.web;
 
 import it.av.es.model.Product;
-import it.av.es.model.Project;
-import it.av.es.service.ProjectService;
-import it.av.es.web.data.ProjectSortableDataProvider;
+import it.av.es.service.ProductService;
+import it.av.es.web.data.ProductSortableDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,51 +14,50 @@ import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFal
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
- * The page provides the home page.
+ * 
  * 
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
 @AuthorizeInstantiation({ "USER", "VENDOR" })
-public class ProjectManagerPage extends BasePageSimple {
+public class ProductManagerPage extends BasePageSimple {
 
     @SpringBean
-    private ProjectService userService;
+    private ProductService userService;
     @SpringBean
-    private ProjectService projectService;
+    private ProductService productService;
 
-    public ProjectManagerPage() {
+    public ProductManagerPage() {
         super();
 
-        List<IColumn<Project, String>> columns = new ArrayList<IColumn<Project, String>>();
+        List<IColumn<Product, String>> columns = new ArrayList<IColumn<Product, String>>();
 
-        columns.add(new PropertyColumn<Project, String>(new Model<String>("Project Name"), Project.NAME_FIELD, Project.NAME_FIELD));
+        columns.add(new PropertyColumn<Product, String>(new Model<String>("Product Name"), Product.NAME_FIELD, Product.NAME_FIELD));
 
-        final AjaxFallbackDefaultDataTable<Project, String> dataTable = new AjaxFallbackDefaultDataTable<Project, String>(
-                "dataTable", columns, new ProjectSortableDataProvider(), 50);
+        final AjaxFallbackDefaultDataTable<Product, String> dataTable = new AjaxFallbackDefaultDataTable<Product, String>(
+                "dataTable", columns, new ProductSortableDataProvider(), 50);
         add(dataTable);
 
-        final Form<Project> formPrj = new Form<Project>("prj", new CompoundPropertyModel<Project>(new Project()));
+        final Form<Product> formPrj = new Form<Product>("prj", new CompoundPropertyModel<Product>(new Product()));
         add(formPrj);
         formPrj.add(new TextField<String>("name"));
         formPrj.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                Project p = (Project) form.getModelObject();
-                projectService.save(p);
+                Product p = (Product) form.getModelObject();
+                productService.save(p);
                 target.add(dataTable);
-                formPrj.setModelObject(new Project());
+                formPrj.setModelObject(new Product());
             }
         });
+
     }
-    
 
 }

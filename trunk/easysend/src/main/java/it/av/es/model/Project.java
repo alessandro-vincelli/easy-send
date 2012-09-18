@@ -9,6 +9,9 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 @Entity
 public class Project extends BasicEntity {
     
@@ -19,6 +22,7 @@ public class Project extends BasicEntity {
 
     private String name;
     @ManyToMany(targetEntity = User.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch=FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     //@JoinTable(joinColumns = @JoinColumn(name = "EMPER_ID"), inverseJoinColumns = @JoinColumn(name = "EMPEE_ID"))
     private Set<User> users;
     @OneToMany
