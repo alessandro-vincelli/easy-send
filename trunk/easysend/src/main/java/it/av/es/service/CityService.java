@@ -38,6 +38,14 @@ public interface CityService extends ApplicationService<City> {
     List<City> find(String string, Country country, int maxResults);
 
     /**
+     * Finds cities on the given country
+     * 
+     * @param country
+     * @return a city
+     */
+    List<City> getByCountry(Country country);
+    
+    /**
      * Finds a city using an exact match (case insensitive) on the given cityName and country
      * 
      * @param cityName

@@ -109,4 +109,11 @@ public class CityServiceHibernate extends ApplicationServiceHibernate<City> impl
         }
     }
 
+    @Override
+    public List<City> getByCountry(Country country) {
+        Criterion critByCountry = Restrictions.eq("country", country);
+        Order orderByName = Order.asc(City.NAME_FIELD);
+        return findByCriteria(orderByName, 0, 0, critByCountry);
+    }
+
 }

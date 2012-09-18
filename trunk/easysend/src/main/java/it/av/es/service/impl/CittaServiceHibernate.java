@@ -30,6 +30,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.MatchMode;
 import org.hibernate.criterion.Order;
+import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -113,6 +114,20 @@ public class CittaServiceHibernate implements CittaService {
 
     protected final Session getHibernateSession() {
         return (Session) entityManager.getDelegate();
+    }
+
+    @Override
+    public List<String> findCapByComune(String comune, int maxResults) {
+        Criterion critByName = Restrictions.ilike("comune", comune, MatchMode.ANYWHERE);
+        Order orderByName = Order.asc("cap");
+        Criteria criteria = getHibernateSession().createCriteria(Citta.class);
+        criteria.setProjection(Projections.distinct(Projections.property("cap")));
+        criteria.add(critByName);
+        criteria.addOrder(orderByName);
+        if (maxResults > 0) {
+            criteria.setMaxResults(maxResults);
+        }
+        return criteria.list();
     }
 
 }

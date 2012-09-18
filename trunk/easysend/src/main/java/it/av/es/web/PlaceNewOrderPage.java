@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.markup.html.form.DropDownChoice;
@@ -56,33 +57,64 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private CittaService cittaService;
     @SpringBean
     private CountryService countryService;
+    private DropDownChoice<String> zipCode;
+    private DropDownChoice<String> province;
 
     public PlaceNewOrderPage() {
         super();
-        CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
+        final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
         final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
         // add the single-select component
-        Select2Choice<Recipient> recipient = new Select2Choice<Recipient>("recipient", new Model<Recipient>(new Recipient()),
+        final Select2Choice<Recipient> recipient = new Select2Choice<Recipient>("recipient", new Model<Recipient>(new Recipient()),
                 new RecipientProvider());
         formNewOrder.add(recipient);
+        recipient.add(new OnChangeAjaxBehavior() {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                Recipient rcp = recipient.getModelObject();
+                model.getObject().setRecipient(rcp);
+                target.add(formNewOrder);
+            }
+        });
 
-        formNewOrder.add(new TextField<String>("recipient.name"));
-        formNewOrder.add(new TextField<String>("recipient.address"));
-        Select2Choice<City> city = new Select2Choice<City>("recipient.city", new PropertyModel<City>(model, "recipient.city"),
-                new CityProvider());
+        formNewOrder.add(new TextField<String>("recipient.name").setRequired(true));
+        formNewOrder.add(new TextField<String>("recipient.address").setRequired(true));
+        province = new DropDownChoice<String>("recipient.province", new ArrayList<String>());
+        province.setRequired(true);
+        formNewOrder.add(province);
+        
+        final Select2Choice<City> city = new Select2Choice<City>("recipient.city", new PropertyModel<City>(model, "recipient.city"),
+                new CityProvider(){
+        });
+        city.add(new OnChangeAjaxBehavior() {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                System.out.println(city.getModelObject().getName());
+                zipCode.setChoices(cittaService.findCapByComune(city.getModelObject().getName(), 0));
+                target.add(zipCode);
+            }
+        });
+        city.setRequired(true);
         formNewOrder.add(city);
-        formNewOrder.add(new DropDownChoice<String>("recipient.zipcode", new ArrayList<String>()));
+        zipCode = new DropDownChoice<String>("recipient.zipcode", new ArrayList<String>());
+        zipCode.setOutputMarkupId(true);
+        zipCode.setRequired(true);
+        formNewOrder.add(zipCode);
         ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
-        formNewOrder.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer()));
-        formNewOrder.add(new DropDownChoice<Integer>(Order.PRODUCTNUMBER_FIELD, Arrays.asList(1, 2, 3)));
+        formNewOrder.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer()).setRequired(true));
+        formNewOrder.add(new DropDownChoice<Integer>(Order.PRODUCTNUMBER_FIELD, Arrays.asList(1, 2, 3)).setRequired(true));
 
         formNewOrder.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Order p = (Order) form.getModelObject();
-                orderService.save(p);
+                if(p.getRecipient().getId() == null){
+                    p.setRecipient(recipientService.save(p.getRecipient()));
+                }
+                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
                 formNewOrder.setModelObject(new Order());
             }
         });
@@ -121,7 +153,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             Set<Recipient> recipients = getSecuritySession().getLoggedInUser().getRecipients();
             for (String id : ids) {
                 for (Recipient rcp : recipients) {
-                    if (rcp.equals(id)) {
+                    if (rcp.getId().equals(id)) {
                         results.add(rcp);
                     }
                 }
@@ -136,7 +168,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         @Override
         public void query(String term, int page, Response<City> response) {
             Country country = countryService.getByIso2("IT");
-            response.addAll(cityService.find(term, country, 0));
+            response.addAll(cityService.find(term, country, 20));
         }
 
         @Override
@@ -147,12 +179,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
         @Override
         public Collection<City> toChoices(Collection<String> ids) {
             Country country = countryService.getByIso2("IT");
-            List<City> cities = cityService.find("", country, 0);
+            List<City> cities = cityService.getByCountry(country);
             Collection<City> results = new ArrayList<City>();
             for (String id : ids) {
-                for (City rcp : cities) {
-                    if (rcp.equals(id)) {
-                        results.add(rcp);
+                for (City item : cities) {
+                    if (item.getId().equals(id)) {
+                        results.add(item);
                     }
                 }
             }
