@@ -15,6 +15,7 @@
  */
 package it.av.es.web.security;
 
+import it.av.es.model.Project;
 import it.av.es.model.User;
 
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
@@ -43,6 +44,7 @@ public class SecuritySession extends AuthenticatedWebSession {
     private Authentication auth;
     private String username = "";
     private Roles roles;
+    private Project currentProject = null;
 
     /**
      * @see org.apache.wicket.authentication.AuthenticatedWebSession#authenticate(java.lang.String, java.lang.String)
@@ -92,4 +94,20 @@ public class SecuritySession extends AuthenticatedWebSession {
         return SecurityContextHelper.getAuthenticatedUser();
     }
 
+
+    public Project getCurrentProject() {
+        if(currentProject != null){
+            return currentProject;
+        }
+        if(getLoggedInUser().getProjects() != null){
+            return getLoggedInUser().getProjects().iterator().next();    
+        }
+        return null;
+    }
+
+
+    public void setCurrentProject(Project currentProject) {
+        this.currentProject = currentProject;
+    }
+    
 }

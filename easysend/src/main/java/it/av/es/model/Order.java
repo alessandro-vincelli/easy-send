@@ -13,6 +13,14 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "orders")
 public class Order extends BasicEntity {
+    
+    public static final String NAME_FIELD = "name";
+    public static final String USER_FIELD = "user";
+    public static final String PROJECT_FIELD = "project";
+    public static final String PRODUCT_FIELD = "product";
+    public static final String CREATIONTIME_FIELD = "creationTime";
+    public static final String PRODUCTNUMBER_FIELD = "productNumber";
+    
 
     private String name;
     @ManyToOne

@@ -17,6 +17,8 @@ import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
@@ -82,9 +84,12 @@ public class User extends BasicEntity implements Comparable<User> {
     @Version
     private int version;
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch=FetchType.EAGER )
+    @Fetch(FetchMode.SUBSELECT)
     private Set<Project> projects;
     @OneToMany
     public Set<Order> orders;
+    @OneToMany
+    public Set<Recipient> recipients;
 
     public User() {
         super();
@@ -193,14 +198,29 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
+    
+    public Set<Recipient> getRecipients() {
+        return recipients;
+    }
 
+    public void setRecipients(Set<Recipient> recipients) {
+        this.recipients = recipients;
+    }
+    
+    public void addRecipient(Recipient recipient){
+        if(recipients ==null){
+            recipients = new HashSet<Recipient>();
+        }
+        recipients.add(recipient);
+    }
+    
     public void addProject(Project prj){
         if(projects ==null){
             projects = new HashSet<Project>();
         }
         projects.add(prj);
     }
-    
+
     public void addOrder(Order order) {
         if (orders == null) {
             orders = new HashSet<Order>();

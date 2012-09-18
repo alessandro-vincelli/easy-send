@@ -5,6 +5,8 @@ import javax.persistence.Entity;
 @Entity
 public class Product extends BasicEntity {
 
+    public static final String NAME_FIELD = "name";
+    
     private String name;
 
     public Product() {
