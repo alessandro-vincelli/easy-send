@@ -21,6 +21,7 @@
         <class>it.av.es.model.Recipient</class>
         <class>it.av.es.model.City</class>
         <class>it.av.es.model.Country</class>
+        <class>it.av.es.model.Citta</class>
 			
 		<properties>
 			<!-- Scan for annotated classes  -->
