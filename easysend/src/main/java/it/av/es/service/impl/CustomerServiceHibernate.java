@@ -47,7 +47,7 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
      */
     @Override
     public List<Customer> getAll() {
-        Order orderBYName = Order.asc(Customer.NAME_FIELD);
+        Order orderBYName = Order.asc(Customer.CORPORATENAME_FIELD);
         return super.findByCriteria(orderBYName);
     }
 
@@ -56,8 +56,8 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
      */
     @Override
     public List<Customer> find(String string, int maxResults) {
-        Criterion critByName = Restrictions.ilike("name", string + "%");
-        Order orderByName = Order.asc(Customer.NAME_FIELD);
+        Criterion critByName = Restrictions.ilike(Customer.CORPORATENAME_FIELD, string + "%");
+        Order orderByName = Order.asc(Customer.CORPORATENAME_FIELD);
         return findByCriteria(orderByName, 0, maxResults, critByName);
     }
 

@@ -1,20 +1,48 @@
-<wicket:extend>
-   
-	<div id="wrapper">
-    <div id="content">
-    <div id="login">
-    	<h2 class="sbtitle">Sign in</h2>
-		<div>
-        <span wicket:id="signInPanel"></span>
-        </div>
-        <table class="facebookPanel">
-        <tr class="buttons">
-        <th><wicket:message key="message.join"></wicket:message></th>
-        <td><a href="#" title="" wicket:id="signUp" wicket:message="title:signIn.signUpLinkTitle" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="signIn.signUpLink"/></span></a></td>
-        </tr>
-        </table>        
-	</div>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title><wicket:container wicket:id="pageTitle"/></title>
+<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen" title="default" />
+
+<wicket:link>
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+</wicket:link>    
+</head>
+<body id="login-bg"> 
+ 
+<!-- Start: login-holder -->
+<div id="login-holder">
+
+    <!-- start logo -->
+    <div id="logo-login">
+        <a href="index.html"><img src="images/shared/logo.png" width="156" height="40" alt="" /></a>
     </div>
-    </div>
-</wicket:extend>
+    <!-- end logo -->
+    
+    <div class="clear"></div>
+    
+    <!--  start loginbox ................................................................................. -->
+    <div id="loginbox">
+    
+    <!--  start login-inner -->
+    <span wicket:id="signInPanel"></span>
+    <div class="clear"></div>
+    <a href="" wicket:id="signUp" class="forgot-pwd"><wicket:message key="message.join"/></a>
+ </div>
+ <!--  end loginbox -->
+ 
+</div>
+<!-- End: login-holder -->
+</body>
+</html>
+
+
+
+
+
+
+
+
+
 

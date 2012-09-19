@@ -54,6 +54,14 @@ public class HomePage extends BasePageSimple{
                         .isInstantiationAuthorized(PlaceNewOrderPage.class)));
             }
         });
+        add(new BookmarkablePageLink<String>("goCustomerManagerPage", CustomerManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(CustomerManagerPage.class)));
+            }
+        });
         add(new BookmarkablePageLink<String>("goSignOut", SignOut.class) {
             @Override
             protected void onBeforeRender() {

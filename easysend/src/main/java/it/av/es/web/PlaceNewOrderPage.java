@@ -1,15 +1,20 @@
 package it.av.es.web;
 
 import it.av.es.model.City;
+import it.av.es.model.ClosingDays;
 import it.av.es.model.Country;
-import it.av.es.model.Order;
-import it.av.es.model.Product;
 import it.av.es.model.Customer;
+import it.av.es.model.DeliveryType;
+import it.av.es.model.DeliveryVehicle;
+import it.av.es.model.DeploingType;
+import it.av.es.model.Order;
+import it.av.es.model.PaymentType;
+import it.av.es.model.Product;
 import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
-import it.av.es.service.OrderService;
 import it.av.es.service.CustomerService;
+import it.av.es.service.OrderService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -22,6 +27,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
@@ -69,7 +75,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
         // add the single-select component
-        final Select2Choice<Customer> customer = new Select2Choice<Customer>("recipient",
+        final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer",
                 new Model<Customer>(new Customer()), new RecipientProvider());
         formNewOrder.add(customer);
         customer.add(new OnChangeAjaxBehavior() {
@@ -83,14 +89,14 @@ public class PlaceNewOrderPage extends BasePageSimple {
             }
         });
 
-        formNewOrder.add(new TextField<String>("recipient.name").setRequired(true));
-        formNewOrder.add(new TextField<String>("recipient.address").setRequired(true));
-        province = new DropDownChoice<String>("recipient.province", new ArrayList<String>());
+        formNewOrder.add(new TextField<String>("customer.corporateName").setRequired(true));
+        formNewOrder.add(new TextField<String>("customer.address").setRequired(true));
+        province = new DropDownChoice<String>("customer.province", new ArrayList<String>());
         province.setRequired(true).setOutputMarkupId(true);
         formNewOrder.add(province);
 
-        final Select2Choice<City> city = new Select2Choice<City>("recipient.city", new PropertyModel<City>(model,
-                "recipient.city"), new CityProvider() {
+        final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model,
+                "customer.city"), new CityProvider() {
         });
         city.add(new OnChangeAjaxBehavior() {
 
@@ -104,11 +110,32 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         city.setRequired(true);
         formNewOrder.add(city);
-        zipCode = new Select2Choice<String>("recipient.zipcode", new PropertyModel<String>(model,
-                "recipient.zipcode"), new ZipcodeProvider() {
+        zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model,
+                "customer.zipcode"), new ZipcodeProvider() {
         });
         zipCode.setRequired(true);
         formNewOrder.add(zipCode);
+        
+        
+        
+        formNewOrder.add(new TextField<String>("customer.email"));
+        formNewOrder.add(new TextField<String>("customer.phoneNumber").setRequired(true));
+        formNewOrder.add(new TextField<String>("customer.faxNumber"));
+        formNewOrder.add(new TextField<String>("customer.partitaIvaNumber"));
+        formNewOrder.add(new TextField<String>("customer.codiceFiscaleNumber"));
+        formNewOrder.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())));
+        formNewOrder.add(new TextField<String>("customer.iban"));
+        formNewOrder.add(new TextField<String>("customer.bankName"));
+        formNewOrder.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())));
+        //formNewOrder.add(new DropDownChoice<ClosingDays>("customer.closingRange", Arrays.asList(ClosingDays.values())));
+        formNewOrder.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())));
+        //formNewOrder.add(new DropDownChoice<DeploingType>("customer.loadDateTime", Arrays.asList(DeploingType.values())));
+        formNewOrder.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())));
+        formNewOrder.add(new TextField<String>("customer.deliveryNote"));
+        formNewOrder.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values())));
+        formNewOrder.add(new CheckBox("customer.phoneForewarning"));
+        
+        
         ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
         formNewOrder.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer())
                 .setRequired(true));

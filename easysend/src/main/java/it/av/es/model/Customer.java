@@ -2,6 +2,7 @@ package it.av.es.model;
 
 import java.util.Set;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -9,7 +10,7 @@ import javax.persistence.ManyToOne;
 @Entity
 public class Customer extends BasicEntity {
 
-    public static final String NAME_FIELD = "name";
+    public static final String CORPORATENAME_FIELD = "corporateName";
     public static final String ADDRES_FIELD = "address";
     public static final String ZIPCODE_FIELD = "zipcode";
     public static final String PROVINCE_FIELD = "province";
@@ -43,6 +44,7 @@ public class Customer extends BasicEntity {
     private DeploingType deployngType;
     private String loadDateTime;
     private String deliveryNote;
+    @ElementCollection
     private Set<DeliveryDays> deliveryDay;
     private DeliveryType deliveryType;
     private DeliveryVehicle deliveryVehicle;

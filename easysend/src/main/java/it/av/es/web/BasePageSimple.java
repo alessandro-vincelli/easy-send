@@ -17,9 +17,13 @@ package it.av.es.web;
 
 import it.av.es.web.security.SecuritySession;
 
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
+import org.apache.wicket.request.resource.CssResourceReference;
+import org.apache.wicket.request.resource.PackageResourceReference;
 
 /**
  * Base Page without user session. Contains some commons elements.
@@ -28,9 +32,9 @@ import org.apache.wicket.markup.html.panel.FeedbackPanel;
  */
 public class BasePageSimple extends WebPage {
 
-    private static final String BASEPAGE_JS =  "BasePage.js";
+    //private static final String BASEPAGE_JS =  "BasePage.js";
     private static final String STYLES_CSS =  "resources/styles.css";
-    private static final String STYLES_JQUERY_CSS =  "resources/jquery-ui-1.8.5.custom.css";
+    //private static final String STYLES_JQUERY_CSS =  "resources/jquery-ui-1.8.5.custom.css";
     
     private CustomFeedbackPanel feedbackPanel;
     private Label titlePage;
@@ -41,7 +45,7 @@ public class BasePageSimple extends WebPage {
      */
     public BasePageSimple() {
         HtmlUtil.fixInitialHtml(this);
-        titlePage = new Label("pageTitle", ":: YouEat ::");
+        titlePage = new Label("pageTitle", ":: EaysSend - Eurocargo ::");
         add(titlePage);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
@@ -76,12 +80,15 @@ public class BasePageSimple extends WebPage {
     public SecuritySession getSecuritySession() {
         return session;
     }
-    
-//    @Override
-//    public void renderHead(IHeaderResponse response) {
-//        super.renderHead(response);
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+//        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/960.css")));
+//        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/template.css")));
+//        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/colour.css")));
+//        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/text.css")));
 //        response.renderJavaScriptReference(new PackageResourceReference(BasePage.class, BASEPAGE_JS));
 //        response.renderCSSReference(new PackageResourceReference(BasePage.class, STYLES_JQUERY_CSS));
 //        response.renderCSSReference(new PackageResourceReference(BasePage.class, STYLES_CSS));
-//    }
+    }
 }
