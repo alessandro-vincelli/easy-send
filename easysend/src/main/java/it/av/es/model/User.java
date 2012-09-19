@@ -90,7 +90,7 @@ public class User extends BasicEntity implements Comparable<User> {
     public Set<Order> orders;
     @OneToMany(fetch=FetchType.EAGER )
     @Fetch(FetchMode.SUBSELECT)
-    public Set<Recipient> recipients;
+    public Set<Customer> customers;
 
     public User() {
         super();
@@ -200,19 +200,19 @@ public class User extends BasicEntity implements Comparable<User> {
         this.orders = orders;
     }
     
-    public Set<Recipient> getRecipients() {
-        return recipients;
+    public Set<Customer> getRecipients() {
+        return customers;
     }
 
-    public void setRecipients(Set<Recipient> recipients) {
-        this.recipients = recipients;
+    public void setRecipients(Set<Customer> customers) {
+        this.customers = customers;
     }
     
-    public void addRecipient(Recipient recipient){
-        if(recipients ==null){
-            recipients = new HashSet<Recipient>();
+    public void addRecipient(Customer customer){
+        if(customers ==null){
+            customers = new HashSet<Customer>();
         }
-        recipients.add(recipient);
+        customers.add(customer);
     }
     
     public void addProject(Project prj){

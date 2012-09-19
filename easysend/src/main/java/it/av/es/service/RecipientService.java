@@ -15,49 +15,49 @@
  */
 package it.av.es.service;
 
-import it.av.es.model.Recipient;
+import it.av.es.model.Customer;
 import it.av.es.model.User;
 
 import java.util.List;
 
 /**
- * Services on {@Link Recipient}
+ * Services on {@Link Customer}
  * 
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
-public interface RecipientService extends ApplicationService<Recipient> {
+public interface RecipientService extends ApplicationService<Customer> {
     
     /**
      * Finds the recipient using the given pattern
      * 
      * @param string
      * @param maxResults
-     * @return found recipients
+     * @return found customers
      */
-    List<Recipient> find(String string, int maxResults);
+    List<Customer> find(String string, int maxResults);
     
     /**
-     * Save a Recipient
+     * Save a Customer
      * 
-     * @param recipient
+     * @param customer
      * @param user user that relates to the recipient
      * @return just saved profile
      */
-    Recipient save(Recipient recipient, User user);
+    Customer save(Customer customer, User user);
 
     /**
      * Get all the user profile
      * 
      * @return all the user profile
      */
-    List<Recipient> getAll();
+    List<Customer> getAll();
 
     /**
      * Remove a profile
      * 
      * @param profile
      */
-    void remove(Recipient profile);
+    void remove(Customer profile);
     
     /**
      * Return the order by id
@@ -65,7 +65,7 @@ public interface RecipientService extends ApplicationService<Recipient> {
      * @param id
      * @return user with the passed email
      */
-    Recipient getByID(String id);
+    Customer getByID(String id);
 
 
 }

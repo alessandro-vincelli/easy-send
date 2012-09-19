@@ -15,7 +15,7 @@
  */
 package it.av.es.service.impl;
 
-import it.av.es.model.Recipient;
+import it.av.es.model.Customer;
 import it.av.es.model.User;
 import it.av.es.service.RecipientService;
 import it.av.es.service.UserService;
@@ -30,14 +30,14 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * Implements the operation on {@link Recipient}
+ * Implements the operation on {@link Customer}
  * 
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
 @Transactional(readOnly = true)
 @Repository
-public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recipient> implements RecipientService {
+public class RecipientServiceHibernate extends ApplicationServiceHibernate<Customer> implements RecipientService {
 
     @Autowired
     private UserService userService;
@@ -46,8 +46,8 @@ public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recip
      * {@inheritDoc}
      */
     @Override
-    public List<Recipient> getAll() {
-        Order orderBYName = Order.asc(Recipient.NAME_FIELD);
+    public List<Customer> getAll() {
+        Order orderBYName = Order.asc(Customer.NAME_FIELD);
         return super.findByCriteria(orderBYName);
     }
 
@@ -55,20 +55,20 @@ public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recip
      * {@inheritDoc}
      */
     @Override
-    public List<Recipient> find(String string, int maxResults) {
+    public List<Customer> find(String string, int maxResults) {
         Criterion critByName = Restrictions.ilike("name", string + "%");
-        Order orderByName = Order.asc(Recipient.NAME_FIELD);
+        Order orderByName = Order.asc(Customer.NAME_FIELD);
         return findByCriteria(orderByName, 0, maxResults, critByName);
     }
 
     @Override
-    public Recipient save(Recipient recipient, User user) {
+    public Customer save(Customer customer, User user) {
         user = userService.getByID(user.getId());
-        recipient.setUser(user);
-        user.addRecipient(recipient);
-        save(recipient);
+        customer.setUser(user);
+        user.addRecipient(customer);
+        save(customer);
         userService.update(user);
-        return recipient;
+        return customer;
     }
 
 }
