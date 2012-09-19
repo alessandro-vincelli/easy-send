@@ -63,9 +63,10 @@ public class RecipientServiceHibernate extends ApplicationServiceHibernate<Recip
 
     @Override
     public Recipient save(Recipient recipient, User user) {
+        user = userService.getByID(user.getId());
         recipient.setUser(user);
-        save(recipient);
         user.addRecipient(recipient);
+        save(recipient);
         userService.update(user);
         return recipient;
     }

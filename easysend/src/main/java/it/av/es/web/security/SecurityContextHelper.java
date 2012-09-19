@@ -27,7 +27,7 @@ public final class SecurityContextHelper {
      */
     public static User getAuthenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
+        if (authentication != null &&  authentication.getPrincipal() instanceof UserDetailsImpl) {
             return ((UserDetailsImpl) authentication.getPrincipal()).getUser();
         }
         return null;

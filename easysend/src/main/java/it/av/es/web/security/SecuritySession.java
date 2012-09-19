@@ -20,8 +20,12 @@ import it.av.es.model.User;
 
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.request.Request;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.ProviderManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
@@ -32,6 +36,9 @@ import org.springframework.security.core.context.SecurityContextHolder;
  * 
  */
 public class SecuritySession extends AuthenticatedWebSession {
+    
+    @SpringBean(name="authenticationManager")
+    private ProviderManager authenticationProvider;
     /**
      * Construct.
      * 
@@ -39,6 +46,7 @@ public class SecuritySession extends AuthenticatedWebSession {
      */
     public SecuritySession(Request request) {
         super(request);
+        Injector.get().inject(this);
     }
 
     private Authentication auth;
@@ -53,7 +61,7 @@ public class SecuritySession extends AuthenticatedWebSession {
     public boolean authenticate(final String username, final String password) {
         // Check username and password
         try {
-            auth = AuthenticationProvider.authenticate(username, password);
+            auth = authenticationProvider.authenticate(new UsernamePasswordAuthenticationToken(username, password));
             SecurityContextHolder.getContext().setAuthentication(auth);
             signIn(true);
             return auth.isAuthenticated();
