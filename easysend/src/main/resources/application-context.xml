@@ -117,7 +117,7 @@
     
     <bean id="productService" class="it.av.es.service.impl.ProductServiceHibernate"/>
     
-    <bean id="recipientService" class="it.av.es.service.impl.RecipientServiceHibernate"/>
+    <bean id="customerService" class="it.av.es.service.impl.CustomerServiceHibernate"/>
     
     <bean id="cityService" class="it.av.es.service.impl.CityServiceHibernate"/>
     

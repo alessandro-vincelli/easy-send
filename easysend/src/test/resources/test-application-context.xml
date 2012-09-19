@@ -78,10 +78,13 @@
     
     <bean id="productService" class="it.av.es.service.impl.ProductServiceHibernate"/>
     
+    <bean id="customerService" class="it.av.es.service.impl.CustomerServiceHibernate"/>
+    
     <bean id="cityService" class="it.av.es.service.impl.CityServiceHibernate"/>
+    
+    <bean id="cittaService" class="it.av.es.service.impl.CittaServiceHibernate"/>
     
     <bean id="countryService" class="it.av.es.service.impl.CountryServiceHibernate"/>
     
-    <bean id="cittaService" class="it.av.es.service.impl.CittaServiceHibernate"/>
 
 </beans>

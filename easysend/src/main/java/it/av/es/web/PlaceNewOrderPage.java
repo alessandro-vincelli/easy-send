@@ -9,7 +9,7 @@ import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
 import it.av.es.service.OrderService;
-import it.av.es.service.RecipientService;
+import it.av.es.service.CustomerService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -52,7 +52,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
     @SpringBean
     private OrderService orderService;
     @SpringBean
-    private RecipientService recipientService;
+    private CustomerService customerService;
     @SpringBean
     private CityService cityService;
     @SpringBean
@@ -76,7 +76,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Customer rcp = customer.getModelObject();
-                model.getObject().setRecipient(recipientService.getByID(rcp.getId()));
+                model.getObject().setRecipient(customerService.getByID(rcp.getId()));
                 zipcodes = (cittaService.findCapByComune(rcp.getCity().getName(), 0));
                 province.setChoices(cittaService.findProvinciaByComune(rcp.getCity().getName(), 0));
                 target.add(formNewOrder);
@@ -120,7 +120,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 super.onSubmit(target, form);
                 Order p = (Order) form.getModelObject();
                 if (p.getRecipient().getId() == null) {
-                    p.setRecipient(recipientService.save(p.getRecipient(), getSecuritySession().getLoggedInUser()));
+                    p.setRecipient(customerService.save(p.getRecipient(), getSecuritySession().getLoggedInUser()));
                 }
                 orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
                 formNewOrder.setModelObject(new Order());
