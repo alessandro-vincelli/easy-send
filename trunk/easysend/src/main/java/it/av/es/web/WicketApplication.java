@@ -25,6 +25,15 @@ public class WicketApplication extends AuthenticatedWebApplication {
         if(getSpringContext() != null){
             getComponentInstantiationListeners().add(new SpringComponentInjector(this, getSpringContext(), true));
         }
+        
+        mountPage("/products", ProductManagerPage.class);
+        mountPage("/users", UserManagerPage.class);
+        mountPage("/newOrder", PlaceNewOrderPage.class);
+        mountPage("/customers", CustomerManagerPage.class);
+        mountPage("/projects", ProjectManagerPage.class);
+        mountPage("/signIn", SignIn.class);
+        mountPage("/signOut", SignOut.class);
+        mountPage("/signUp", SignUpPage.class);
     }
 
 

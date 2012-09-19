@@ -17,6 +17,8 @@ package it.av.es.web;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.https.RequireHttps;
 
 /**
@@ -26,14 +28,26 @@ import org.apache.wicket.protocol.https.RequireHttps;
  * 
  */
 @RequireHttps
-public class SignIn extends BasePageSimple {
+public class SignIn extends WebPage {
+
+    private Label titlePage;
+    private CustomFeedbackPanel feedbackPanel;
 
     /**
      * Constructor
      */
     public SignIn() {
+        
+        titlePage = new Label("pageTitle", ":: EaysSend - Eurocargo ::");
+        add(titlePage);
+        
+        feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
+        feedbackPanel.setOutputMarkupId(true);
+        feedbackPanel.setOutputMarkupPlaceholderTag(true);
+        add(feedbackPanel);
+        
         //to eliminate duplicated feedback panel
-        getFeedbackPanel().setVisible(false);
+        feedbackPanel.setVisible(false);
         appendToPageTile(" " + getString("basepage.goSignIn"));
 
         add(new SignInPanel("signInPanel", true));
@@ -47,4 +61,7 @@ public class SignIn extends BasePageSimple {
         
     }
 
+    protected void appendToPageTile(String title){
+        titlePage.setDefaultModelObject(titlePage.getDefaultModelObjectAsString().concat(title));
+    }
 }
