@@ -65,7 +65,7 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
     public Customer save(Customer customer, User user) {
         user = userService.getByID(user.getId());
         customer.setUser(user);
-        user.addRecipient(customer);
+        user.addCustomer(customer);
         save(customer);
         userService.update(user);
         return customer;

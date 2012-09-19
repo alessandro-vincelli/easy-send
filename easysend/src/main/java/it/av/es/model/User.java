@@ -199,16 +199,16 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
-    
-    public Set<Customer> getRecipients() {
+        
+    public Set<Customer> getCustomers() {
         return customers;
     }
 
-    public void setRecipients(Set<Customer> customers) {
+    public void setCustomers(Set<Customer> customers) {
         this.customers = customers;
     }
-    
-    public void addRecipient(Customer customer){
+
+    public void addCustomer(Customer customer){
         if(customers ==null){
             customers = new HashSet<Customer>();
         }
