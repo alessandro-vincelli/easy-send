@@ -17,7 +17,7 @@ package it.av.es.service.impl;
 
 import it.av.es.model.Customer;
 import it.av.es.model.User;
-import it.av.es.service.RecipientService;
+import it.av.es.service.CustomerService;
 import it.av.es.service.UserService;
 
 import java.util.List;
@@ -37,7 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Transactional(readOnly = true)
 @Repository
-public class RecipientServiceHibernate extends ApplicationServiceHibernate<Customer> implements RecipientService {
+public class CustomerServiceHibernate extends ApplicationServiceHibernate<Customer> implements CustomerService {
 
     @Autowired
     private UserService userService;

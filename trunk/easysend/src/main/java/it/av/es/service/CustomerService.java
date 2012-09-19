@@ -25,7 +25,7 @@ import java.util.List;
  * 
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
-public interface RecipientService extends ApplicationService<Customer> {
+public interface CustomerService extends ApplicationService<Customer> {
     
     /**
      * Finds the recipient using the given pattern
