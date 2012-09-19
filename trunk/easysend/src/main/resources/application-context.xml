@@ -20,8 +20,6 @@
     <tx:jta-transaction-manager />
     <tx:annotation-driven transaction-manager="transactionManager" />
     
-    <!-- <security:global-method-security /> -->
-    
     <bean id="passwordEncoder"  class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></bean>
     
     <bean class="org.springframework.beans.factory.config.PropertyOverrideConfigurer">
@@ -31,6 +29,24 @@
             </list>
         </property>
     </bean>
+    
+    <security:http auto-config="true">
+        <security:intercept-url pattern="/**"/>
+    </security:http>
+    
+    <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
+        <constructor-arg>    
+            <list>
+                <ref local="daoAuthenticationProvider" />
+            </list>
+        </constructor-arg>
+    </bean>
+        
+    <security:authentication-manager>
+        <security:authentication-provider user-service-ref="userDetailsService"></security:authentication-provider>
+    </security:authentication-manager>
+
+    <security:global-method-security secured-annotations="enabled" />
         
     <bean id="dataSourceMain" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
 
@@ -87,10 +103,6 @@
                 <property name="userPropertyToUse" value="passwordSalt"></property>
             </bean>
         </property>
-    </bean>
-
-    <bean id="authenticationProvider" class="it.av.es.web.security.AuthenticationProvider">
-        <constructor-arg ref="daoAuthenticationProvider"/>
     </bean>
 
     <bean id="languageService" class="it.av.es.service.impl.LanguageServiceHibernate"></bean>

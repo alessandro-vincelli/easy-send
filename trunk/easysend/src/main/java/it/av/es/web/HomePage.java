@@ -9,7 +9,7 @@ import org.apache.wicket.markup.html.link.BookmarkablePageLink;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation( { "USER", "VENDOR" })
+@AuthorizeInstantiation( { "ADMIN", "VENDOR" })
 public class HomePage extends BasePageSimple{
 
     public HomePage() {
