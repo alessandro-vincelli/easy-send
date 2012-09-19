@@ -4,7 +4,7 @@ import it.av.es.model.City;
 import it.av.es.model.Country;
 import it.av.es.model.Order;
 import it.av.es.model.Product;
-import it.av.es.model.Recipient;
+import it.av.es.model.Customer;
 import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
@@ -69,13 +69,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
         final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
         // add the single-select component
-        final Select2Choice<Recipient> recipient = new Select2Choice<Recipient>("recipient",
-                new Model<Recipient>(new Recipient()), new RecipientProvider());
-        formNewOrder.add(recipient);
-        recipient.add(new OnChangeAjaxBehavior() {
+        final Select2Choice<Customer> customer = new Select2Choice<Customer>("recipient",
+                new Model<Customer>(new Customer()), new RecipientProvider());
+        formNewOrder.add(customer);
+        customer.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                Recipient rcp = recipient.getModelObject();
+                Customer rcp = customer.getModelObject();
                 model.getObject().setRecipient(recipientService.getByID(rcp.getId()));
                 zipcodes = (cittaService.findCapByComune(rcp.getCity().getName(), 0));
                 province.setChoices(cittaService.findProvinciaByComune(rcp.getCity().getName(), 0));
@@ -149,24 +149,24 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
     }
 
-    private class RecipientProvider extends ChoiceProvider<Recipient> {
+    private class RecipientProvider extends ChoiceProvider<Customer> {
 
         @Override
-        public void query(String term, int page, Response<Recipient> response) {
+        public void query(String term, int page, Response<Customer> response) {
             response.addAll(getSecuritySession().getLoggedInUser().getRecipients());
         }
 
         @Override
-        public void toJson(Recipient choice, JSONWriter writer) throws JSONException {
-            writer.key("id").value(choice.getId()).key("text").value(choice.getName());
+        public void toJson(Customer choice, JSONWriter writer) throws JSONException {
+            writer.key("id").value(choice.getId()).key("text").value(choice.getCorporateName());
         }
 
         @Override
-        public Collection<Recipient> toChoices(Collection<String> ids) {
-            Collection<Recipient> results = new ArrayList<Recipient>();
-            Set<Recipient> recipients = getSecuritySession().getLoggedInUser().getRecipients();
+        public Collection<Customer> toChoices(Collection<String> ids) {
+            Collection<Customer> results = new ArrayList<Customer>();
+            Set<Customer> customers = getSecuritySession().getLoggedInUser().getRecipients();
             for (String id : ids) {
-                for (Recipient rcp : recipients) {
+                for (Customer rcp : customers) {
                     if (rcp.getId().equals(id)) {
                         results.add(rcp);
                     }
