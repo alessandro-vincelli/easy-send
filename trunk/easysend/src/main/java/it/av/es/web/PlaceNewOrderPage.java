@@ -76,7 +76,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Customer rcp = customer.getModelObject();
-                model.getObject().setRecipient(customerService.getByID(rcp.getId()));
+                model.getObject().setCustomer(customerService.getByID(rcp.getId()));
                 zipcodes = (cittaService.findCapByComune(rcp.getCity().getName(), 0));
                 province.setChoices(cittaService.findProvinciaByComune(rcp.getCity().getName(), 0));
                 target.add(formNewOrder);
@@ -119,8 +119,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Order p = (Order) form.getModelObject();
-                if (p.getRecipient().getId() == null) {
-                    p.setRecipient(customerService.save(p.getRecipient(), getSecuritySession().getLoggedInUser()));
+                if (p.getCustomer().getId() == null) {
+                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
                 }
                 orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
                 formNewOrder.setModelObject(new Order());
@@ -153,7 +153,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         @Override
         public void query(String term, int page, Response<Customer> response) {
-            response.addAll(getSecuritySession().getLoggedInUser().getRecipients());
+            response.addAll(getSecuritySession().getLoggedInUser().getCustomers());
         }
 
         @Override
@@ -164,7 +164,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         @Override
         public Collection<Customer> toChoices(Collection<String> ids) {
             Collection<Customer> results = new ArrayList<Customer>();
-            Set<Customer> customers = getSecuritySession().getLoggedInUser().getRecipients();
+            Set<Customer> customers = getSecuritySession().getLoggedInUser().getCustomers();
             for (String id : ids) {
                 for (Customer rcp : customers) {
                     if (rcp.getId().equals(id)) {

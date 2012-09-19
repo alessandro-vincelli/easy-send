@@ -22,7 +22,7 @@ public class Order extends BasicEntity {
     public static final String PRODUCTNUMBER_FIELD = "productNumber";
 
     @ManyToOne
-    @JoinColumn(name = "recipient_fk")
+    @JoinColumn(name = "customer_fk")
     private Customer customer;
     private String name;
     @ManyToOne
@@ -91,12 +91,13 @@ public class Order extends BasicEntity {
         this.creationTime = creationTime;
     }
 
-    public Customer getRecipient() {
+    public Customer getCustomer() {
         return customer;
     }
 
-    public void setRecipient(Customer customer) {
+    public void setCustomer(Customer customer) {
         this.customer = customer;
     }
+
 
 }
