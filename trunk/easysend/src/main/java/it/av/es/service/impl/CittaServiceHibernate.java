@@ -118,7 +118,7 @@ public class CittaServiceHibernate implements CittaService {
 
     @Override
     public List<String> findCapByComune(String comune, int maxResults) {
-        Criterion critByName = Restrictions.ilike("comune", comune, MatchMode.ANYWHERE);
+        Criterion critByName = Restrictions.ilike("comune", comune);
         Order orderByName = Order.asc("cap");
         Criteria criteria = getHibernateSession().createCriteria(Citta.class);
         criteria.setProjection(Projections.distinct(Projections.property("cap")));
@@ -132,7 +132,7 @@ public class CittaServiceHibernate implements CittaService {
 
     @Override
     public List<String> findProvinciaByComune(String comune, int maxResults) {
-        Criterion critByName = Restrictions.ilike("comune", comune, MatchMode.ANYWHERE);
+        Criterion critByName = Restrictions.ilike("comune", comune);
         Order orderByName = Order.asc("provincia");
         Criteria criteria = getHibernateSession().createCriteria(Citta.class);
         criteria.setProjection(Projections.distinct(Projections.property("provincia")));

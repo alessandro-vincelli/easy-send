@@ -68,10 +68,10 @@ public class SignUpPanel extends Panel {
      * @param feedbackPanel
      * @throws EasySendException
      */
-    public SignUpPanel(String id, FeedbackPanel feedbackPanel) throws EasySendException {
+    public SignUpPanel(String id) throws EasySendException {
         super(id);
         Injector.get().inject(this);
-        this.feedbackPanel = feedbackPanel;
+        this.feedbackPanel = new FeedbackPanel("feedBackPanel");
 
         RfcCompliantEmailAddressValidator emailAddressValidator = RfcCompliantEmailAddressValidator.getInstance();
         StringValidator pwdValidator = StringValidator.lengthBetween(6, 20);

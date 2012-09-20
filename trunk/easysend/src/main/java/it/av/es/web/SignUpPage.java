@@ -32,7 +32,7 @@ public class SignUpPage extends BasePageSimple {
      * @throws YoueatException
      */
     public SignUpPage() {
-        SignUpPanel signUpPanel = new SignUpPanel("userSignUpPanel", getFeedbackPanel());
+        SignUpPanel signUpPanel = new SignUpPanel("userSignUpPanel");
         add(signUpPanel);
     }
 
