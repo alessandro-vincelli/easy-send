@@ -15,15 +15,22 @@
  */
 package it.av.es.web;
 
+import it.av.es.model.User;
+import it.av.es.util.CookieUtil;
 import it.av.es.web.security.SecuritySession;
 
-import org.apache.wicket.markup.head.CssHeaderItem;
+import java.util.Locale;
+
+import javax.servlet.http.Cookie;
+
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
-import org.apache.wicket.request.resource.CssResourceReference;
-import org.apache.wicket.request.resource.PackageResourceReference;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.http.WebResponse;
+import org.apache.wicket.util.cookies.CookieUtils;
 
 /**
  * Base Page without user session. Contains some commons elements.
@@ -31,14 +38,11 @@ import org.apache.wicket.request.resource.PackageResourceReference;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
 public class BasePageSimple extends WebPage {
-
-    //private static final String BASEPAGE_JS =  "BasePage.js";
-    private static final String STYLES_CSS =  "resources/styles.css";
-    //private static final String STYLES_JQUERY_CSS =  "resources/jquery-ui-1.8.5.custom.css";
     
     private CustomFeedbackPanel feedbackPanel;
     private Label titlePage;
     private SecuritySession session;
+    private User loggedInUser;
 
     /**
      * Construct.
@@ -53,6 +57,90 @@ public class BasePageSimple extends WebPage {
         feedbackPanel.setOutputMarkupPlaceholderTag(true);
         add(feedbackPanel);
         session = ((SecuritySession)getSession());
+        
+        
+        
+        loggedInUser = session.getLoggedInUser();
+        if(new CookieUtils().load(CookieUtil.LANGUAGE) != null) {
+            getSession().setLocale(
+                    new Locale(new CookieUtils().load(CookieUtil.LANGUAGE)));
+        } else {
+            if (loggedInUser != null) {
+                ((WebResponse)RequestCycle.get().getResponse()).addCookie((new Cookie(CookieUtil.LANGUAGE, loggedInUser.getLanguage().getLanguage())));
+                getSession().setLocale(new Locale(loggedInUser.getLanguage().getLanguage()));
+            }
+        }
+        
+        //BookmarkablePageLink goAccount = new BookmarkablePageLink<String>("goAccount", EaterAccountPage.class, goAccountParameters);
+        
+        Label name = new Label("loggedInUser", loggedInUser != null ? loggedInUser.getFirstname() + " " +loggedInUser.getLastname() : "");
+        add(name);
+        
+        add(new BookmarkablePageLink<String>("goUserManagerPage", UserManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(UserManagerPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goProjectManagerPage", ProjectManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(ProjectManagerPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goProductManagerPage", ProductManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(ProductManagerPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goSelectProjectPage", SelectProjectPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(SelectProjectPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goPlaceNewOrderPage", PlaceNewOrderPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(PlaceNewOrderPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goCustomerManagerPage", CustomerManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(CustomerManagerPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goCustomerNewPage", CustomerNewPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(CustomerNewPage.class)));
+            }
+        });
+        add(new BookmarkablePageLink<String>("goSignOut", SignOut.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(SignOut.class)));
+            }
+        });        
+
         
 //        BookmarkablePageLink goInfo = new BookmarkablePageLink("goInfo", AboutPage.class);
 //        add(goInfo);
@@ -87,8 +175,5 @@ public class BasePageSimple extends WebPage {
 //        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/template.css")));
 //        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/colour.css")));
 //        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/text.css")));
-//        response.renderJavaScriptReference(new PackageResourceReference(BasePage.class, BASEPAGE_JS));
-//        response.renderCSSReference(new PackageResourceReference(BasePage.class, STYLES_JQUERY_CSS));
-//        response.renderCSSReference(new PackageResourceReference(BasePage.class, STYLES_CSS));
     }
 }

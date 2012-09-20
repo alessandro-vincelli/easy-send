@@ -28,13 +28,15 @@ import java.util.List;
 public interface CustomerService extends ApplicationService<Customer> {
     
     /**
-     * Finds the recipient using the given pattern
+     * Finds the customer using the given pattern
      * 
      * @param string
      * @param maxResults
      * @return found customers
      */
     List<Customer> find(String string, int maxResults);
+    
+    
     
     /**
      * Save a Customer
