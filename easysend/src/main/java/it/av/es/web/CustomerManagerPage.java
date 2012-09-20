@@ -47,20 +47,6 @@ public class CustomerManagerPage extends BasePageSimple {
                 "dataTable", columns, new CustomerSortableDataProvider(), 50);
         add(dataTable);
 
-        final Form<Customer> formPrj = new Form<Customer>("prj", new CompoundPropertyModel<Customer>(new Customer()));
-        add(formPrj);
-        formPrj.add(new TextField<String>(Customer.CORPORATENAME_FIELD));
-        formPrj.add(new AjaxSubmitLink("submit") {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
-                Customer p = (Customer) form.getModelObject();
-                customerService.save(p);
-                target.add(dataTable);
-                formPrj.setModelObject(new Customer());
-            }
-        });
-
     }
 
 }

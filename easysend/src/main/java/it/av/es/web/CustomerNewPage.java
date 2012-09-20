@@ -70,6 +70,8 @@ public class CustomerNewPage extends BasePageSimple {
 
     public CustomerNewPage() {
         super();
+        
+        
         final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(new Customer());
         final Form<Customer> formNewOrder = new Form<Customer>("newCustomer", model);
         add(formNewOrder);
@@ -88,9 +90,15 @@ public class CustomerNewPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
-                province.setChoices(cittaService.findProvinciaByComune(city.getModelObject().getName(), 0));
-                target.add(zipCode);
-                target.add(province);
+                if(zipcodes != null && zipcodes.size() == 1){
+                    formNewOrder.getModelObject().setZipcode(zipcodes.get(0));
+                }
+                List<String> provinces = cittaService.findProvinciaByComune(city.getModelObject().getName(), 0);
+                province.setChoices(provinces);
+                if(provinces != null && provinces.size() == 1){
+                    formNewOrder.getModelObject().setProvince(provinces.get(0));
+                }
+                target.add(formNewOrder);
             }
         });
         city.setRequired(true);
@@ -126,6 +134,8 @@ public class CustomerNewPage extends BasePageSimple {
                 Customer c = (Customer) form.getModelObject();
                 customerService.save(c);
                 formNewOrder.setEnabled(false);
+                getFeedbackPanel().info("salvato con successo");
+                target.add(getFeedbackPanel());
                 target.add(formNewOrder);
             }
 
@@ -135,48 +145,6 @@ public class CustomerNewPage extends BasePageSimple {
                 target.add(getFeedbackPanel());
             }
         });
-
-    }
-
-    private class ProductChoiceRenderer implements IChoiceRenderer<Product> {
-
-        @Override
-        public Object getDisplayValue(Product object) {
-            return object.getName();
-        }
-
-        @Override
-        public String getIdValue(Product object, int index) {
-            return object.getId();
-        }
-
-    }
-
-    private class RecipientProvider extends ChoiceProvider<Customer> {
-
-        @Override
-        public void query(String term, int page, Response<Customer> response) {
-            response.addAll(getSecuritySession().getLoggedInUser().getCustomers());
-        }
-
-        @Override
-        public void toJson(Customer choice, JSONWriter writer) throws JSONException {
-            writer.key("id").value(choice.getId()).key("text").value(choice.getCorporateName());
-        }
-
-        @Override
-        public Collection<Customer> toChoices(Collection<String> ids) {
-            Collection<Customer> results = new ArrayList<Customer>();
-            Set<Customer> customers = getSecuritySession().getLoggedInUser().getCustomers();
-            for (String id : ids) {
-                for (Customer rcp : customers) {
-                    if (rcp.getId().equals(id)) {
-                        results.add(rcp);
-                    }
-                }
-            }
-            return results;
-        }
 
     }
 

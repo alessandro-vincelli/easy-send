@@ -1,122 +1,277 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
-    <div id="wrapper">
-	<div id="content">
+<!-- start content-outer -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+
+<div id="page-heading"><h1>Inserisci ordine</h1></div>
+
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+<tr>
+    <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+    <th class="topleft"></th>
+    <td id="tbl-border-top">&nbsp;</td>
+    <th class="topright"></th>
+    <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+</tr>
+<tr>
+    <td id="tbl-border-left"></td>
+    <td>
+    <!--  start content-table-inner -->
+    <div id="content-table-inner">
+    <span wicket:id="feedBackPanel">message will be here</span>
+    
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tr valign="top">
+    <td>
+    
+    
+        <!--  start step-holder -->
+        <div id="step-holder">
+            <div class="step-no">1</div>
+            <div class="step-dark-left"><a href="">Selezione cliente</a></div>
+            <div class="step-dark-right">&nbsp;</div>
+            <div class="step-no-off">2</div>
+            <div class="step-light-left">Selezione prodotto</div>
+            <div class="step-light-round">&nbsp;</div>
+            <div class="clear"></div>
+        </div>
+        <!--  end step-holder -->
+    
+        <!-- start id-form -->
         <form wicket:id="newOrder">
-           <fieldset>
-             <table class="form-risto">
-                <tr>
-                <th><label for="customer"><wicket:message key="customer"/></label></th>
-                <td><input type="hidden" style="width: 300px;" wicket:id="customer"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.corporateName"><wicket:message key="customer.corporateName"/></label></th>
-                <td><input type="text" wicket:id="customer.corporateName" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.address"><wicket:message key="customer.address"/></label></th>
-                <td><input type="text" wicket:id="customer.address" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.city"><wicket:message key="customer.city"/></label></th>
-                <td><input type="hidden" style="width: 300px;" wicket:id="customer.city"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.province"><wicket:message key="customer.province"/></label></th>
-                <td><select wicket:id="customer.province"></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.zipcode"><wicket:message key="customer.zipcode"/></label></th>
-                <td><input type="hidden" style="width: 300px;" wicket:id="customer.zipcode"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.email"><wicket:message key="customer.email"/></label></th>
-                <td><input type="text" wicket:id="customer.email" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.phoneNumber"><wicket:message key="customer.phoneNumber"/></label></th>
-                <td><input type="text" wicket:id="customer.phoneNumber" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.faxNumber"><wicket:message key="customer.faxNumber"/></label></th>
-                <td><input type="text" wicket:id="customer.faxNumber" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.partitaIvaNumber"><wicket:message key="customer.partitaIvaNumber"/></label></th>
-                <td><input type="text" wicket:id="customer.partitaIvaNumber" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.codiceFiscaleNumber"><wicket:message key="customer.codiceFiscaleNumber"/></label></th>
-                <td><input type="text" wicket:id="customer.codiceFiscaleNumber" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.paymentType"><wicket:message key="customer.paymentType"/></label></th>
-                <td><select wicket:id="customer.paymentType"></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.iban"><wicket:message key="customer.iban"/></label></th>
-                <td><input type="text" wicket:id="customer.iban" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.bankName"><wicket:message key="customer.bankName"/></label></th>
-                <td><input type="text" wicket:id="customer.bankName" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.closingDay"><wicket:message key="customer.closingDay"/></label></th>
-                <td><select wicket:id="customer.closingDay"></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.closingRange"><wicket:message key="customer.closingRange"/></label></th>
-                <td><select></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.deployngType"><wicket:message key="customer.deployngType"/></label></th>
-                <td><select wicket:id="customer.deployngType"></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.loadDateTime"><wicket:message key="customer.loadDateTime"/></label></th>
-                <td><select></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.deliveryDay"><wicket:message key="customer.deliveryDay"/></label></th>
-                <td><select></select ></td>
-                </tr>
-                <tr>
-                <th><label for="customer.deliveryNote"><wicket:message key="customer.deliveryNote"/></label></th>
-                <td><input type="text" wicket:id="customer.deliveryNote" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>
-                <tr>
-                <th><label for="customer.phoneForewarning"><wicket:message key="customer.deliveryNote"/></label></th>
-                <td><input type="checkbox" wicket:id="customer.phoneForewarning" class="ui-widget ui-state-default ui-corner-all ui-button-text-only"></input></td>
-                </tr>                
-                <tr>
-                <th><label for="customer.deliveryType"><wicket:message key="customer.deliveryType"/></label></th>
-                <td><select wicket:id="customer.deliveryType"></select ></td>
-                </tr>                
-                <tr>
-                <th><label for="customer.deliveryVehicle"><wicket:message key="customer.deliveryVehicle"/></label></th>
-                <td><select wicket:id="customer.deliveryVehicle"></select ></td>
-                </tr>        
-                <tr>
-                <th><label for="product"><wicket:message key="product"/></label></th>
-                <td><select style="width: 300px;" wicket:id="product"></select></td>
-                </tr>
-                <tr>
-                <th><label for="productNumber"><wicket:message key="productNumber"/></label></th>
-                <td><select wicket:id="productNumber"></select ></td>
-                </tr>
-                <tr>
-                <td colspan="2" class="submitarea buttons">
-                    <a wicket:message="value:button.create" wicket:id="submit" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="button.create"/></span></a> 
-                    <!-- <a wicket:id="buttonClearForm" class="ui-button ui-state-default ui-corner-all ui-button-text-only"><span class="ui-button-text"><wicket:message key="button.clean"/></span></a> -->
-                </td>
-                </tr>
-            </table>
-           </fieldset>
-        </form>
-	</div>
-	</div>
-    <div id="extra">
+        <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+        <colgroup wicket:id="step1">
+        <tr>
+        <th valign="top"><wicket:message key="customer"/></th>
+        <td>
+        <input type="hidden" style="width: 300px;" wicket:id="customer" ></input>
+        </td>
+        <td></td>
+        </tr>        
+        <tr>
+            <th valign="top"><wicket:message key="customer.corporateName"/></th>
+            <td><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.address"/></th>
+            <td><input type="text" wicket:id="customer.address" class="inp-form" /></td>
+            <td></td>
+        </tr>
+        <tr>
+        <th valign="top"><wicket:message key="customer.city"/></th>
+        <td>
+        <input type="hidden" style="width: 300px;" wicket:id="customer.city" ></input>
+        </td>
+        <td></td>
+        </tr>     
+        <tr>
+            <th valign="top"><wicket:message key="customer.province"/></th>
+            <td>    
+            <select wicket:id="customer.province"></select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.zipcode"/></th>
+            <td><input type="hidden" style="width: 200px;" wicket:id="customer.zipcode" ></input></td>
+            <th valign="top"><wicket:message key="customer.email"/></th>
+            <td><input type="text" wicket:id="customer.email" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
+            <td><input type="text" wicket:id="customer.phoneNumber" class="inp-form-small" /></td>
+            <th valign="top"><wicket:message key="customer.faxNumber"/></th>
+            <td><input type="text" wicket:id="customer.faxNumber" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.partitaIvaNumber"/></th>
+            <td><input type="text" wicket:id="customer.partitaIvaNumber" class="inp-form-small" /></td>
+            <th valign="top"><wicket:message key="customer.codiceFiscaleNumber"/></th>
+            <td><input type="text" wicket:id="customer.codiceFiscaleNumber" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
+            <td><select wicket:id="customer.paymentType"></select></td>
+            <th valign="top"><wicket:message key="customer.iban"/></th>
+            <td><input type="text" wicket:id="customer.iban" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.bankName"/></th>
+            <td><input type="text" wicket:id="customer.bankName" class="inp-form" /></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.closingDay"/></th>
+            <td><select wicket:id="customer.closingDay" ></select></td>
+            <th valign="top"><wicket:message key="customer.closingRange"/>:</th>
+            <td><select ></select></td>
+        </tr>                     
+        <tr>
+            <th valign="top"><wicket:message key="customer.deployngType"/>:</th>
+            <td><select wicket:id="customer.deployngType" ></select></td>
+            <th valign="top"><wicket:message key="customer.loadDateTime"/></th>
+            <td><select ></select></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryDay"/></th>
+            <td><select ></select></td>
+            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
+            <td><input type="text" wicket:id="customer.deliveryNote" class="inp-form-small" /></td>
+        </tr>        
+        <tr>
+            <th valign="top"><wicket:message key="customer.phoneForewarning"/></th>
+            <td><input type="checkbox" wicket:id="customer.phoneForewarning" class="inp-form-small" /></td>
+            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
+            <td><select wicket:id="customer.deliveryType" ></select></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryVehicle"/></th>
+            <td>    
+            <select wicket:id="customer.deliveryVehicle" ></select>
+            </td>
+            <td></td>
+        </tr>
+        </colgroup>
+        <colgroup wicket:id="step2">
+        <tr>
+            <th valign="top"><wicket:message key="product"/></th>
+            <td>    
+            <select wicket:id="product" ></select>
+            </td>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="productNumber"/></th>
+            <td>    
+            <select wicket:id="productNumber" ></select>
+            </td>
+            <td></td>
+        </tr>
+        </colgroup>
+        <tr>
+        <th>&nbsp;</th>
+        <td valign="top">
+            <input type="button" value="" class="form-submit" wicket:id="submit" ></input>
+            <input type="reset" value="" class="form-reset"  />
+        </td>
+        <td></td>
+    </tr>
+    </table>
+    </form>
+    <!-- end id-form  -->
+
+    </td>
+    <td>
+
+    <!--  start related-activities -->
+    <div id="related-activities">
+        
+        <!--  start related-act-top -->
+        <div id="related-act-top">
+        <img src="images/forms/header_related_act.gif" width="271" height="43" alt="" />
+        </div>
+        <!-- end related-act-top -->
+        
+        <!--  start related-act-bottom -->
+        <div id="related-act-bottom">
+        
+            <!--  start related-act-inner -->
+            <div id="related-act-inner">
+            
+                <div class="left"><a href=""><img src="images/forms/icon_plus.gif" width="21" height="21" alt="" /></a></div>
+                <div class="right">
+                    <h5>Add another product</h5>
+                    Lorem ipsum dolor sit amet consectetur
+                    adipisicing elitsed do eiusmod tempor.
+                    <ul class="greyarrow">
+                        <li><a href="">Click here to visit</a></li> 
+                        <li><a href="">Click here to visit</a> </li>
+                    </ul>
+                </div>
+                
+                <div class="clear"></div>
+                <div class="lines-dotted-short"></div>
+                
+                <div class="left"><a href=""><img src="images/forms/icon_minus.gif" width="21" height="21" alt="" /></a></div>
+                <div class="right">
+                    <h5>Delete products</h5>
+                    Lorem ipsum dolor sit amet consectetur
+                    adipisicing elitsed do eiusmod tempor.
+                    <ul class="greyarrow">
+                        <li><a href="">Click here to visit</a></li> 
+                        <li><a href="">Click here to visit</a> </li>
+                    </ul>
+                </div>
+                
+                <div class="clear"></div>
+                <div class="lines-dotted-short"></div>
+                
+                <div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
+                <div class="right">
+                    <h5>Edit categories</h5>
+                    Lorem ipsum dolor sit amet consectetur
+                    adipisicing elitsed do eiusmod tempor.
+                    <ul class="greyarrow">
+                        <li><a href="">Click here to visit</a></li> 
+                        <li><a href="">Click here to visit</a> </li>
+                    </ul>
+                </div>
+                <div class="clear"></div>
+                
+            </div>
+            <!-- end related-act-inner -->
+            <div class="clear"></div>
+        
+        </div>
+        <!-- end related-act-bottom -->
+    
     </div>
-    <div id="navigation">
-    </div>
+    <!-- end related-activities -->
+
+</td>
+</tr>
+<tr>
+<td><img src="images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+<td></td>
+</tr>
+</table>
+ 
+<div class="clear"></div>
+ 
+
+</div>
+<!--  end content-table-inner  -->
+</td>
+<td id="tbl-border-right"></td>
+</tr>
+<tr>
+    <th class="sized bottomleft"></th>
+    <td id="tbl-border-bottom">&nbsp;</td>
+    <th class="sized bottomright"></th>
+</tr>
+</table>
+
+
+
+<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer -->
+
+ 
+
+<div class="clear">&nbsp;</div>
+
+
+
 </wicket:extend>
+
+
+

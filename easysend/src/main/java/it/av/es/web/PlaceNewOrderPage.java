@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -68,16 +69,22 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private Select2Choice<String> zipCode;
     private List<String> zipcodes = new ArrayList<String>();
     private DropDownChoice<String> province;
+    private WebMarkupContainer step2;
+    private WebMarkupContainer step1;
 
     public PlaceNewOrderPage() {
         super();
         final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
         final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
+        
+        step1 = new WebMarkupContainer("step1");
+        formNewOrder.add(step1);
+        
         // add the single-select component
         final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer",
                 new Model<Customer>(new Customer()), new RecipientProvider());
-        formNewOrder.add(customer);
+        step1.add(customer);
         customer.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -89,11 +96,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
             }
         });
 
-        formNewOrder.add(new TextField<String>("customer.corporateName").setRequired(true));
-        formNewOrder.add(new TextField<String>("customer.address").setRequired(true));
+        step1.add(new TextField<String>("customer.corporateName").setRequired(true));
+        step1.add(new TextField<String>("customer.address").setRequired(true));
         province = new DropDownChoice<String>("customer.province", new ArrayList<String>());
         province.setRequired(true).setOutputMarkupId(true);
-        formNewOrder.add(province);
+        step1.add(province);
 
         final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model,
                 "customer.city"), new CityProvider() {
@@ -109,54 +116,70 @@ public class PlaceNewOrderPage extends BasePageSimple {
             }
         });
         city.setRequired(true);
-        formNewOrder.add(city);
+        step1.add(city);
         zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model,
                 "customer.zipcode"), new ZipcodeProvider() {
         });
         zipCode.setRequired(true);
-        formNewOrder.add(zipCode);
+        step1.add(zipCode);
         
         
         
-        formNewOrder.add(new TextField<String>("customer.email"));
-        formNewOrder.add(new TextField<String>("customer.phoneNumber").setRequired(true));
-        formNewOrder.add(new TextField<String>("customer.faxNumber"));
-        formNewOrder.add(new TextField<String>("customer.partitaIvaNumber"));
-        formNewOrder.add(new TextField<String>("customer.codiceFiscaleNumber"));
+        step1.add(new TextField<String>("customer.email"));
+        step1.add(new TextField<String>("customer.phoneNumber").setRequired(true));
+        step1.add(new TextField<String>("customer.faxNumber"));
+        step1.add(new TextField<String>("customer.partitaIvaNumber"));
+        step1.add(new TextField<String>("customer.codiceFiscaleNumber"));
         formNewOrder.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())));
         formNewOrder.add(new TextField<String>("customer.iban"));
         formNewOrder.add(new TextField<String>("customer.bankName"));
-        formNewOrder.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())));
+        step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())));
         //formNewOrder.add(new DropDownChoice<ClosingDays>("customer.closingRange", Arrays.asList(ClosingDays.values())));
-        formNewOrder.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())));
+        step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())));
         //formNewOrder.add(new DropDownChoice<DeploingType>("customer.loadDateTime", Arrays.asList(DeploingType.values())));
-        formNewOrder.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())));
-        formNewOrder.add(new TextField<String>("customer.deliveryNote"));
-        formNewOrder.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values())));
-        formNewOrder.add(new CheckBox("customer.phoneForewarning"));
+        step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())));
+        step1.add(new TextField<String>("customer.deliveryNote"));
+        step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values())));
+        step1.add(new CheckBox("customer.phoneForewarning"));
         
+        
+
+        step2 = new WebMarkupContainer("step2");
+        
+        formNewOrder.add(step2);
         
         ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
-        formNewOrder.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer())
+        step2.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer())
                 .setRequired(true));
-        formNewOrder.add(new DropDownChoice<Integer>(Order.PRODUCTNUMBER_FIELD, Arrays.asList(1, 2, 3)).setRequired(true));
+        step2.add(new DropDownChoice<Integer>(Order.PRODUCTNUMBER_FIELD, Arrays.asList(1, 2, 3)).setRequired(true));
 
+        step2.setVisible(false);
+        
         formNewOrder.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                Order p = (Order) form.getModelObject();
-                if (p.getCustomer().getId() == null) {
-                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
+                if(step1.isVisible()){
+                    step1.setVisible(false);
+                    step2.setVisible(true);
                 }
-                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                formNewOrder.setModelObject(new Order());
+                if(step2.isVisible()){
+                    
+                }
+                target.add(form);
+//                Order p = (Order) form.getModelObject();
+//                if (p.getCustomer().getId() == null) {
+//                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
+//                }
+//                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+//                formNewOrder.setModelObject(new Order());
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
-                getFeedbackPanel().anyErrorMessage();
-                target.add(getFeedbackPanel());
+                //TODO adde feeback panel
+//                getFeedbackPanel().anyErrorMessage();
+//                target.add(getFeedbackPanel());
             }
         });
 

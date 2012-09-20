@@ -56,6 +56,7 @@ public class BasePageSimple extends WebPage {
         feedbackPanel.setOutputMarkupId(true);
         feedbackPanel.setOutputMarkupPlaceholderTag(true);
         add(feedbackPanel);
+        
         session = ((SecuritySession)getSession());
         
         
