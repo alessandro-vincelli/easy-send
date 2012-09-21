@@ -44,7 +44,8 @@ public class WicketApplication extends AuthenticatedWebApplication {
         mountPage("/users", UserManagerPage.class);
         mountPage("/newOrder", PlaceNewOrderPage.class);
         mountPage("/customers", CustomerManagerPage.class);
-        mountPage("/customerNew", CustomerNewPage.class);
+        mountPage("/customer/${" + CustomHttpParams.CUSTOMER_ID + "}/" , CustomerPage.class);
+        mountPage("/customer" , CustomerPage.class);
         mountPage("/projects", ProjectManagerPage.class);
         mountPage("/signIn", SignIn.class);
         mountPage("/signOut", SignOut.class);

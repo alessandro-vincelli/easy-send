@@ -5,7 +5,7 @@
 <div id="content">
 
 
-<div id="page-heading"><h1>Aggiungi cliente</h1></div>
+<div id="page-heading"><h1>Gestione cliente</h1></div>
 
 
 <table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
@@ -21,52 +21,29 @@
 	<td>
 	<!--  start content-table-inner -->
 	<div id="content-table-inner">
-    <span wicket:id="feedBackPanel">message will be here</span>
+    
 	
 	<table border="0" width="100%" cellpadding="0" cellspacing="0">
 	<tr valign="top">
 	<td>
-	
-	
-		<!--  start step-holder -->
-		<div id="step-holder">
-			<div class="step-no">1</div>
-			<div class="step-dark-left"><a href="">Agggiungi cliente</a></div>
-			<div class="step-dark-right">&nbsp;</div>
-			<div class="step-no-off">2</div>
-			<div class="step-light-left">Verifica dati inseriti</div>
-			<div class="step-light-round">&nbsp;</div>
-			<div class="clear"></div>
-		</div>
-		<!--  end step-holder -->
-	
+		
 		<!-- start id-form -->
         <form wicket:id="newCustomer">
 		<table border="0" cellpadding="0" cellspacing="0"  id="id-form">
 		<tr>
 			<th valign="top"><wicket:message key="customer.corporateName"/></th>
-			<td><input type="text" class="inp-form"  wicket:id="corporateName" /></td>
-			<td></td>
+			<td colspan="2"><input type="text" class="inp-form"  wicket:id="corporateName" /></td>
 		</tr>
 		<tr>
 			<th valign="top"><wicket:message key="customer.address"/></th>
-			<td><input type="text" wicket:id="address" class="inp-form" /></td>
-			<td></td>
+			<td colspan="2"><input type="text" wicket:id="address" class="inp-form" /></td>
 		</tr>
         <tr>
         <th valign="top"><wicket:message key="customer.city"/></th>
-        <td>
-        <input type="hidden" style="width: 300px;" wicket:id="city" ></input>
-        </td>
-        <td></td>
-        </tr>     
-        <tr>
+            <td><input type="hidden" style="width: 300px;" wicket:id="city" ></input></td>
             <th valign="top"><wicket:message key="customer.province"/></th>
-            <td>    
-            <select wicket:id="province"></select>
-            </td>
-            <td></td>
-        </tr>
+            <td><select wicket:id="province"></select></td>
+        </tr>     
         <tr>
             <th valign="top"><wicket:message key="customer.zipcode"/></th>
             <td><input type="hidden" style="width: 200px;" wicket:id="zipcode" ></input></td>
@@ -98,16 +75,11 @@
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.closingDay"/></th>
-            <td>
-            <select wicket:id="closingDay" ></select>
-            <select wicket:id="closingRange"></select>
-            </td>
-            <td></td>
-        </tr>                     
-        <tr>
+            <td><select wicket:id="closingDay" ></select>
+            <select wicket:id="closingRange"></select></td>
             <th valign="top"><wicket:message key="customer.deployngType"/>:</th>
             <td><select wicket:id="deployngType" ></select></td>
-        </tr>
+        </tr>                     
         <tr>
             <th valign="top">Orario carico:</th>
             <td colspan="2">
@@ -130,22 +102,19 @@
                 </span>
                 </span>
             </td>
-            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
-            <td><input type="text" wicket:id="deliveryNote" class="inp-form-small" /></td>
-        </tr>        
-        <tr>
             <th valign="top"><wicket:message key="customer.phoneForewarning"/></th>
             <td><input type="checkbox" wicket:id="phoneForewarning" class="inp-form-small" /></td>
-            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
-            <td><select wicket:id="deliveryType" ></select></td>
         </tr>
         <tr>
+            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
+            <td><select wicket:id="deliveryType" ></select></td>
             <th valign="top"><wicket:message key="customer.deliveryVehicle"/></th>
-            <td>    
-            <select wicket:id="deliveryVehicle" ></select>
-            </td>
-            <td></td>
+            <td><select wicket:id="deliveryVehicle" ></select></td>
         </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
+            <td><input type="text" wicket:id="deliveryNote" class="inp-form" /></td>
+        </tr>        
         <tr>
         <th>&nbsp;</th>
         <td valign="top">
@@ -157,7 +126,7 @@
     </table>
     </form>
     <!-- end id-form  -->
-
+    <span wicket:id="feedBackPanel">message will be here</span>
     </td>
     <td>
 
@@ -166,7 +135,7 @@
         
         <!--  start related-act-top -->
         <div id="related-act-top">
-        <img src="images/forms/header_related_act.gif" width="271" height="43" alt="" />
+        Pippo
         </div>
         <!-- end related-act-top -->
         
@@ -176,42 +145,13 @@
             <!--  start related-act-inner -->
             <div id="related-act-inner">
             
-                <div class="left"><a href=""><img src="images/forms/icon_plus.gif" width="21" height="21" alt="" /></a></div>
-                <div class="right">
-                    <h5>Add another product</h5>
-                    Lorem ipsum dolor sit amet consectetur
-                    adipisicing elitsed do eiusmod tempor.
-                    <ul class="greyarrow">
-                        <li><a href="">Click here to visit</a></li> 
-                        <li><a href="">Click here to visit</a> </li>
-                    </ul>
-                </div>
-                
-                <div class="clear"></div>
-                <div class="lines-dotted-short"></div>
-                
-                <div class="left"><a href=""><img src="images/forms/icon_minus.gif" width="21" height="21" alt="" /></a></div>
-                <div class="right">
-                    <h5>Delete products</h5>
-                    Lorem ipsum dolor sit amet consectetur
-                    adipisicing elitsed do eiusmod tempor.
-                    <ul class="greyarrow">
-                        <li><a href="">Click here to visit</a></li> 
-                        <li><a href="">Click here to visit</a> </li>
-                    </ul>
-                </div>
-                
-                <div class="clear"></div>
-                <div class="lines-dotted-short"></div>
-                
                 <div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
                 <div class="right">
-                    <h5>Edit categories</h5>
-                    Lorem ipsum dolor sit amet consectetur
-                    adipisicing elitsed do eiusmod tempor.
+                    <h5>Clienti</h5>
+                    Gestione del proprio portafoglio clienti.
                     <ul class="greyarrow">
-                        <li><a href="">Click here to visit</a></li> 
-                        <li><a href="">Click here to visit</a> </li>
+                        <li><a href="/customers">Clienti</a></li> 
+                        <li><a href="/customer">Nuovo cliente</a> </li>
                     </ul>
                 </div>
                 <div class="clear"></div>

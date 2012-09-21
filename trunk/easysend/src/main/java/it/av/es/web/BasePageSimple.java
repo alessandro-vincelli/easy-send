@@ -49,7 +49,7 @@ public class BasePageSimple extends WebPage {
      */
     public BasePageSimple() {
         HtmlUtil.fixInitialHtml(this);
-        titlePage = new Label("pageTitle", ":: EaysSend - Eurocargo ::");
+        titlePage = new Label("pageTitle", ":: EasySend - Eurocargo ::");
         add(titlePage);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
@@ -125,12 +125,12 @@ public class BasePageSimple extends WebPage {
                         .isInstantiationAuthorized(CustomerManagerPage.class)));
             }
         });
-        add(new BookmarkablePageLink<String>("goCustomerNewPage", CustomerNewPage.class) {
+        add(new BookmarkablePageLink<String>("goCustomerNewPage", CustomerPage.class) {
             @Override
             protected void onBeforeRender() {
                 super.onBeforeRender();
                 setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
-                        .isInstantiationAuthorized(CustomerNewPage.class)));
+                        .isInstantiationAuthorized(CustomerPage.class)));
             }
         });
         add(new BookmarkablePageLink<String>("goSignOut", SignOut.class) {

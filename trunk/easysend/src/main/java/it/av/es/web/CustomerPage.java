@@ -58,7 +58,7 @@ import com.vaynberg.wicket.select2.TextChoiceProvider;
  * 
  */
 @AuthorizeInstantiation({ "USER", "VENDOR" })
-public class CustomerNewPage extends BasePageSimple {
+public class CustomerPage extends BasePageSimple {
 
     @SpringBean
     private OrderService userService;
@@ -77,14 +77,23 @@ public class CustomerNewPage extends BasePageSimple {
     private Select2Choice<String> zipCode;
     private List<String> zipcodes = new ArrayList<String>();
     private DropDownChoice<String> province;
+    private Customer customer = new Customer();
 
-    public CustomerNewPage(PageParameters parameters) {
-        super();
+    public CustomerPage(PageParameters parameters) {
         String customerId = parameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
-        Customer customer = new Customer();
+
         if (StringUtils.isNotBlank(customerId)) {
             customer = customerService.getByID(customerId);
         }
+        init();
+    }
+
+    public CustomerPage() {
+        super();
+        init();
+    }
+
+    private void init() {
 
         final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(customer);
         final Form<Customer> formNewOrder = new Form<Customer>("newCustomer", model);
@@ -162,9 +171,9 @@ public class CustomerNewPage extends BasePageSimple {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Customer c = (Customer) form.getModelObject();
-                customerService.save(c);
-                formNewOrder.setEnabled(false);
-                getFeedbackPanel().info("salvato con successo");
+                formNewOrder.setModelObject(customerService.save(c));
+                //formNewOrder.setEnabled(false);
+                getFeedbackPanel().info("cliente salvato con successo");
                 target.add(getFeedbackPanel());
                 target.add(formNewOrder);
             }
