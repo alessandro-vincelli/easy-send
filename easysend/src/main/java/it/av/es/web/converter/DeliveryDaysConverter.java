@@ -1,7 +1,6 @@
 package it.av.es.web.converter;
 
 import it.av.es.model.DeliveryDays;
-import it.av.es.model.DeliveryType;
 
 import java.util.Locale;
 

@@ -8,10 +8,14 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Customer extends BasicEntity {
@@ -61,7 +65,8 @@ public class Customer extends BasicEntity {
     @Temporal(TemporalType.TIME) 
     private Date loadTimePMTo;
     private String deliveryNote;
-    @ElementCollection
+    @ElementCollection(fetch=FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
     @Enumerated(EnumType.STRING)
     private Set<DeliveryDays> deliveryDays;
     @Enumerated(EnumType.STRING)

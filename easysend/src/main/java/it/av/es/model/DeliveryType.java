@@ -1,7 +1,5 @@
 package it.av.es.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * @author Alessandro Vincelli

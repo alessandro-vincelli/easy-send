@@ -15,6 +15,7 @@ import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
 import it.av.es.service.CustomerService;
 import it.av.es.service.OrderService;
+import it.av.es.service.ProvinciaService;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -40,6 +41,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -69,21 +71,28 @@ public class CustomerNewPage extends BasePageSimple {
     @SpringBean
     private CittaService cittaService;
     @SpringBean
+    private ProvinciaService provinciaService;
+    @SpringBean
     private CountryService countryService;
     private Select2Choice<String> zipCode;
     private List<String> zipcodes = new ArrayList<String>();
     private DropDownChoice<String> province;
 
-    public CustomerNewPage() {
+    public CustomerNewPage(PageParameters parameters) {
         super();
+        String customerId = parameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
+        Customer customer = new Customer();
+        if (StringUtils.isNotBlank(customerId)) {
+            customer = customerService.getByID(customerId);
+        }
 
-        final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(new Customer());
+        final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(customer);
         final Form<Customer> formNewOrder = new Form<Customer>("newCustomer", model);
         add(formNewOrder);
-        
+
         formNewOrder.add(new TextField<String>("corporateName").setRequired(true));
         formNewOrder.add(new TextField<String>("address").setRequired(true));
-        province = new DropDownChoice<String>("province", new ArrayList<String>());
+        province = new DropDownChoice<String>("province", provinciaService.getAllSigle());
         province.setRequired(true).setOutputMarkupId(true);
         formNewOrder.add(province);
 
@@ -98,7 +107,6 @@ public class CustomerNewPage extends BasePageSimple {
                     formNewOrder.getModelObject().setZipcode(zipcodes.get(0));
                 }
                 List<String> provinces = cittaService.findProvinciaByComune(city.getModelObject().getName(), 0);
-                province.setChoices(provinces);
                 if (provinces != null && provinces.size() == 1) {
                     formNewOrder.getModelObject().setProvince(provinces.get(0));
                 }
@@ -129,14 +137,12 @@ public class CustomerNewPage extends BasePageSimple {
         formNewOrder.add(new TimeField("loadTimeAMTo"));
         formNewOrder.add(new TimeField("loadTimePMFrom"));
         formNewOrder.add(new TimeField("loadTimePMTo"));
-        
+
         CheckGroup<String> checks = new CheckGroup<String>("deliveryDays");
         formNewOrder.add(checks);
-        ListView<DeliveryDays> checksList = new ListView<DeliveryDays>("deliveryDaysList", Arrays.asList(DeliveryDays.values()))
-        {
+        ListView<DeliveryDays> checksList = new ListView<DeliveryDays>("deliveryDaysList", Arrays.asList(DeliveryDays.values())) {
             @Override
-            protected void populateItem(ListItem<DeliveryDays> item)
-            {
+            protected void populateItem(ListItem<DeliveryDays> item) {
                 Check<DeliveryDays> check = new Check<DeliveryDays>("check", item.getModel());
                 check.setLabel(new Model<String>(getString(item.getModel().getObject().name())));
                 item.add(check);
@@ -144,10 +150,11 @@ public class CustomerNewPage extends BasePageSimple {
             }
         }.setReuseItems(true);
         checks.add(checksList);
-        
+
         formNewOrder.add(new DropDownChoice<DeliveryType>("deliveryType", Arrays.asList(DeliveryType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryType>()));
         formNewOrder.add(new TextField<String>("deliveryNote"));
-        formNewOrder.add(new DropDownChoice<DeliveryVehicle>("deliveryVehicle", Arrays.asList(DeliveryVehicle.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
+        formNewOrder.add(new DropDownChoice<DeliveryVehicle>("deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
+                .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
         formNewOrder.add(new CheckBox("phoneForewarning"));
 
         formNewOrder.add(new AjaxSubmitLink("submit") {
@@ -226,6 +233,5 @@ public class CustomerNewPage extends BasePageSimple {
             return ids;
         }
     }
-
 
 }

@@ -125,6 +125,8 @@
     
     <bean id="countryService" class="it.av.es.service.impl.CountryServiceHibernate"/>
     
+    <bean id="provinciaService" class="it.av.es.service.impl.ProvinciaServiceHibernate"/>
+    
     <bean id="wicketApplication" class="it.av.es.web.WicketApplication"/>
 
 
