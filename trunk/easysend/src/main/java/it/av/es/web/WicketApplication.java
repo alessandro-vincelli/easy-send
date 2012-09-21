@@ -1,7 +1,5 @@
 package it.av.es.web;
 
-import java.math.BigDecimal;
-
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
 import it.av.es.model.DeliveryDays;
@@ -23,8 +21,6 @@ import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSessio
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.apache.wicket.util.convert.IConverter;
-import org.apache.wicket.util.convert.converter.BigDecimalConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.WebApplicationContext;
