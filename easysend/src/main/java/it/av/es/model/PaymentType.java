@@ -6,7 +6,7 @@ package it.av.es.model;
  */
 public enum PaymentType {
 
-	HISTORIC_CENTER,	
-	ZTL
+    PREPAYMENT, 
+    CONTRASSEGNO
 
 }
