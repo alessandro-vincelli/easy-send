@@ -98,19 +98,38 @@
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.closingDay"/></th>
-            <td><select wicket:id="closingDay" ></select></td>
-            <th valign="top"><wicket:message key="customer.closingRange"/>:</th>
-            <td><select ></select></td>
+            <td>
+            <select wicket:id="closingDay" ></select>
+            <select wicket:id="closingRange"></select>
+            </td>
+            <td></td>
         </tr>                     
         <tr>
             <th valign="top"><wicket:message key="customer.deployngType"/>:</th>
             <td><select wicket:id="deployngType" ></select></td>
-            <th valign="top"><wicket:message key="customer.loadDateTime"/></th>
-            <td><select ></select></td>
+        </tr>
+        <tr>
+            <th valign="top">Orario carico:</th>
+            <td colspan="2">
+            mattina da:
+            <span wicket:id="loadTimeAMFrom"/>
+            a
+            <span wicket:id="loadTimeAMTo"/>
+            pomeriggo
+            <span wicket:id="loadTimePMFrom"/>
+            a
+            <span wicket:id="loadTimePMTo"/>
+            </td>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.deliveryDay"/></th>
-            <td><select ></select></td>
+            <td>
+                <span wicket:id="deliveryDays">             
+                <span wicket:id="deliveryDaysList">
+                    <input type="checkbox" wicket:id="check"/><label wicket:id="number" style="display:inline; color: black;"></label>
+                </span>
+                </span>
+            </td>
             <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
             <td><input type="text" wicket:id="deliveryNote" class="inp-form-small" /></td>
         </tr>        

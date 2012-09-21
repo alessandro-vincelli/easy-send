@@ -2,9 +2,8 @@ package it.av.es.model;
 
 public enum ClosingRange {
     
-    M_A,
-    M,
-    A,
-
+    CLOSED_MORNING_AND_AFERTOON,
+    CLOSED_MORNING,
+    CLOSED_AFTERNOON,
 
 }

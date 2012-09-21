@@ -1,11 +1,17 @@
 package it.av.es.model;
 
+import java.util.Date;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 @Entity
 public class Customer extends BasicEntity {
@@ -35,26 +41,38 @@ public class Customer extends BasicEntity {
     
     private String codiceFiscaleNumber;
     private String partitaIvaNumber;
-    private String paymentType;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
     private String iban;
     private String bankName;
     
+    @Enumerated(EnumType.STRING)
     private ClosingDays closingDay;
+    @Enumerated(EnumType.STRING)
     private ClosingRange closingRange;
+    @Enumerated(EnumType.STRING)
     private DeploingType deployngType;
-    private String loadDateTime;
+    @Temporal(TemporalType.TIME) 
+    private Date loadTimeAMFrom;
+    @Temporal(TemporalType.TIME) 
+    private Date loadTimeAMTo;
+    @Temporal(TemporalType.TIME) 
+    private Date loadTimePMFrom;
+    @Temporal(TemporalType.TIME) 
+    private Date loadTimePMTo;
     private String deliveryNote;
     @ElementCollection
-    private Set<DeliveryDays> deliveryDay;
+    @Enumerated(EnumType.STRING)
+    private Set<DeliveryDays> deliveryDays;
+    @Enumerated(EnumType.STRING)
     private DeliveryType deliveryType;
+    @Enumerated(EnumType.STRING)
     private DeliveryVehicle deliveryVehicle;
     private boolean phoneForewarning;
-    
 
     public Customer() {
         super();
     }
-
 
     public String getAddress() {
         return address;
@@ -164,16 +182,13 @@ public class Customer extends BasicEntity {
         this.partitaIvaNumber = partitaIvaNumber;
     }
 
-
-    public String getPaymentType() {
+    public PaymentType getPaymentType() {
         return paymentType;
     }
 
-
-    public void setPaymentType(String paymentType) {
+    public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
     }
-
 
     public String getIban() {
         return iban;
@@ -224,16 +239,37 @@ public class Customer extends BasicEntity {
         this.deployngType = deployngType;
     }
 
-
-    public String getLoadDateTime() {
-        return loadDateTime;
+    public Date getLoadTimeAMFrom() {
+        return loadTimeAMFrom;
     }
 
-
-    public void setLoadDateTime(String loadDateTime) {
-        this.loadDateTime = loadDateTime;
+    public void setLoadTimeAMFrom(Date loadTimeAMFrom) {
+        this.loadTimeAMFrom = loadTimeAMFrom;
     }
 
+    public Date getLoadTimeAMTo() {
+        return loadTimeAMTo;
+    }
+
+    public void setLoadTimeAMTo(Date loadTimeAMTo) {
+        this.loadTimeAMTo = loadTimeAMTo;
+    }
+
+    public Date getLoadTimePMFrom() {
+        return loadTimePMFrom;
+    }
+
+    public void setLoadTimePMFrom(Date loadTimePMFrom) {
+        this.loadTimePMFrom = loadTimePMFrom;
+    }
+
+    public Date getLoadTimePMTo() {
+        return loadTimePMTo;
+    }
+
+    public void setLoadTimePMTo(Date loadTimePMTo) {
+        this.loadTimePMTo = loadTimePMTo;
+    }
 
     public String getDeliveryNote() {
         return deliveryNote;
@@ -244,16 +280,16 @@ public class Customer extends BasicEntity {
         this.deliveryNote = deliveryNote;
     }
 
-
-    public Set<DeliveryDays> getDeliveryDay() {
-        return deliveryDay;
+    public Set<DeliveryDays> getDeliveryDays() {
+        if(deliveryDays == null){
+            deliveryDays = new HashSet<DeliveryDays>();
+        }
+        return deliveryDays;
     }
 
-
-    public void setDeliveryDay(Set<DeliveryDays> deliveryDay) {
-        this.deliveryDay = deliveryDay;
+    public void setDeliveryDays(Set<DeliveryDays> deliveryDays) {
+        this.deliveryDays = deliveryDays;
     }
-
 
     public DeliveryType getDeliveryType() {
         return deliveryType;
