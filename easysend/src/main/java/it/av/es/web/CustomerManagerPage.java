@@ -80,7 +80,7 @@ public class CustomerManagerPage extends BasePageSimple {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    setResponsePage(CustomerNewPage.class, new PageParameters().add(CustomHttpParams.CUSTOMER_ID, getModelObject().getId()));
+                    setResponsePage(CustomerPage.class, new PageParameters().add(CustomHttpParams.CUSTOMER_ID, getModelObject().getId()));
                 }
             });
             add(new AjaxFallbackLink<Customer>("remove", model) {
