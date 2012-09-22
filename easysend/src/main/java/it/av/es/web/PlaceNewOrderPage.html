@@ -51,30 +51,20 @@
         </td>
         <td></td>
         </tr>        
-        <tr>
-            <th valign="top"><wicket:message key="customer.corporateName"/></th>
-            <td><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
-            <td></td>
-        </tr>
-        <tr>
-            <th valign="top"><wicket:message key="customer.address"/></th>
-            <td><input type="text" wicket:id="customer.address" class="inp-form" /></td>
-            <td></td>
-        </tr>
+		<tr>
+			<th valign="top"><wicket:message key="customer.corporateName"/></th>
+			<td colspan="2"><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
+		</tr>
+		<tr>
+			<th valign="top"><wicket:message key="customer.address"/></th>
+			<td colspan="2"><input type="text" wicket:id="customer.address" class="inp-form" /></td>
+		</tr>
         <tr>
         <th valign="top"><wicket:message key="customer.city"/></th>
-        <td>
-        <input type="hidden" style="width: 300px;" wicket:id="customer.city" ></input>
-        </td>
-        <td></td>
-        </tr>     
-        <tr>
+            <td><input type="hidden" style="width: 300px;" wicket:id="customer.city" ></input></td>
             <th valign="top"><wicket:message key="customer.province"/></th>
-            <td>    
-            <select wicket:id="customer.province"></select>
-            </td>
-            <td></td>
-        </tr>
+            <td><select wicket:id="customer.province"></select></td>
+        </tr>     
         <tr>
             <th valign="top"><wicket:message key="customer.zipcode"/></th>
             <td><input type="hidden" style="width: 200px;" wicket:id="customer.zipcode" ></input></td>
@@ -106,34 +96,45 @@
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.closingDay"/></th>
-            <td><select wicket:id="customer.closingDay" ></select></td>
-            <th valign="top"><wicket:message key="customer.closingRange"/>:</th>
-            <td><select ></select></td>
-        </tr>                     
-        <tr>
+            <td><select wicket:id="customer.closingDay" ></select>
+            <select wicket:id="customer.closingRange"></select></td>
             <th valign="top"><wicket:message key="customer.deployngType"/>:</th>
             <td><select wicket:id="customer.deployngType" ></select></td>
-            <th valign="top"><wicket:message key="customer.loadDateTime"/></th>
-            <td><select ></select></td>
+        </tr>                     
+        <tr>
+            <th valign="top">Orario carico:</th>
+            <td colspan="2">
+            mattina da:
+            <span wicket:id="customer.loadTimeAMFrom"/>
+            a
+            <span wicket:id="customer.loadTimeAMTo"/>
+            pomeriggo
+            <span wicket:id="customer.loadTimePMFrom"/>
+            a
+            <span wicket:id="customer.loadTimePMTo"/>
+            </td>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.deliveryDay"/></th>
-            <td><select ></select></td>
-            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
-            <td><input type="text" wicket:id="customer.deliveryNote" class="inp-form-small" /></td>
-        </tr>        
-        <tr>
+            <td>
+                <span wicket:id="customer.deliveryDays">             
+                <span wicket:id="deliveryDaysList">
+                    <input type="checkbox" wicket:id="check"/><label wicket:id="number" style="display:inline; color: black;"></label>
+                </span>
+                </span>
+            </td>
             <th valign="top"><wicket:message key="customer.phoneForewarning"/></th>
             <td><input type="checkbox" wicket:id="customer.phoneForewarning" class="inp-form-small" /></td>
-            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
-            <td><select wicket:id="customer.deliveryType" ></select></td>
         </tr>
         <tr>
+            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
+            <td><select wicket:id="customer.deliveryType" ></select></td>
             <th valign="top"><wicket:message key="customer.deliveryVehicle"/></th>
-            <td>    
-            <select wicket:id="customer.deliveryVehicle" ></select>
-            </td>
-            <td></td>
+            <td><select wicket:id="customer.deliveryVehicle" ></select></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
+            <td><input type="text" wicket:id="customer.deliveryNote" class="inp-form" /></td>
         </tr>
         </colgroup>
         <colgroup wicket:id="step2">
@@ -151,7 +152,7 @@
             </td>
             <td></td>
         </tr>
-        </colgroup>
+        </colgroup>        
         <tr>
         <th>&nbsp;</th>
         <td valign="top">

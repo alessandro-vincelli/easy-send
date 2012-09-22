@@ -26,7 +26,6 @@ import javax.persistence.PersistenceContextType;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.annotations.Cache;
 import org.hibernate.criterion.Projections;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
