@@ -26,7 +26,9 @@ import javax.persistence.PersistenceContextType;
 
 import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.annotations.Cache;
 import org.hibernate.criterion.Projections;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +57,7 @@ public class ProvinciaServiceHibernate implements ProvinciaService {
         return (Session) entityManager.getDelegate();
     }
 
+    @Cacheable("getAllProvince")
     @Override
     public List<Provincia> getAll() {
         Criteria criteria = getHibernateSession().createCriteria(Provincia.class);
@@ -62,6 +65,7 @@ public class ProvinciaServiceHibernate implements ProvinciaService {
     }
 
 
+    @Cacheable("getAllProvinceSigla")
     @Override
     public List<String> getAllSigle() {
         Criteria criteria = getHibernateSession().createCriteria(Provincia.class);

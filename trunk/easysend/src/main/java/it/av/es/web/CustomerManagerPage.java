@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
-import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -39,6 +38,7 @@ public class CustomerManagerPage extends BasePageSimple {
     private CustomerService userService;
     @SpringBean
     private CustomerService customerService;
+    private CustomAjaxFallbackDefaultDataTable<Customer, String> dataTable;
 
     public CustomerManagerPage() {
         super();
@@ -55,17 +55,10 @@ public class CustomerManagerPage extends BasePageSimple {
                 cellItem.add(new ActionPanel(componentId, model));
                 cellItem.add(AttributeModifier.replace("class", "options-width"));
             }
-
-            @Override
-            public Component getHeader(String componentId) {
-                return super.getHeader(componentId).add(AttributeModifier.replace("class", "table-header-options line-left"));
-            }
-            
-            
         });
 
-        final CustomAjaxFallbackDefaultDataTable<Customer, String> dataTable = new CustomAjaxFallbackDefaultDataTable<Customer, String>("dataTable", columns,
-                new CustomerSortableDataProvider(), 50);
+        dataTable = new CustomAjaxFallbackDefaultDataTable<Customer, String>("dataTable", columns,
+                new CustomerSortableDataProvider(getSecuritySession().getLoggedInUser()), 2);
         add(dataTable);
         
 
@@ -88,7 +81,7 @@ public class CustomerManagerPage extends BasePageSimple {
                 @Override
                 public void onClick(AjaxRequestTarget target) {
                     customerService.remove(getModelObject());
-                    target.add(getParent());
+                    target.add(dataTable);
                 }
             });
         }

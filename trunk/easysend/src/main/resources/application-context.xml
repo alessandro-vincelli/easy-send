@@ -3,6 +3,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
     xmlns:context="http://www.springframework.org/schema/context" xmlns:security="http://www.springframework.org/schema/security" 
+    xmlns:cache="http://www.springframework.org/schema/cache"
     xsi:schemaLocation="http://www.springframework.org/schema/beans
                            http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
                            http://www.springframework.org/schema/tx
@@ -13,12 +14,16 @@
                            http://www.springframework.org/schema/aop/spring-aop-3.1.xsd
                            http://www.springframework.org/schema/security 
                            http://www.springframework.org/schema/security/spring-security-3.1.xsd
+                           http://www.springframework.org/schema/cache http://www.springframework.org/schema/cache/spring-cache.xsd
                            ">
 
     <context:annotation-config />
     <context:spring-configured />
     <tx:jta-transaction-manager />
     <tx:annotation-driven transaction-manager="transactionManager" />
+    <cache:annotation-driven  mode="proxy" proxy-target-class="true"/>
+    
+    <import resource="classpath:cache-manager.xml" />
     
     <bean id="passwordEncoder"  class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></bean>
     

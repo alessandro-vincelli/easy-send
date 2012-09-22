@@ -15,6 +15,7 @@
  */
 package it.av.es.service.impl;
 
+import it.av.es.EasySendException;
 import it.av.es.model.Customer;
 import it.av.es.model.User;
 import it.av.es.service.CustomerService;
@@ -22,10 +23,14 @@ import it.av.es.service.UserService;
 
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +46,7 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
 
     @Autowired
     private UserService userService;
-    
+
     /**
      * {@inheritDoc}
      */
@@ -49,6 +54,16 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
     public List<Customer> getAll() {
         Order orderBYName = Order.asc(Customer.CORPORATENAME_FIELD);
         return super.findByCriteria(orderBYName);
+    }
+    
+    /**
+     * {@inheritDoc}
+     */
+    //@Cacheable("getAllCustomers")
+    @Override
+    public List<Customer> getAll(User user) {
+        Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
+        return super.findByCriteria(critByUser);
     }
 
     /**
@@ -61,6 +76,16 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
         return findByCriteria(orderByName, 0, maxResults, critByName);
     }
 
+    //@CacheEvict({"getAllCustomers", "getCustomers"})
+    @Override
+    public Customer save(Customer obj) {
+        if(obj.getUser() == null){
+            throw new EasySendException("Non user setted on Customer");
+        }
+        return super.save(obj);
+    }
+
+    //@CacheEvict({"getAllCustomers", "getCustomers"})
     @Override
     public Customer save(Customer customer, User user) {
         user = userService.getByID(user.getId());
@@ -69,6 +94,23 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
         save(customer);
         userService.update(user);
         return customer;
+    }
+
+    
+    //@Cacheable("getCustomers")
+    @Override
+    public List<Customer> get(User user, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
+        Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
+        Order orderByName = null;
+        if (StringUtils.isNotBlank(sortProperty)) {
+            if (isAscending) {
+                orderByName = Order.asc(sortProperty);
+            } else {
+                orderByName = Order.desc(sortProperty);
+            }
+        }
+        return findByCriteria(orderByName, firstResult, maxResult, critByUser);
+
     }
 
 }

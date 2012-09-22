@@ -53,6 +53,18 @@ public interface CustomerService extends ApplicationService<Customer> {
      * @return all the user profile
      */
     List<Customer> getAll();
+    
+    /**
+     * Get all the user profile
+     * 
+     * @param user
+     * @param firstResult
+     * @param maxResult
+     * @param sortProperty
+     * @param isAscending
+     * @return all the user profile
+     */
+    List<Customer> get(User user, int firstResult, int maxResult, String sortProperty, boolean isAscending);
 
     /**
      * Remove a profile
@@ -68,6 +80,15 @@ public interface CustomerService extends ApplicationService<Customer> {
      * @return user with the passed email
      */
     Customer getByID(String id);
+
+
+
+    /**
+     * 
+     * @param user
+     * @return
+     */
+    List<Customer> getAll(User user);
 
 
 }
