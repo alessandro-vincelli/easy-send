@@ -171,7 +171,7 @@ public class CustomerPage extends BasePageSimple {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Customer c = (Customer) form.getModelObject();
-                formNewOrder.setModelObject(customerService.save(c));
+                formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
                 //formNewOrder.setEnabled(false);
                 getFeedbackPanel().info("cliente salvato con successo");
                 target.add(getFeedbackPanel());

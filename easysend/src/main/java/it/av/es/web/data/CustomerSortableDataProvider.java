@@ -16,13 +16,14 @@
 package it.av.es.web.data;
 
 import it.av.es.model.Customer;
+import it.av.es.model.User;
 import it.av.es.service.CustomerService;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
+import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
@@ -37,17 +38,18 @@ public class CustomerSortableDataProvider extends SortableDataProvider<Customer,
     private static final long serialVersionUID = 1L;
     @SpringBean
     private CustomerService customerService;
-    private transient Collection<Customer> results;
+    private transient List<Customer> results;
     private long size;
+    private User user;
 
     /**
      * Constructor
      */
-    public CustomerSortableDataProvider() {
+    public CustomerSortableDataProvider(User user) {
         super();
+        this.user = user;
         Injector.get().inject(this);
-        results = customerService.getAll();
-        // setSort(LightVac.SortedFieldNames.dateTime.value(), true);
+        setSort(Customer.CORPORATENAME_FIELD, SortOrder.ASCENDING);
     }
 
     /**
@@ -55,7 +57,7 @@ public class CustomerSortableDataProvider extends SortableDataProvider<Customer,
      */
     @Override
     public final long size() {
-        size = customerService.getAll().size();
+        size = customerService.getAll(user).size();
         return size;
     }
 
@@ -77,8 +79,8 @@ public class CustomerSortableDataProvider extends SortableDataProvider<Customer,
 
     @Override
     public Iterator<? extends Customer> iterator(long first, long count) {
-        results = customerService.getAll();
-        return Collections.synchronizedList(new ArrayList<Customer>(results)).iterator();
+        results = Collections.synchronizedList(customerService.get(user, (int)first, (int)count, getSort().getProperty(), getSort().isAscending()));
+        return results.iterator();
     }
 
 }

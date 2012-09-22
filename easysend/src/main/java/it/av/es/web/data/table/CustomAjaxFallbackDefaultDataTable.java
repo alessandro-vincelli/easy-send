@@ -2,7 +2,6 @@ package it.av.es.web.data.table;
 
 import java.util.List;
 
-import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxNavigationToolbar;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
@@ -26,8 +25,9 @@ public class CustomAjaxFallbackDefaultDataTable<T, S> extends DataTable<T, S>{
         super(id, columns, dataProvider, rowsPerPage);
         setOutputMarkupId(true);
         setVersioned(false);
-        addTopToolbar(new AjaxNavigationToolbar(this));
+        //addTopToolbar(new AjaxNavigationToolbar(this));
         addTopToolbar(new CustomAjaxFallbackHeadersToolbar(this, dataProvider));
+        addBottomToolbar(new CustomAjaxNavigationToolbar(this));
         addBottomToolbar(new NoRecordsToolbar(this));
     }
 

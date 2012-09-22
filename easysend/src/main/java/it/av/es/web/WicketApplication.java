@@ -32,7 +32,6 @@ public class WicketApplication extends AuthenticatedWebApplication {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(WicketApplication.class);
 
-
     @Override
     protected void init() {
         super.init();
