@@ -41,6 +41,7 @@ public class Order extends BasicEntity {
 
     public Order() {
         super();
+        customer = new Customer();
     }
 
     public String getName() {

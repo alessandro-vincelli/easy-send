@@ -77,6 +77,7 @@ public class Customer extends BasicEntity {
 
     public Customer() {
         super();
+        deliveryDays = new HashSet<DeliveryDays>();
     }
 
     public String getAddress() {

@@ -2,8 +2,10 @@ package it.av.es.web;
 
 import it.av.es.model.City;
 import it.av.es.model.ClosingDays;
+import it.av.es.model.ClosingRange;
 import it.av.es.model.Country;
 import it.av.es.model.Customer;
+import it.av.es.model.DeliveryDays;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
@@ -27,12 +29,19 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.extensions.yui.calendar.TimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.CheckGroup;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -130,17 +139,36 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1.add(new TextField<String>("customer.faxNumber"));
         step1.add(new TextField<String>("customer.partitaIvaNumber"));
         step1.add(new TextField<String>("customer.codiceFiscaleNumber"));
-        formNewOrder.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())));
-        formNewOrder.add(new TextField<String>("customer.iban"));
-        formNewOrder.add(new TextField<String>("customer.bankName"));
-        step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())));
-        //formNewOrder.add(new DropDownChoice<ClosingDays>("customer.closingRange", Arrays.asList(ClosingDays.values())));
-        step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())));
-        //formNewOrder.add(new DropDownChoice<DeploingType>("customer.loadDateTime", Arrays.asList(DeploingType.values())));
-        step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())));
-        step1.add(new TextField<String>("customer.deliveryNote"));
-        step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values())));
+        step1.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
+        step1.add(new TextField<String>("customer.iban"));
+        step1.add(new TextField<String>("customer.bankName"));
+        step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()));
+        step1.add(new DropDownChoice<ClosingRange>("customer.closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()));
+        step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()));
+        step1.add(new TimeField("customer.loadTimeAMFrom"));
+        step1.add(new TimeField("customer.loadTimeAMTo"));
+        step1.add(new TimeField("customer.loadTimePMFrom"));
+        step1.add(new TimeField("customer.loadTimePMTo"));
         step1.add(new CheckBox("customer.phoneForewarning"));
+       
+        
+        CheckGroup<String> checks = new CheckGroup<String>("customer.deliveryDays");
+        step1.add(checks);
+        ListView<DeliveryDays> checksList = new ListView<DeliveryDays>("deliveryDaysList", Arrays.asList(DeliveryDays.values())) {
+            @Override
+            protected void populateItem(ListItem<DeliveryDays> item) {
+                Check<DeliveryDays> check = new Check<DeliveryDays>("check", item.getModel());
+                check.setLabel(new Model<String>(getString(item.getModel().getObject().name())));
+                item.add(check);
+                item.add(new SimpleFormComponentLabel("number", check));
+            }
+        }.setReuseItems(true);
+        checks.add(checksList);
+
+        step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryType>()));
+        step1.add(new TextField<String>("customer.deliveryNote"));
+        step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
+                .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
         
         
 
