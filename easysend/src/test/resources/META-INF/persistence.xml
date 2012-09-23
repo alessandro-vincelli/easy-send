@@ -23,6 +23,8 @@
         <class>it.av.es.model.Country</class>
         <class>it.av.es.model.Citta</class>
         <class>it.av.es.model.Price</class>
+        <class>it.av.es.model.ProductOrdered</class>
+        
 			
 		<properties>
 			<!-- Scan for annotated classes  -->

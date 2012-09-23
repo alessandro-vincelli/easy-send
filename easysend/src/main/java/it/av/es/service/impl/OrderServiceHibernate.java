@@ -15,7 +15,12 @@
  */
 package it.av.es.service.impl;
 
+import it.av.es.EasySendConcurrentModificationException;
+import it.av.es.EasySendException;
 import it.av.es.model.Order;
+import it.av.es.model.Price;
+import it.av.es.model.Product;
+import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.OrderService;
@@ -23,8 +28,12 @@ import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserService;
 
+import java.math.BigDecimal;
+import java.util.Currency;
 import java.util.Date;
+import java.util.List;
 
+import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +65,30 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         userService.update(user);
         projectService.save(project);
         return order;
+    }
+
+    @Override
+    public ProductOrdered addProductOrdered(Order order, Product product, int numberOfProds) {
+        ProductOrdered ordered = new ProductOrdered();
+        ordered.setProduct(product);
+        ordered.setNumber(numberOfProds);
+        BigDecimal amount = new BigDecimal(0);
+        Currency currency;
+        int percentDiscount = 0;
+        List<Price> prices = product.getPrices();
+        for (Price price : prices) {
+            if(numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()){
+                amount= price.getAmount();
+                currency = price.getCurrency();
+                percentDiscount = price.getPercentDiscount();
+            }
+        }
+        if(amount == BigDecimal.ZERO){
+            throw new EasySendException("Price non available");
+        }
+        ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
+        ordered.setDiscout(percentDiscount);
+        return ordered;
     }
 
 
