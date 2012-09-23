@@ -12,12 +12,14 @@ import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
 import it.av.es.model.PaymentType;
 import it.av.es.model.Product;
+import it.av.es.model.ProductOrdered;
 import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
 import it.av.es.service.CustomerService;
 import it.av.es.service.OrderService;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -42,6 +44,7 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
@@ -86,13 +89,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
         final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
         final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
-        
+
         step1 = new WebMarkupContainer("step1");
         formNewOrder.add(step1);
-        
+
         // add the single-select component
-        final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer",
-                new Model<Customer>(new Customer()), new RecipientProvider());
+        final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer", new Model<Customer>(new Customer()), new RecipientProvider());
         step1.add(customer);
         customer.add(new OnChangeAjaxBehavior() {
             @Override
@@ -111,8 +113,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         province.setRequired(true).setOutputMarkupId(true);
         step1.add(province);
 
-        final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model,
-                "customer.city"), new CityProvider() {
+        final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model, "customer.city"), new CityProvider() {
         });
         city.add(new OnChangeAjaxBehavior() {
 
@@ -126,14 +127,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         city.setRequired(true);
         step1.add(city);
-        zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model,
-                "customer.zipcode"), new ZipcodeProvider() {
+        zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model, "customer.zipcode"), new ZipcodeProvider() {
         });
         zipCode.setRequired(true);
         step1.add(zipCode);
-        
-        
-        
+
         step1.add(new TextField<String>("customer.email"));
         step1.add(new TextField<String>("customer.phoneNumber").setRequired(true));
         step1.add(new TextField<String>("customer.faxNumber"));
@@ -150,8 +148,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1.add(new TimeField("customer.loadTimePMFrom"));
         step1.add(new TimeField("customer.loadTimePMTo"));
         step1.add(new CheckBox("customer.phoneForewarning"));
-       
-        
+
         CheckGroup<String> checks = new CheckGroup<String>("customer.deliveryDays");
         step1.add(checks);
         ListView<DeliveryDays> checksList = new ListView<DeliveryDays>("deliveryDaysList", Arrays.asList(DeliveryDays.values())) {
@@ -169,45 +166,66 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1.add(new TextField<String>("customer.deliveryNote"));
         step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
                 .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
-        
-        
 
         step2 = new WebMarkupContainer("step2");
-        
-        formNewOrder.add(step2);
-        
-        ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
-        step2.add(new DropDownChoice<Product>(Order.PRODUCT_FIELD, products, new ProductChoiceRenderer())
-                .setRequired(true));
-        step2.add(new DropDownChoice<Integer>(Order.PRODUCTNUMBER_FIELD, Arrays.asList(1, 2, 3)).setRequired(true));
 
-        step2.setVisible(false);
+        formNewOrder.add(step2);
+
+        final ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
+        step2.setVisible(false).setOutputMarkupId(true);
+        final DropDownChoice<Product> productToAdd = new DropDownChoice<Product>("product", new Model<Product>() ,products, new ProductChoiceRenderer());
+        final DropDownChoice<Integer> productNumberToAdd = new DropDownChoice<Integer>("number", new Model<Integer>(), Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        step2.add(productToAdd);
+        step2.add(productNumberToAdd);
+        final WebMarkupContainer productsOrderedContanier = new WebMarkupContainer("productsOrderedContanier");
+        productsOrderedContanier.setOutputMarkupId(true);
+        step2.add(productsOrderedContanier);
+        PropertyListView<ProductOrdered> listViewProductsOrdered = new PropertyListView<ProductOrdered>(Order.PRODUCTSORDERED_FIELD) {
+
+            @Override
+            protected void populateItem(ListItem<ProductOrdered> item) {
+                item.add(new DropDownChoice<Product>("product", products, new ProductChoiceRenderer()));
+                item.add(new DropDownChoice<Integer>("number", Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
+                item.add(new TextField<BigDecimal>("amount", BigDecimal.class).setEnabled(false));
+            }
+        };
+        productsOrderedContanier.add(listViewProductsOrdered);
+        
+        step2.add(new AjaxSubmitLink("addProductOrdered"){
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), productNumberToAdd.getModelObject());
+                formNewOrder.getModelObject().addProductOrdered(ordered);
+                target.add(productsOrderedContanier);
+            }
+        });
         
         formNewOrder.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                if(step1.isVisible()){
+                if (step1.isVisible()) {
                     step1.setVisible(false);
                     step2.setVisible(true);
                 }
-                if(step2.isVisible()){
-                    
+                if (step2.isVisible()) {
+
                 }
                 target.add(form);
-//                Order p = (Order) form.getModelObject();
-//                if (p.getCustomer().getId() == null) {
-//                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
-//                }
-//                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-//                formNewOrder.setModelObject(new Order());
+                //                Order p = (Order) form.getModelObject();
+                //                if (p.getCustomer().getId() == null) {
+                //                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
+                //                }
+                //                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+                //                formNewOrder.setModelObject(new Order());
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
                 //TODO adde feeback panel
-//                getFeedbackPanel().anyErrorMessage();
-//                target.add(getFeedbackPanel());
+                //                getFeedbackPanel().anyErrorMessage();
+                //                target.add(getFeedbackPanel());
             }
         });
 

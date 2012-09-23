@@ -16,6 +16,8 @@
 package it.av.es.service;
 
 import it.av.es.model.Order;
+import it.av.es.model.Product;
+import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 
@@ -66,5 +68,14 @@ public interface OrderService {
      * @return
      */
     Order placeNewOrder(Order order, Project project, User user);
+    
+    /**
+     * Creates a {@link ProductOrdered} with correct ad data, NOT persists
+     * 
+     * @param order
+     * @param productOrdered
+     * @return
+     */
+    ProductOrdered addProductOrdered(Order order, Product product, int numberOfProds);
 
 }

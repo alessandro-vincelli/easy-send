@@ -140,17 +140,18 @@
         <colgroup wicket:id="step2">
         <tr>
             <th valign="top"><wicket:message key="product"/></th>
-            <td>    
+            <td>
             <select wicket:id="product" ></select>
+            <wicket:message key="productNumber"/><select wicket:id="number" ></select>
             </td>
-            <td></td>
+            <td><input type="button" value="" class="form-submit" wicket:id="addProductOrdered" ></input></td>
         </tr>
-        <tr>
-            <th valign="top"><wicket:message key="productNumber"/></th>
-            <td>    
-            <select wicket:id="productNumber" ></select>
+        <tr wicket:id="productsOrderedContanier">
+            <td colspan="3">
+            <ul wicket:id="productsOrdered">
+            <li><select wicket:id="product" ></select><select wicket:id="number" ></select><input type="text" wicket:id="amount" class="inp-form-xsmall" /></li>
+            </ul>
             </td>
-            <td></td>
         </tr>
         </colgroup>        
         <tr>
