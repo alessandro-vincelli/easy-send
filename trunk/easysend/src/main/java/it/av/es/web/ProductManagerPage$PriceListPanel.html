@@ -1,0 +1,24 @@
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+<form wicket:id="priceListForm">
+<table id="id-form" cellspacing="0" cellpadding="0" border="0">
+<tr>
+<td>Da quantitˆ</td>
+<td>Alla quantitˆ</td>
+<td>Prezzo</td>
+<td>Valuta</td>
+<td>% sconto</td>
+<td></td>
+</tr>
+<tr wicket:id="prices">
+<td><input type="text" wicket:id="fromNumber" class="inp-form-xsmall" style="width:  13px;"/></td>
+<td><input type="text" wicket:id="toNumber" class="inp-form-xsmall" style="width:  13px;"/></td>
+<td><input type="text" wicket:id="amount" class="inp-form-xsmall" /></td>
+<td><input type="text" wicket:id="currency" class="inp-form-xsmall" style="width:  13px;"/></td>
+<td><input type="text" wicket:id="percentDiscount" class="inp-form-xsmall" style="width:  13px;"/></td>
+<td><input type="submit" wicket:id="savePrice"value="salva"/></td>
+</tr>
+</table>
+<input type="submit" wicket:id="addPrice" value="aggiungi prezzo"/>
+<input type="submit" wicket:id="savePriceList" value="salva prezzi"/>
+</form>                
+</wicket:panel>

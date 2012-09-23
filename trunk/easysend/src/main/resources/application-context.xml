@@ -132,6 +132,8 @@
     
     <bean id="provinciaService" class="it.av.es.service.impl.ProvinciaServiceHibernate"/>
     
+    <bean id="priceService" class="it.av.es.service.impl.PriceServiceHibernate"/>
+    
     <bean id="wicketApplication" class="it.av.es.web.WicketApplication"/>
 
 

@@ -1,8 +1,12 @@
 package it.av.es.web;
 
+import it.av.es.model.Product;
 import it.av.es.model.Project;
+import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
+import it.av.es.web.data.ProductsOfProjectsSortableDataProvider;
 import it.av.es.web.data.ProjectSortableDataProvider;
+import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +19,10 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.IModel;
@@ -36,22 +42,25 @@ public class ProjectManagerPage extends BasePageSimple {
     private ProjectService userService;
     @SpringBean
     private ProjectService projectService;
+    @SpringBean
+    private ProductService productService;
 
     public ProjectManagerPage() {
         super();
 
         List<IColumn<Project, String>> columns = new ArrayList<IColumn<Project, String>>();
+
+        columns.add(new PropertyColumn<Project, String>(new Model<String>("Progetto"), Project.NAME_FIELD, Project.NAME_FIELD));
         
-        columns.add(new AbstractColumn<Project, String>(new Model<String>("Assign Products")) {
+        columns.add(new AbstractColumn<Project, String>(new Model<String>("Prodotti"), "Prodotti") {
             public void populateItem(Item<ICellPopulator<Project>> cellItem, String componentId, IModel<Project> model) {
-                cellItem.add(new ProductPanel(componentId, model));
+                cellItem.add(new ProductManagerPanel(componentId, model));
             }
         });
 
-        columns.add(new PropertyColumn<Project, String>(new Model<String>("Project Name"), Project.NAME_FIELD, Project.NAME_FIELD));
 
-        final AjaxFallbackDefaultDataTable<Project, String> dataTable = new AjaxFallbackDefaultDataTable<Project, String>(
-                "dataTable", columns, new ProjectSortableDataProvider(), 50);
+        final CustomAjaxFallbackDefaultDataTable<Project, String> dataTable = new CustomAjaxFallbackDefaultDataTable<Project, String>("dataTable", columns,
+                new ProjectSortableDataProvider(), 50);
         add(dataTable);
 
         final Form<Project> formPrj = new Form<Project>("prj", new CompoundPropertyModel<Project>(new Project()));
@@ -68,6 +77,39 @@ public class ProjectManagerPage extends BasePageSimple {
             }
         });
     }
-    
+
+    public class ProductPanel extends Panel {
+        public ProductPanel(String id, final IModel<Project> project) {
+            super(id, project);
+            Injector.get().inject(this);
+
+            List<IColumn<Product, String>> columns = new ArrayList<IColumn<Product, String>>();
+
+            columns.add(new PropertyColumn<Product, String>(new Model<String>("Product Name"), Product.NAME_FIELD, Product.NAME_FIELD));
+
+            final ProductsOfProjectsSortableDataProvider dataProvider = new ProductsOfProjectsSortableDataProvider(new ArrayList<Product>(project.getObject().getProducts()));
+            final AjaxFallbackDefaultDataTable<Product, String> dataTable = new AjaxFallbackDefaultDataTable<Product, String>("dataTable", columns, dataProvider, 50);
+            add(dataTable);
+
+            final Form<Product> formPrj = new Form<Product>("prj", new CompoundPropertyModel<Product>(new Product()));
+            add(formPrj);
+            formPrj.add(new TextField<String>("name"));
+            formPrj.add(new AjaxSubmitLink("submit") {
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    super.onSubmit(target, form);
+                    Product p = (Product) form.getModelObject();
+                    project.getObject().addProduct(p);
+                    productService.save(p);
+                    Project project2 = projectService.save(project.getObject());
+                    project.setObject(project2);
+                    dataProvider.setData(new ArrayList<Product>(project2.getProducts()));
+                    target.add(dataTable);
+                    formPrj.setModelObject(new Product());
+                }
+            });
+
+        }
+    }
 
 }

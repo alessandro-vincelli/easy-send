@@ -93,14 +93,14 @@ public class BasePageSimple extends WebPage {
                         .isInstantiationAuthorized(ProjectManagerPage.class)));
             }
         });
-        add(new BookmarkablePageLink<String>("goProductManagerPage", ProductManagerPage.class) {
-            @Override
-            protected void onBeforeRender() {
-                super.onBeforeRender();
-                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
-                        .isInstantiationAuthorized(ProductManagerPage.class)));
-            }
-        });
+//        add(new BookmarkablePageLink<String>("goProductManagerPage", ProductManagerPage.class) {
+//            @Override
+//            protected void onBeforeRender() {
+//                super.onBeforeRender();
+//                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+//                        .isInstantiationAuthorized(ProductManagerPage.class)));
+//            }
+//        });
         add(new BookmarkablePageLink<String>("goSelectProjectPage", SelectProjectPage.class) {
             @Override
             protected void onBeforeRender() {

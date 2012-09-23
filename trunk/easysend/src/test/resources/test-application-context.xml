@@ -88,5 +88,6 @@
     
     <bean id="countryService" class="it.av.es.service.impl.CountryServiceHibernate"/>
     
+    <bean id="priceService" class="it.av.es.service.impl.PriceServiceHibernate"/>
 
 </beans>

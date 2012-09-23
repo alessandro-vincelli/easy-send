@@ -39,7 +39,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
             getComponentInstantiationListeners().add(new SpringComponentInjector(this, getSpringContext(), true));
         }
         
-        mountPage("/products", ProductManagerPage.class);
+        //mountPage("/products", ProductManagerPage.class);
         mountPage("/users", UserManagerPage.class);
         mountPage("/newOrder", PlaceNewOrderPage.class);
         mountPage("/customers", CustomerManagerPage.class);

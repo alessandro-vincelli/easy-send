@@ -16,6 +16,7 @@
 package it.av.es.web.data;
 
 import it.av.es.model.Product;
+import it.av.es.model.Project;
 import it.av.es.service.ProductService;
 
 import java.util.ArrayList;
@@ -39,14 +40,16 @@ public class ProductSortableDataProvider extends SortableDataProvider<Product, S
     private ProductService productService;
     private transient Collection<Product> results;
     private long size;
+    private Project project;
 
     /**
      * Constructor
      */
-    public ProductSortableDataProvider() {
+    public ProductSortableDataProvider(Project project) {
         super();
+        this.project = project;
         Injector.get().inject(this);
-        results = productService.getAll();
+        results = project.getProducts();
         // setSort(LightVac.SortedFieldNames.dateTime.value(), true);
     }
 
@@ -56,7 +59,7 @@ public class ProductSortableDataProvider extends SortableDataProvider<Product, S
     @Override
     public final long size() {
         
-            size = productService.getAll().size();
+            size = project.getProducts().size();
             return size;
         
     }
@@ -80,7 +83,7 @@ public class ProductSortableDataProvider extends SortableDataProvider<Product, S
 
     @Override
     public Iterator<? extends Product> iterator(long first, long count) {
-        results = productService.getAll();
+        results = project.getProducts();
         return Collections.synchronizedList(new ArrayList<Product>(results)).iterator();
     }
 
