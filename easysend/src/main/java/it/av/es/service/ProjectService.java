@@ -15,6 +15,7 @@
  */
 package it.av.es.service;
 
+import it.av.es.model.Product;
 import it.av.es.model.Project;
 
 import java.util.Collection;
@@ -25,25 +26,44 @@ import java.util.Collection;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
 public interface ProjectService {
+    
     /**
-     * Save a VendorProfile
+     * Save a Project
      * 
      * @param object
      * @return just saved profile
      */
     Project save(Project object);
+    
+    /**
+     * 
+     * 
+     * @param object
+     * @param product
+     * @return just saved profile
+     */
+    Project saveAndAddProduct(Project object, Product product);
+    
+    /**
+     * 
+     * 
+     * @param object
+     * @param product
+     * @return just saved profile
+     */
+    Project saveAndRemoveProduct(Project object, Product product);
 
     /**
-     * Get all the user profile
+     * Get all the uProject
      * 
-     * @return all the user profile
+     * @return all the Project
      */
     Collection<Project> getAll();
 
     /**
-     * Remove a profile
+     * Remove a Project
      * 
-     * @param profile
+     * @param Project
      */
     void remove(Project profile);
     
