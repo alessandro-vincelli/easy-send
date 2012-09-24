@@ -27,7 +27,6 @@
     <tr valign="top">
     <td>
     
-    
         <!--  start step-holder -->
         <div id="step-holder" wicket:id="tabs">
             <div class="step-no" wicket:id="step1-number">1</div>
@@ -171,9 +170,18 @@
             </td>
         </tr>
         <tr>
+            <td><input type="checkbox"  wicket:id="isPrePayment" ></input></td>
+            <th valign="top">Pagamento Anticipato</th>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top">Costo spedizione Û:</th>
+            <td><input type="text" class="inp-form-xsmall" wicket:id="shippingCost" ></input></td>
+            <td></td>
+        </tr>        
+        <tr>
             <th valign="top">Note:</th>
             <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>
-            <td></td>
             <td></td>
         </tr>
         

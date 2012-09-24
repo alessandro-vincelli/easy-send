@@ -82,12 +82,15 @@ public interface OrderService {
     Order placeNewOrder(Order order, Project project, User user);
     
     /**
-     * Creates a {@link ProductOrdered} with correct ad data, NOT persists
+     * Creates a {@link ProductOrdered} with correct ad data, <strong>NOT persists</strong>
      * 
      * @param order
-     * @param productOrdered
+     * @param product
+     * @param project
+     * @param numberOfProds
+
      * @return
      */
-    ProductOrdered addProductOrdered(Order order, Product product, int numberOfProds);
+    ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds);
 
 }

@@ -13,6 +13,7 @@ import it.av.es.model.Order;
 import it.av.es.model.PaymentType;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
+import it.av.es.model.Project;
 import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
@@ -21,7 +22,6 @@ import it.av.es.service.OrderService;
 import it.av.es.util.DateUtil;
 
 import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -100,10 +100,14 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private AjaxSubmitLink submitConfirm;
     private AjaxSubmitLink submitNext;
     private Form<Order> formNewOrder;
+    private Project currentProject;
 
     public PlaceNewOrderPage() {
         super();
-        final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
+        
+        currentProject = getSecuritySession().getCurrentProject();
+                
+        final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order(currentProject));
         formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
         addFakeTabs(this);
@@ -217,7 +221,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 Product product = productToAdd.getModelObject();
                 Integer integer = productNumberToAdd.getModelObject();
                 if(product != null && integer != null ){
-                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), productNumberToAdd.getModelObject());
+                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), currentProject, productNumberToAdd.getModelObject());
                     formNewOrder.getModelObject().addProductOrdered(ordered);
                     target.add(productsOrderedContanier);
                     target.add(getFeedbackPanel());
@@ -234,6 +238,28 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         
         step2.add(new TextArea<String>("notes"));
+        CheckBox isPrepayment = new CheckBox("isPrePayment");
+        step2.add(isPrepayment);
+        isPrepayment.add(new OnChangeAjaxBehavior() {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                // apply discount for isPrePayment if applicable
+                List<ProductOrdered> list = formNewOrder.getModelObject().getProductsOrdered();
+                if(list != null && list.size() > 0){
+                    List<ProductOrdered> newList = new ArrayList<ProductOrdered>(list.size());
+                    for (ProductOrdered p : list) {
+                        ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), p.getProduct(), currentProject, p.getNumber());
+                        newList.add(ordered);
+                    }
+                    formNewOrder.getModelObject().setProductsOrdered(newList);
+                    target.add(formNewOrder);
+                    target.add(getFeedbackPanel());                    
+                }
+            }
+        });
+        
+        step2.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
         
         submitNext = new AjaxSubmitLink("submitNext") {
             @Override

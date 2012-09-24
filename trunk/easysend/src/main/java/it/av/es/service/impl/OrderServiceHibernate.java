@@ -75,7 +75,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     }
 
     @Override
-    public ProductOrdered addProductOrdered(Order order, Product product, int numberOfProds) {
+    public ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds) {
+        order.setProject(project);
         ProductOrdered ordered = new ProductOrdered();
         ordered.setProduct(product);
         ordered.setNumber(numberOfProds);
@@ -91,9 +92,14 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             }
         }
         if(amount == BigDecimal.ZERO){
-            throw new EasySendException("Price non available");
+            throw new EasySendException("Price not available");
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
+        //apply discount if isPrepayment
+        if(order.getIsPrePayment() && order.getProject().getPrePaymentDiscount() > 0){
+            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getProject().getPrePaymentDiscount())));
+            ordered.setAmount(ordered.getAmount().subtract(discount));    
+        }
         ordered.setDiscount(percentDiscount);
         return ordered;
     }
