@@ -1,5 +1,6 @@
 package it.av.es.model;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -30,6 +31,15 @@ public class Project extends BasicEntity {
     @OneToMany(fetch=FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private Set<Product> products;
+    /**
+     * % of discount for prePayment
+     */
+    private Integer prePaymentDiscount;
+    private BigDecimal shippingCost;
+    /**
+     * the number of product for free shipping
+     */
+    private Integer freeShippingNumber;
 
     public String getName() {
         return name;
@@ -83,5 +93,30 @@ public class Project extends BasicEntity {
         }
         this.users.add(user);
     }
+
+    public Integer getPrePaymentDiscount() {
+        return prePaymentDiscount;
+    }
+
+    public void setPrePaymentDiscount(Integer prePaymentDiscount) {
+        this.prePaymentDiscount = prePaymentDiscount;
+    }
+
+    public BigDecimal getShippingCost() {
+        return shippingCost;
+    }
+
+    public void setShippingCost(BigDecimal shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
+    public Integer getFreeShippingNumber() {
+        return freeShippingNumber;
+    }
+
+    public void setFreeShippingNumber(Integer freeShippingNumber) {
+        this.freeShippingNumber = freeShippingNumber;
+    }
+
 
 }

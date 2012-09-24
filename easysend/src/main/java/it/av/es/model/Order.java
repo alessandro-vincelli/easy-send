@@ -1,5 +1,6 @@
 package it.av.es.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -46,10 +47,35 @@ public class Order extends BasicEntity {
     @Column(nullable = false)
     private Date creationTime;
     private String notes;
+    private Boolean isPrePayment;
+    /**
+     * % of discount for prePayment, applied From parent Project
+     */
+    private Integer prePaymentDiscount;
+    /**
+     *  applied From parent Project
+     */
+    private BigDecimal shippingCost;
+    /**
+     * the number of product for free shipping,  applied From parent Project
+     */
+    private Integer freeShippingNumber;
 
     public Order() {
         super();
         customer = new Customer();
+    }
+    
+    /**
+     * Creates order and set fields from Project 
+     * 
+     * @param project
+     */
+    public Order(Project project) {
+        this();
+        setFreeShippingNumber(project.getFreeShippingNumber());
+        setPrePaymentDiscount(project.getPrePaymentDiscount());
+        setShippingCost(project.getShippingCost());
     }
 
     public User getUser() {
@@ -109,6 +135,38 @@ public class Order extends BasicEntity {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public Boolean getIsPrePayment() {
+        return isPrePayment;
+    }
+
+    public void setIsPrePayment(Boolean isPrePayment) {
+        this.isPrePayment = isPrePayment;
+    }
+
+    public Integer getPrePaymentDiscount() {
+        return prePaymentDiscount;
+    }
+
+    public void setPrePaymentDiscount(Integer prePaymentDiscount) {
+        this.prePaymentDiscount = prePaymentDiscount;
+    }
+
+    public BigDecimal getShippingCost() {
+        return shippingCost;
+    }
+
+    public void setShippingCost(BigDecimal shippingCost) {
+        this.shippingCost = shippingCost;
+    }
+
+    public Integer getFreeShippingNumber() {
+        return freeShippingNumber;
+    }
+
+    public void setFreeShippingNumber(Integer freeShippingNumber) {
+        this.freeShippingNumber = freeShippingNumber;
     }
 
 }
