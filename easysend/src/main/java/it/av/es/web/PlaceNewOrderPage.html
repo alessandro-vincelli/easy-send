@@ -145,12 +145,25 @@
             <wicket:message key="productNumber"/><select wicket:id="number" ></select>
             </td>
             <td><input type="button" value="" class="form-submit" wicket:id="addProductOrdered" ></input></td>
+            <td></td>
+            <td></td>
         </tr>
         <tr wicket:id="productsOrderedContanier">
-            <td colspan="3">
-            <ul wicket:id="productsOrdered">
-            <li><select wicket:id="product" ></select><select wicket:id="number" ></select><input type="text" wicket:id="amount" class="inp-form-xsmall" /></li>
-            </ul>
+            <td colspan="4">
+            <table id="product-ordered" width="100%" cellspacing="0" cellpadding="0" border="0" >
+            <tr valign="top">
+            <th>Prodotto</th>
+            <th>N. Cartoni</th>
+            <th>Importo Û</th>
+            <th>Sconto %</th>
+            </tr>
+            <tr valign="top" wicket:id="productsOrdered">
+            <td><input type="text" wicket:id="product.name" class="inp-form" /></td>
+            <td><input type="text" wicket:id="number" class="inp-form-xsmall" /></td>
+            <td><input type="text" wicket:id="amount" class="inp-form-xsmall" /></td>
+            <td><input type="text" wicket:id="discount" class="inp-form-xsmall" />%</td>
+            </tr>
+            </table>
             </td>
         </tr>
         </colgroup>        
