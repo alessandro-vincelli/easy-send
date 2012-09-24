@@ -49,6 +49,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
         mountPage("/signIn", SignIn.class);
         mountPage("/signOut", SignOut.class);
         mountPage("/signUp", SignUpPage.class);
+        mountPage("/orders", OrderManagerPage.class);
     }
 
 
