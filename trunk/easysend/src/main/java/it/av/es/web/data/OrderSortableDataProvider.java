@@ -16,6 +16,8 @@
 package it.av.es.web.data;
 
 import it.av.es.model.Order;
+import it.av.es.model.Project;
+import it.av.es.model.User;
 import it.av.es.service.OrderService;
 
 import java.util.ArrayList;
@@ -39,15 +41,15 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private OrderService orderService;
     private transient Collection<Order> results;
     private long size;
+    private User user;
+    private Project project;
 
-    /**
-     * Constructor
-     */
-    public OrderSortableDataProvider() {
+    public OrderSortableDataProvider(User user, Project project) {
         super();
+        this.user = user;
+        this.project = project;
         Injector.get().inject(this);
-        results = orderService.getAll();
-        // setSort(LightVac.SortedFieldNames.dateTime.value(), true);
+        results = orderService.get(user, project, 0, 0, null);
     }
 
     /**
@@ -55,10 +57,9 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        
-            size = orderService.getAll().size();
-            return size;
-        
+        size = orderService.get(user, project, 0, 0, null).size();
+        return size;
+
     }
 
     /**
@@ -77,10 +78,9 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         results = null;
     }
 
-
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.getAll();
+        results = orderService.get(user, project, (int) first, (int) count, null);
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
     }
 
