@@ -57,10 +57,8 @@ public class CustomerManagerPage extends BasePageSimple {
             }
         });
 
-        dataTable = new CustomAjaxFallbackDefaultDataTable<Customer, String>("dataTable", columns,
-                new CustomerSortableDataProvider(getSecuritySession().getLoggedInUser()), 2);
+        dataTable = new CustomAjaxFallbackDefaultDataTable<Customer, String>("dataTable", columns, new CustomerSortableDataProvider(getSecuritySession().getLoggedInUser()), 25);
         add(dataTable);
-        
 
     }
 
@@ -87,5 +85,5 @@ public class CustomerManagerPage extends BasePageSimple {
         }
 
     }
-    
+
 }
