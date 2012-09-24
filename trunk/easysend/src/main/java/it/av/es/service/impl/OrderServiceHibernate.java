@@ -15,7 +15,6 @@
  */
 package it.av.es.service.impl;
 
-import it.av.es.EasySendConcurrentModificationException;
 import it.av.es.EasySendException;
 import it.av.es.model.Order;
 import it.av.es.model.Price;
@@ -33,7 +32,6 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.commons.lang.math.NumberUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,7 +85,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             throw new EasySendException("Price non available");
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
-        ordered.setDiscout(percentDiscount);
+        ordered.setDiscount(percentDiscount);
         return ordered;
     }
 

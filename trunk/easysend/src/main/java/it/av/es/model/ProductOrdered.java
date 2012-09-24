@@ -17,7 +17,7 @@ public class ProductOrdered extends BasicEntity {
     private Product product;
     private int number;
     private BigDecimal amount;
-    private int discout;
+    private int discount;
 
     public ProductOrdered() {
         super();
@@ -55,13 +55,12 @@ public class ProductOrdered extends BasicEntity {
         this.amount = amount;
     }
 
-    public int getDiscout() {
-        return discout;
+    public int getDiscount() {
+        return discount;
     }
 
-    public void setDiscout(int discout) {
-        this.discout = discout;
+    public void setDiscount(int discount) {
+        this.discount = discount;
     }
-
 
 }

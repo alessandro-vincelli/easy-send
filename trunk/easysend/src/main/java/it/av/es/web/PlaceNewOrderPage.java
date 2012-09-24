@@ -175,6 +175,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step2.setVisible(false).setOutputMarkupId(true);
         final DropDownChoice<Product> productToAdd = new DropDownChoice<Product>("product", new Model<Product>() ,products, new ProductChoiceRenderer());
         final DropDownChoice<Integer> productNumberToAdd = new DropDownChoice<Integer>("number", new Model<Integer>(), Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        productNumberToAdd.setNullValid(false);
         step2.add(productToAdd);
         step2.add(productNumberToAdd);
         final WebMarkupContainer productsOrderedContanier = new WebMarkupContainer("productsOrderedContanier");
@@ -184,9 +185,10 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
             @Override
             protected void populateItem(ListItem<ProductOrdered> item) {
-                item.add(new DropDownChoice<Product>("product", products, new ProductChoiceRenderer()));
-                item.add(new DropDownChoice<Integer>("number", Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10)));
+                item.add(new TextField<Product>("product.name").setEnabled(false));;
+                item.add(new TextField<Integer>("number").setEnabled(false));
                 item.add(new TextField<BigDecimal>("amount", BigDecimal.class).setEnabled(false));
+                item.add(new TextField<Integer>("discount", Integer.class).setEnabled(false));
             }
         };
         productsOrderedContanier.add(listViewProductsOrdered);
@@ -195,9 +197,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), productNumberToAdd.getModelObject());
-                formNewOrder.getModelObject().addProductOrdered(ordered);
-                target.add(productsOrderedContanier);
+                Product product = productToAdd.getModelObject();
+                Integer integer = productNumberToAdd.getModelObject();
+                if(product != null && integer != null ){
+                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), productNumberToAdd.getModelObject());
+                    formNewOrder.getModelObject().addProductOrdered(ordered);
+                    target.add(productsOrderedContanier);                    
+                }
             }
         });
         
