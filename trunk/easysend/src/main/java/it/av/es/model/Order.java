@@ -22,17 +22,16 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "orders")
 public class Order extends BasicEntity {
 
-    public static final String NAME_FIELD = "name";
+    
     public static final String USER_FIELD = "user";
     public static final String PROJECT_FIELD = "project";
     public static final String PRODUCTSORDERED_FIELD = "productsOrdered";
     public static final String CREATIONTIME_FIELD = "creationTime";
-    public static final String PRODUCTNUMBER_FIELD = "productNumber";
+    public static final String NOTES_FIELD = "notes";
 
     @ManyToOne
     @JoinColumn(name = "customer_fk")
     private Customer customer;
-    private String name;
     @ManyToOne
     @JoinColumn(name = "user_fk")
     private User user;
@@ -45,18 +44,11 @@ public class Order extends BasicEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date creationTime;
+    private String notes;
 
     public Order() {
         super();
         customer = new Customer();
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public User getUser() {
@@ -108,6 +100,14 @@ public class Order extends BasicEntity {
 
     public void setProductsOrdered(List<ProductOrdered> productsOrdered) {
         this.productsOrdered = productsOrdered;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
 }
