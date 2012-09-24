@@ -29,13 +29,16 @@
     
     
         <!--  start step-holder -->
-        <div id="step-holder">
-            <div class="step-no">1</div>
-            <div class="step-dark-left"><a href="">Selezione cliente</a></div>
-            <div class="step-dark-right">&nbsp;</div>
-            <div class="step-no-off">2</div>
-            <div class="step-light-left">Selezione prodotto</div>
-            <div class="step-light-round">&nbsp;</div>
+        <div id="step-holder" wicket:id="tabs">
+            <div class="step-no" wicket:id="step1-number">1</div>
+            <div class="step-dark-left" wicket:id="step1-left">Selezione cliente</div>
+            <div class="step-dark-right" wicket:id="step1-right">&nbsp;</div>
+            <div class="step-no-off" wicket:id="step2-number">2</div>
+            <div class="step-light-left" wicket:id="step2-left">Selezione prodotto</div>
+            <div class="step-light-right" wicket:id="step2-right">&nbsp;</div>
+            <div class="step-no-off" wicket:id="step3-number">3</div>
+            <div class="step-light-left" wicket:id="step3-left">Ordine inserito</div>
+            <div class="step-light-round" wicket:id="step3-right">&nbsp;</div>            
             <div class="clear"></div>
         </div>
         <!--  end step-holder -->
@@ -43,7 +46,6 @@
         <!-- start id-form -->
         <form wicket:id="newOrder">
         <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
-        <colgroup wicket:id="step1">
         <tr>
         <th valign="top"><wicket:message key="customer"/></th>
         <td>
@@ -51,6 +53,8 @@
         </td>
         <td></td>
         </tr>        
+        
+        <colgroup wicket:id="step1">
 		<tr>
 			<th valign="top"><wicket:message key="customer.corporateName"/></th>
 			<td colspan="2"><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
@@ -166,12 +170,19 @@
             </table>
             </td>
         </tr>
+        <tr>
+            <th valign="top">Note:</th>
+            <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>
+            <td></td>
+            <td></td>
+        </tr>
+        
         </colgroup>        
         <tr>
         <th>&nbsp;</th>
         <td valign="top">
-            <input type="button" value="" class="form-submit" wicket:id="submit" ></input>
-            <input type="reset" value="" class="form-reset"  />
+            <input type="button" value="" class="form-submit" wicket:id="submitNext" ></input>
+            <input type="button" value="" class="form-submit" wicket:id="submitConfirm" ></input>
         </td>
         <td></td>
     </tr>

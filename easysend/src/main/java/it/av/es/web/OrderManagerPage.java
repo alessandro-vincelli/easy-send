@@ -39,7 +39,6 @@ public class OrderManagerPage extends BasePageSimple {
 
         List<IColumn<Order, String>> columns = new ArrayList<IColumn<Order, String>>();
 
-        columns.add(new PropertyColumn<Order, String>(new Model<String>("Order Name"), Order.NAME_FIELD, Order.NAME_FIELD));
         //columns.add(new PropertyColumn<Order, String>(new Model<String>("Product Name"), Order.PRODUCT_FIELD +".name", Order.NAME_FIELD + ".name"));
         columns.add(new PropertyColumn<Order, String>(new Model<String>("Creation time"), Order.CREATIONTIME_FIELD, Order.CREATIONTIME_FIELD));
 

@@ -18,8 +18,10 @@ import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
 import it.av.es.service.CustomerService;
 import it.av.es.service.OrderService;
+import it.av.es.util.DateUtil;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +29,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -41,6 +44,7 @@ import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -83,19 +87,30 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private DropDownChoice<String> province;
     private WebMarkupContainer step2;
     private WebMarkupContainer step1;
+    private WebMarkupContainer step1Number;
+    private WebMarkupContainer step1Left;
+    private WebMarkupContainer step1Right;
+    private WebMarkupContainer step2Number;
+    private WebMarkupContainer step2Left;
+    private WebMarkupContainer step2Right;
+    private WebMarkupContainer step3Number;
+    private WebMarkupContainer step3Left;
+    private WebMarkupContainer step3Right;
+    private WebMarkupContainer fakeTabs;
+    private AjaxSubmitLink submitConfirm;
+    private AjaxSubmitLink submitNext;
+    private Form<Order> formNewOrder;
 
     public PlaceNewOrderPage() {
         super();
         final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order());
-        final Form<Order> formNewOrder = new Form<Order>("newOrder", model);
+        formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
-
-        step1 = new WebMarkupContainer("step1");
-        formNewOrder.add(step1);
-
+        addFakeTabs(this);
+        
         // add the single-select component
         final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer", new Model<Customer>(new Customer()), new RecipientProvider());
-        step1.add(customer);
+        formNewOrder.add(customer);
         customer.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -106,11 +121,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 target.add(formNewOrder);
             }
         });
-
-        step1.add(new TextField<String>("customer.corporateName").setRequired(true));
-        step1.add(new TextField<String>("customer.address").setRequired(true));
+        step1 = new WebMarkupContainer("step1");
+        formNewOrder.add(step1);
+        
+        step1.add(new TextField<String>("customer.corporateName").setRequired(true).setEnabled(false));
+        step1.add(new TextField<String>("customer.address").setRequired(true).setEnabled(false));
         province = new DropDownChoice<String>("customer.province", new ArrayList<String>());
-        province.setRequired(true).setOutputMarkupId(true);
+        province.setRequired(true).setOutputMarkupId(true).setEnabled(false);
         step1.add(province);
 
         final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model, "customer.city"), new CityProvider() {
@@ -125,47 +142,47 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 target.add(province);
             }
         });
-        city.setRequired(true);
+        city.setRequired(true).setEnabled(false);
         step1.add(city);
         zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model, "customer.zipcode"), new ZipcodeProvider() {
         });
-        zipCode.setRequired(true);
+        zipCode.setRequired(true).setEnabled(false);
         step1.add(zipCode);
 
-        step1.add(new TextField<String>("customer.email"));
-        step1.add(new TextField<String>("customer.phoneNumber").setRequired(true));
-        step1.add(new TextField<String>("customer.faxNumber"));
-        step1.add(new TextField<String>("customer.partitaIvaNumber"));
-        step1.add(new TextField<String>("customer.codiceFiscaleNumber"));
-        step1.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
-        step1.add(new TextField<String>("customer.iban"));
-        step1.add(new TextField<String>("customer.bankName"));
-        step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()));
-        step1.add(new DropDownChoice<ClosingRange>("customer.closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()));
-        step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()));
-        step1.add(new TimeField("customer.loadTimeAMFrom"));
-        step1.add(new TimeField("customer.loadTimeAMTo"));
-        step1.add(new TimeField("customer.loadTimePMFrom"));
-        step1.add(new TimeField("customer.loadTimePMTo"));
-        step1.add(new CheckBox("customer.phoneForewarning"));
+        step1.add(new TextField<String>("customer.email").setEnabled(false));
+        step1.add(new TextField<String>("customer.phoneNumber").setRequired(true).setEnabled(false));
+        step1.add(new TextField<String>("customer.faxNumber").setEnabled(false));
+        step1.add(new TextField<String>("customer.partitaIvaNumber").setEnabled(false));
+        step1.add(new TextField<String>("customer.codiceFiscaleNumber").setEnabled(false));
+        step1.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setEnabled(false));
+        step1.add(new TextField<String>("customer.iban").setEnabled(false));
+        step1.add(new TextField<String>("customer.bankName").setEnabled(false));
+        step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setEnabled(false));
+        step1.add(new DropDownChoice<ClosingRange>("customer.closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()).setEnabled(false));
+        step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()).setEnabled(false));
+        step1.add(new TimeField("customer.loadTimeAMFrom").setEnabled(false));
+        step1.add(new TimeField("customer.loadTimeAMTo").setEnabled(false));
+        step1.add(new TimeField("customer.loadTimePMFrom").setEnabled(false));
+        step1.add(new TimeField("customer.loadTimePMTo").setEnabled(false));
+        step1.add(new CheckBox("customer.phoneForewarning").setEnabled(false));
 
         CheckGroup<String> checks = new CheckGroup<String>("customer.deliveryDays");
-        step1.add(checks);
+        step1.add(checks.setEnabled(false));
         ListView<DeliveryDays> checksList = new ListView<DeliveryDays>("deliveryDaysList", Arrays.asList(DeliveryDays.values())) {
             @Override
             protected void populateItem(ListItem<DeliveryDays> item) {
                 Check<DeliveryDays> check = new Check<DeliveryDays>("check", item.getModel());
                 check.setLabel(new Model<String>(getString(item.getModel().getObject().name())));
                 item.add(check);
-                item.add(new SimpleFormComponentLabel("number", check));
+                item.add(new SimpleFormComponentLabel("number", check).setEnabled(false));
             }
         }.setReuseItems(true);
         checks.add(checksList);
 
-        step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryType>()));
-        step1.add(new TextField<String>("customer.deliveryNote"));
+        step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryType>()).setEnabled(false));
+        step1.add(new TextField<String>("customer.deliveryNote").setEnabled(false));
         step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
-                .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
+                .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()).setEnabled(false));
 
         step2 = new WebMarkupContainer("step2");
 
@@ -202,41 +219,134 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 if(product != null && integer != null ){
                     ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), productNumberToAdd.getModelObject());
                     formNewOrder.getModelObject().addProductOrdered(ordered);
-                    target.add(productsOrderedContanier);                    
+                    target.add(productsOrderedContanier);
+                    target.add(getFeedbackPanel());
+                }
+                else if (product == null){
+                    getFeedbackPanel().error("Selezionare un prodotto");
+                    target.add(getFeedbackPanel());
+                }
+                else if (integer == null){
+                    getFeedbackPanel().error("Selezionare il numero di prodotti");
+                    target.add(getFeedbackPanel());
                 }
             }
         });
         
-        formNewOrder.add(new AjaxSubmitLink("submit") {
+        step2.add(new TextArea<String>("notes"));
+        
+        submitNext = new AjaxSubmitLink("submitNext") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                if (step1.isVisible()) {
-                    step1.setVisible(false);
-                    step2.setVisible(true);
+                Order o = (Order) form.getModelObject();
+                if(o.getCustomer().getCorporateName() == null){
+                    getFeedbackPanel().info("È necessario selezionare un cliente come destinatario");
+                    target.add(getFeedbackPanel());
                 }
-                if (step2.isVisible()) {
-
+                else{
+                    moveStep();
+                    target.add(form);
+                    target.add(fakeTabs);
+                    target.add(getFeedbackPanel());
                 }
-                target.add(form);
-                //                Order p = (Order) form.getModelObject();
-                //                if (p.getCustomer().getId() == null) {
-                //                    p.setCustomer(customerService.save(p.getCustomer(), getSecuritySession().getLoggedInUser()));
-                //                }
-                //                orderService.placeNewOrder(p, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                //                formNewOrder.setModelObject(new Order());
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
-                //TODO adde feeback panel
-                //                getFeedbackPanel().anyErrorMessage();
-                //                target.add(getFeedbackPanel());
+                getFeedbackPanel().anyErrorMessage();
+                target.add(getFeedbackPanel());
             }
-        });
+        };
+        formNewOrder.add(submitNext);
+        
+        submitConfirm = new AjaxSubmitLink("submitConfirm") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                moveStep();
+                Order o = (Order) form.getModelObject();
+                //some validations
+                if(o.getProductsOrdered() == null || o.getProductsOrdered().size() == 0){
+                    getFeedbackPanel().info("È necessario inserire almeno un prodotto");
+                    target.add(getFeedbackPanel());
+                }
+                //save the order
+                else{
+                    Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+                    formNewOrder.setEnabled(false);
+                    target.add(form);
+                    target.add(fakeTabs);
+                    getFeedbackPanel().info("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
+                    
+                }
+                target.add(getFeedbackPanel());
+            }
 
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                getFeedbackPanel().anyErrorMessage();
+                target.add(getFeedbackPanel());
+            }
+        };
+        submitConfirm.setVisible(false);
+        formNewOrder.add(submitConfirm);
     }
 
+    private void moveStep(){
+        if (step1.isVisible()) {
+            step1.setVisible(false);
+            step2.setVisible(true);
+            step1Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step1Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step1Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step2Number.add(AttributeModifier.replace("class", "step-no"));
+            step2Left.add(AttributeModifier.replace("class", "step-dark-left"));
+            step2Right.add(AttributeModifier.replace("class", "step-dark-right"));
+            step3Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step3Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step3Right.add(AttributeModifier.replace("class", "step-light-round"));
+            submitConfirm.setVisible(true);
+            submitNext.setVisible(false);
+        }
+        else if (step2.isVisible()) {
+            step1Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step1Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step1Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step2Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step2Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step2Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step3Number.add(AttributeModifier.replace("class", "step-no"));
+            step3Left.add(AttributeModifier.replace("class", "step-dark-left"));
+            step3Right.add(AttributeModifier.replace("class", "step-dark-round"));
+        }
+    }
+    
+    private void addFakeTabs(PlaceNewOrderPage placeNewOrderPage){
+        fakeTabs = new WebMarkupContainer("tabs");
+        fakeTabs.setOutputMarkupId(true);
+        add(fakeTabs);
+        step1Number = new WebMarkupContainer("step1-number");
+        step1Left = new WebMarkupContainer("step1-left");
+        step1Right = new WebMarkupContainer("step1-right");
+        step2Number = new WebMarkupContainer("step2-number");
+        step2Left = new WebMarkupContainer("step2-left");
+        step2Right = new WebMarkupContainer("step2-right");
+        step3Number = new WebMarkupContainer("step3-number");
+        step3Left = new WebMarkupContainer("step3-left");
+        step3Right = new WebMarkupContainer("step3-right");
+        fakeTabs.add(step1Number);
+        fakeTabs.add(step1Left);
+        fakeTabs.add(step1Right);
+        fakeTabs.add(step2Number);
+        fakeTabs.add(step2Left);
+        fakeTabs.add(step2Right);
+        fakeTabs.add(step3Number);
+        fakeTabs.add(step3Left);
+        fakeTabs.add(step3Right);
+    }
+    
+    
     private class ProductChoiceRenderer implements IChoiceRenderer<Product> {
 
         @Override
