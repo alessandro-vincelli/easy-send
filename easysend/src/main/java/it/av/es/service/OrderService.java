@@ -43,6 +43,18 @@ public interface OrderService {
      * @return all the user profile
      */
     Collection<Order> getAll();
+    
+    /**
+     * Get all the user profile filtered on user and project
+     * 
+     * @param user
+     * @param project
+     * @param firstResult
+     * @param maxResult
+     * @param sortProperty
+     * @return all the user profile
+     */
+    Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty);
 
     /**
      * Remove a profile

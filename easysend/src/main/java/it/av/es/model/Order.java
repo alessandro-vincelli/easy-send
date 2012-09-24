@@ -28,6 +28,7 @@ public class Order extends BasicEntity {
     public static final String PRODUCTSORDERED_FIELD = "productsOrdered";
     public static final String CREATIONTIME_FIELD = "creationTime";
     public static final String NOTES_FIELD = "notes";
+    public static final String CUSTOMER_FIELD = "customer";
 
     @ManyToOne
     @JoinColumn(name = "customer_fk")
