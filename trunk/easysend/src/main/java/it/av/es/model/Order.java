@@ -11,6 +11,8 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -21,8 +23,11 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.GenerationTime;
 
 @Entity
+
 @Table(name = "orders")
 public class Order extends BasicEntity {
 
@@ -34,6 +39,9 @@ public class Order extends BasicEntity {
     public static final String CUSTOMER_FIELD = "customer";
     public static final String ISPREPAYMENT_FIELD = "isPrePayment";
     public static final String SHIPPINGCOST_FIELD = "shippingCost";
+    public static final String REFERNCENUMBER_FIELD = "referenceNumber";
+    public static final String ISINCHARGE_FIELD = "isInCharge";
+    public static final String ISCANCELLED_FIELD = "isCancelled";
 
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_fk")
@@ -52,6 +60,13 @@ public class Order extends BasicEntity {
     private Date creationTime;
     private String notes;
     private boolean isPrePayment;
+    private boolean isInCharge;
+    private Boolean isCancelled;
+    @Column(columnDefinition = "serial")
+    @Generated(GenerationTime.INSERT)
+    private Integer referenceNumber;
+    @Enumerated(EnumType.STRING)
+    private PaymentType paymentType;
     /**
      * % of discount for prePayment, applied From parent Project
      */
@@ -174,6 +189,46 @@ public class Order extends BasicEntity {
         this.freeShippingNumber = freeShippingNumber;
     }
 
+    public Boolean getIsInCharge() {
+        return isInCharge;
+    }
+
+    public void setIsInCharge(Boolean isInCharge) {
+        this.isInCharge = isInCharge;
+    }
+
+    public Boolean getIsCancelled() {
+        return isCancelled;
+    }
+
+    public void setIsCancelled(Boolean isCancelled) {
+        this.isCancelled = isCancelled;
+    }
+
+    public void setPrePayment(boolean isPrePayment) {
+        this.isPrePayment = isPrePayment;
+    }
+
+    public Integer getReferenceNumber() {
+        return referenceNumber;
+    }
+
+    public void setReferenceNumber(Integer referenceNumber) {
+        this.referenceNumber = referenceNumber;
+    }
+
+    public void setInCharge(boolean isInCharge) {
+        this.isInCharge = isInCharge;
+    }
+
+    public PaymentType getPaymentType() {
+        return paymentType;
+    }
+
+    public void setPaymentType(PaymentType paymentType) {
+        this.paymentType = paymentType;
+    }
+
     public Integer getNumberOfItemsInProductOrdered() {
         int n = 0;
         for (ProductOrdered p : productsOrdered) {
@@ -226,4 +281,6 @@ public class Order extends BasicEntity {
         ordered.setDiscount(percentDiscount);
         return ordered;
     }
+    
+    
 }

@@ -48,6 +48,14 @@ public class OrderManagerPage extends BasePageSimple {
 
         List<IColumn<Order, String>> columns = new ArrayList<IColumn<Order, String>>();
 
+        columns.add(new PropertyColumn<Order, String>(new Model<String>("Num"), Order.REFERNCENUMBER_FIELD, Order.REFERNCENUMBER_FIELD));
+        columns.add(new PropertyColumn<Order, String>(new Model<String>("L"), Order.ISINCHARGE_FIELD, Order.ISINCHARGE_FIELD){
+            @Override
+            public void populateItem(Item<ICellPopulator<Order>> item, String componentId, IModel<Order> rowModel) {
+                item.add(new Label(componentId, getString(rowModel.getObject().getIsInCharge().toString())));
+                item.add(AttributeModifier.prepend("style", "text-align: center;"));
+            }
+        });
         columns.add(new PropertyColumn<Order, String>(new Model<String>("Cliente"), Order.CUSTOMER_FIELD + ".corporateName", Order.CUSTOMER_FIELD + ".corporateName"));
         columns.add(new PropertyColumn<Order, String>(new Model<String>("Data"), Order.CREATIONTIME_FIELD, Order.CREATIONTIME_FIELD));
         columns.add(new PropertyColumn<Order, String>(new Model<String>("Sped."), Order.SHIPPINGCOST_FIELD, Order.SHIPPINGCOST_FIELD){
