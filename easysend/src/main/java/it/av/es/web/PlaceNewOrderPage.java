@@ -225,15 +225,16 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     formNewOrder.getModelObject().addProductOrdered(ordered);
                     formNewOrder.getModelObject().applyDiscountIfApplicable();
                     formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                    getFeedbackPanel().info("Prodotto aggiunto all'ordine");
                     target.add(formNewOrder);
                     target.add(getFeedbackPanel());
                 }
                 else if (product == null){
-                    getFeedbackPanel().error("Selezionare un prodotto");
+                    getFeedbackPanel().warn("Selezionare un prodotto");
                     target.add(getFeedbackPanel());
                 }
                 else if (numberToAdd == null){
-                    getFeedbackPanel().error("Selezionare il numero di prodotti");
+                    getFeedbackPanel().warn("Selezionare il numero di prodotti");
                     target.add(getFeedbackPanel());
                 }
             }
@@ -248,6 +249,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
             protected void onUpdate(AjaxRequestTarget target) {
                 formNewOrder.getModelObject().applyDiscountIfApplicable();
                 formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                if(formNewOrder.getModel().getObject().getIsPrePayment()){
+                    getFeedbackPanel().info("Applicato Sconto del 5% per pagamento anticipato.");                    
+                }
+                else{
+                    getFeedbackPanel().info("Rimosso Sconto del 5% per pagamento anticipato.");
+                }
+
                 target.add(formNewOrder);
                 target.add(getFeedbackPanel());
             }
@@ -262,7 +270,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 super.onSubmit(target, form);
                 Order o = (Order) form.getModelObject();
                 if(o.getCustomer().getCorporateName() == null){
-                    getFeedbackPanel().info("È necessario selezionare un cliente come destinatario");
+                    getFeedbackPanel().warn("È necessario selezionare un cliente come destinatario");
                     target.add(getFeedbackPanel());
                 }
                 else{
@@ -289,7 +297,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 Order o = (Order) form.getModelObject();
                 //some validations
                 if(o.getProductsOrdered() == null || o.getProductsOrdered().size() == 0){
-                    getFeedbackPanel().info("È necessario inserire almeno un prodotto");
+                    getFeedbackPanel().warn("È necessario inserire almeno un prodotto");
                     target.add(getFeedbackPanel());
                 }
                 //save the order
@@ -298,7 +306,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     formNewOrder.setEnabled(false);
                     target.add(form);
                     target.add(fakeTabs);
-                    getFeedbackPanel().info("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
+                    getFeedbackPanel().success("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
                 }
                 target.add(getFeedbackPanel());
             }

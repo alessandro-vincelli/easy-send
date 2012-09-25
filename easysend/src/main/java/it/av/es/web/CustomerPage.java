@@ -173,7 +173,7 @@ public class CustomerPage extends BasePageSimple {
                 Customer c = (Customer) form.getModelObject();
                 formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
                 //formNewOrder.setEnabled(false);
-                getFeedbackPanel().info("cliente salvato con successo");
+                getFeedbackPanel().success("cliente salvato con successo");
                 target.add(getFeedbackPanel());
                 target.add(formNewOrder);
             }
