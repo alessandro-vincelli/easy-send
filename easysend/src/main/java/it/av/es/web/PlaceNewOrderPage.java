@@ -119,7 +119,10 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Customer rcp = customer.getModelObject();
-                model.getObject().setCustomer(customerService.getByID(rcp.getId()));
+                Customer customer2 = customerService.getByID(rcp.getId());
+                model.getObject().setCustomer(customer2);
+                model.getObject().setPaymentType(customer2.getPaymentType());
+                model.getObject().setNotes(customer2.getDeliveryNote());
                 zipcodes = (cittaService.findCapByComune(rcp.getCity().getName(), 0));
                 province.setChoices(cittaService.findProvinciaByComune(rcp.getCity().getName(), 0));
                 target.add(formNewOrder);
@@ -136,17 +139,6 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model, "customer.city"), new CityProvider() {
         });
-        city.add(new OnChangeAjaxBehavior() {
-
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
-                province.setChoices(cittaService.findProvinciaByComune(city.getModelObject().getName(), 0));
-                target.add(zipCode);
-                target.add(province);
-            }
-        });
-        city.setRequired(true).setEnabled(false);
         step1.add(city);
         zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model, "customer.zipcode"), new ZipcodeProvider() {
         });
@@ -241,6 +233,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         
         step2.add(new TextArea<String>("notes"));
+        step2.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
         CheckBox isPrepayment = new CheckBox("isPrePayment");
         step2.add(isPrepayment);
         isPrepayment.add(new OnChangeAjaxBehavior() {
