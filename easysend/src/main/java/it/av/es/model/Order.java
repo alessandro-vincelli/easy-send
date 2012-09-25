@@ -1,7 +1,10 @@
 package it.av.es.model;
 
+import it.av.es.EasySendException;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -23,15 +26,16 @@ import org.hibernate.annotations.FetchMode;
 @Table(name = "orders")
 public class Order extends BasicEntity {
 
-    
     public static final String USER_FIELD = "user";
     public static final String PROJECT_FIELD = "project";
     public static final String PRODUCTSORDERED_FIELD = "productsOrdered";
     public static final String CREATIONTIME_FIELD = "creationTime";
     public static final String NOTES_FIELD = "notes";
     public static final String CUSTOMER_FIELD = "customer";
+    public static final String ISPREPAYMENT_FIELD = "isPrePayment";
+    public static final String SHIPPINGCOST_FIELD = "shippingCost";
 
-    @ManyToOne
+    @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_fk")
     private Customer customer;
     @ManyToOne
@@ -47,7 +51,7 @@ public class Order extends BasicEntity {
     @Column(nullable = false)
     private Date creationTime;
     private String notes;
-    private Boolean isPrePayment;
+    private boolean isPrePayment;
     /**
      * % of discount for prePayment, applied From parent Project
      */
@@ -65,7 +69,7 @@ public class Order extends BasicEntity {
         super();
         customer = new Customer();
     }
-    
+
     /**
      * Creates order and set fields from Project 
      * 
@@ -76,6 +80,7 @@ public class Order extends BasicEntity {
         setFreeShippingNumber(project.getFreeShippingNumber());
         setPrePaymentDiscount(project.getPrePaymentDiscount());
         setShippingCost(project.getShippingCost());
+        setProject(project);
     }
 
     public User getUser() {
@@ -169,4 +174,56 @@ public class Order extends BasicEntity {
         this.freeShippingNumber = freeShippingNumber;
     }
 
+    public Integer getNumberOfItemsInProductOrdered() {
+        int n = 0;
+        for (ProductOrdered p : productsOrdered) {
+            n = n + p.getNumber();
+        }
+        return n;
+    }
+
+    public void applyDiscountIfApplicable() {
+        ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(productsOrdered.size());
+        for (ProductOrdered p : productsOrdered) {
+            newList.add(addProductOrdered(p.getProduct(), p.getNumber()));
+        }
+        setProductsOrdered(newList);
+    }
+
+    public void applyFreeShippingCostIfApplicable() {
+        if (getNumberOfItemsInProductOrdered() >= getProject().getFreeShippingNumber()) {
+            setShippingCost(BigDecimal.ZERO);
+        } else {
+            setShippingCost(project.getShippingCost());
+        }
+    }
+    
+    public ProductOrdered addProductOrdered(Product product, int numberOfProds) {
+        ProductOrdered ordered = new ProductOrdered();
+        ordered.setProduct(product);
+        ordered.setNumber(numberOfProds);
+        BigDecimal amount = new BigDecimal(0);
+        Currency currency;
+        int percentDiscount = 0;
+        List<Price> prices = product.getPrices();
+        for (Price price : prices) {
+            if(numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()){
+                amount= price.getAmount();
+                currency = price.getCurrency();
+                percentDiscount = price.getPercentDiscount();
+            }
+        }
+        if(amount == BigDecimal.ZERO){
+            throw new EasySendException("Price not available");
+        }
+        ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
+        //apply discount if isPrepayment
+        if(getIsPrePayment() && getProject().getPrePaymentDiscount() > 0){
+            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(getProject().getPrePaymentDiscount())));
+            ordered.setAmount(ordered.getAmount().subtract(discount)); 
+            percentDiscount = percentDiscount + prePaymentDiscount; 
+        }
+        ordered.setDiscount(percentDiscount);
+        return ordered;
+    }
 }

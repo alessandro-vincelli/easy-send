@@ -219,18 +219,20 @@ public class PlaceNewOrderPage extends BasePageSimple {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Product product = productToAdd.getModelObject();
-                Integer integer = productNumberToAdd.getModelObject();
-                if(product != null && integer != null ){
-                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), productToAdd.getModelObject(), currentProject, productNumberToAdd.getModelObject());
+                Integer numberToAdd = productNumberToAdd.getModelObject();
+                if(product != null && numberToAdd != null ){
+                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), product, currentProject, numberToAdd);
                     formNewOrder.getModelObject().addProductOrdered(ordered);
-                    target.add(productsOrderedContanier);
+                    formNewOrder.getModelObject().applyDiscountIfApplicable();
+                    formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                    target.add(formNewOrder);
                     target.add(getFeedbackPanel());
                 }
                 else if (product == null){
                     getFeedbackPanel().error("Selezionare un prodotto");
                     target.add(getFeedbackPanel());
                 }
-                else if (integer == null){
+                else if (numberToAdd == null){
                     getFeedbackPanel().error("Selezionare il numero di prodotti");
                     target.add(getFeedbackPanel());
                 }
@@ -244,19 +246,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                // apply discount for isPrePayment if applicable
-                List<ProductOrdered> list = formNewOrder.getModelObject().getProductsOrdered();
-                if(list != null && list.size() > 0){
-                    List<ProductOrdered> newList = new ArrayList<ProductOrdered>(list.size());
-                    for (ProductOrdered p : list) {
-                        ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), p.getProduct(), currentProject, p.getNumber());
-                        newList.add(ordered);
-                    }
-                    formNewOrder.getModelObject().setProductsOrdered(newList);
-                    target.add(formNewOrder);
-                    target.add(getFeedbackPanel());                    
-                }
+                formNewOrder.getModelObject().applyDiscountIfApplicable();
+                formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                target.add(formNewOrder);
+                target.add(getFeedbackPanel());
             }
+
         });
         
         step2.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
@@ -304,7 +299,6 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     target.add(form);
                     target.add(fakeTabs);
                     getFeedbackPanel().info("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
-                    
                 }
                 target.add(getFeedbackPanel());
             }
@@ -318,6 +312,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         submitConfirm.setVisible(false);
         formNewOrder.add(submitConfirm);
     }
+    
 
     private void moveStep(){
         if (step1.isVisible()) {
@@ -391,7 +386,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         @Override
         public void query(String term, int page, Response<Customer> response) {
-            response.addAll(getSecuritySession().getLoggedInUser().getCustomers());
+            response.addAll(customerService.get(getSecuritySession().getLoggedInUser(), 0, 0, "corporateName", true));
         }
 
         @Override

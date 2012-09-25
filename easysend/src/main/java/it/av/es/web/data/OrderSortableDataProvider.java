@@ -25,6 +25,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.IModel;
@@ -49,7 +50,8 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         this.user = user;
         this.project = project;
         Injector.get().inject(this);
-        results = orderService.get(user, project, 0, 0, null);
+        setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
+        results = orderService.get(user, project, 0, 0, getSort().getProperty(), getSort().isAscending());
     }
 
     /**
@@ -57,7 +59,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        size = orderService.get(user, project, 0, 0, null).size();
+        size = orderService.get(user, project, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
         return size;
 
     }
@@ -80,7 +82,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.get(user, project, (int) first, (int) count, null);
+        results = orderService.get(user, project, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
     }
 

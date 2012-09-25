@@ -143,13 +143,9 @@
         <colgroup wicket:id="step2">
         <tr>
             <th valign="top"><wicket:message key="product"/></th>
-            <td>
-            <select wicket:id="product" ></select>
-            <wicket:message key="productNumber"/><select wicket:id="number" ></select>
-            </td>
-            <td><input type="button" value="" class="form-submit" wicket:id="addProductOrdered" ></input></td>
-            <td></td>
-            <td></td>
+            <td><select wicket:id="product" ></select></td>
+            <td><wicket:message key="productNumber"/><select wicket:id="number" ></select></td>
+            <td style="padding-left: 5px;"><input type="button" value="" class="form-submit" wicket:id="addProductOrdered" ></input></td>
         </tr>
         <tr wicket:id="productsOrderedContanier">
             <td colspan="4">
@@ -162,9 +158,9 @@
             </tr>
             <tr valign="top" wicket:id="productsOrdered">
             <td><input type="text" wicket:id="product.name" class="inp-form" /></td>
-            <td><input type="text" wicket:id="number" class="inp-form-xsmall" /></td>
-            <td><input type="text" wicket:id="amount" class="inp-form-xsmall" /></td>
-            <td><input type="text" wicket:id="discount" class="inp-form-xsmall" />%</td>
+            <td><input type="text" wicket:id="number" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
             </tr>
             </table>
             </td>
@@ -176,7 +172,7 @@
         </tr>
         <tr>
             <th valign="top">Costo spedizione Û:</th>
-            <td><input type="text" class="inp-form-xsmall" wicket:id="shippingCost" ></input></td>
+            <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <td></td>
         </tr>        
         <tr>

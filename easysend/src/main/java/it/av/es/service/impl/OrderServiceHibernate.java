@@ -33,6 +33,8 @@ import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
+import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
@@ -105,12 +107,34 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     }
 
     @Override
-    public Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty) {
+    public Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criterion critByUser = Restrictions.eq(Order.USER_FIELD, user);
         Criterion critByProject = Restrictions.eq(Order.PROJECT_FIELD, project);
         LogicalExpression expression = Restrictions.and(critByProject, critByUser);
-        org.hibernate.criterion.Order order = org.hibernate.criterion.Order.asc(Order.CREATIONTIME_FIELD);
-        return findByCriteria(order, firstResult, maxResult, expression);
+        org.hibernate.criterion.Order order = org.hibernate.criterion.Order.desc(Order.CREATIONTIME_FIELD);
+        if(StringUtils.isNotBlank(sortProperty)){
+            if(isAscending){
+                order = org.hibernate.criterion.Order.asc(sortProperty);    
+            }
+            else{
+                order = org.hibernate.criterion.Order.desc(sortProperty);
+            }
+        }
+        
+        Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
+        criteria.add(critByUser).add(critByProject);
+        //Crea l'alias per permetter il sort su property annidate come customer.corporateName 
+        criteria.createAlias("customer", "customer");
+        if (order != null) {
+            criteria.addOrder(order);
+        }
+        if (firstResult > 0) {
+            criteria.setFirstResult(firstResult);
+        }
+        if (maxResult > 0) {
+            criteria.setMaxResults(maxResult);
+        }
+        return criteria.list();
     }
 
 
