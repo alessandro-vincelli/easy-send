@@ -52,9 +52,10 @@ public interface OrderService {
      * @param firstResult
      * @param maxResult
      * @param sortProperty
+     * @param isAscending
      * @return all the user profile
      */
-    Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty);
+    Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty, boolean isAscending);
 
     /**
      * Remove a profile
