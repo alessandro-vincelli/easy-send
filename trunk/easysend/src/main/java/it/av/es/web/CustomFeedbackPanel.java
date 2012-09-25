@@ -34,11 +34,17 @@ public class CustomFeedbackPanel extends FeedbackPanel {
      */
     @Override
     protected String getCSSClass(FeedbackMessage message) {
-        if(message.getLevel() <= 400){
-            return "ui-state-highlight ui-corner-all";    
+        if(message.getLevel() == 250){
+            return "message-green";    
+        }
+        else if(message.getLevel() < 250){
+            return "message-blue";    
+        }
+        else if(message.getLevel() >= 300 && message.getLevel() < 400){
+            return "message-yellow";    
         }
         else{
-            return "ui-state-error ui-corner-all";
+            return "message-red";
         }
     }
 }

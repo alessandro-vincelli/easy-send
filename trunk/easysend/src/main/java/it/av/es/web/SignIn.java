@@ -38,7 +38,7 @@ public class SignIn extends WebPage {
      */
     public SignIn() {
         
-        titlePage = new Label("pageTitle", ":: EaysSend - Eurocargo ::");
+        titlePage = new Label("pageTitle", ":: EasyTrack - Eurocargo ::");
         add(titlePage);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
@@ -52,12 +52,12 @@ public class SignIn extends WebPage {
 
         add(new SignInPanel("signInPanel", true));
         
-        add(new AjaxFallbackLink<String>("signUp") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                setResponsePage(SignUpPage.class);
-            }
-        });
+//        add(new AjaxFallbackLink<String>("signUp") {
+//            @Override
+//            public void onClick(AjaxRequestTarget target) {
+//                setResponsePage(SignUpPage.class);
+//            }
+//        });
         
     }
 

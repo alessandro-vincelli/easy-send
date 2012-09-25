@@ -37,7 +37,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation({ "USER", "VENDOR" })
+@AuthorizeInstantiation({ "ADMIN" })
 public class ProductManagerPanel extends Panel {
 
     @SpringBean

@@ -49,7 +49,7 @@ public class BasePageSimple extends WebPage {
      */
     public BasePageSimple() {
         HtmlUtil.fixInitialHtml(this);
-        titlePage = new Label("pageTitle", ":: EasySend - Eurocargo ::");
+        titlePage = new Label("pageTitle", ":: EasyTrack - Eurocargo ::");
         add(titlePage);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
