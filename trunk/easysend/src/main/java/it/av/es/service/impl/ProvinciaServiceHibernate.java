@@ -46,7 +46,7 @@ public class ProvinciaServiceHibernate implements ProvinciaService {
     /**
      * @param entityManager
      */
-    @PersistenceContext(type = PersistenceContextType.TRANSACTION, unitName = "easySendPersistence")
+    @PersistenceContext(type = PersistenceContextType.TRANSACTION, unitName = "easyTrackPersistence")
     public void setInternalEntityManager(final EntityManager entityManager) {
         this.entityManager = entityManager;
     }

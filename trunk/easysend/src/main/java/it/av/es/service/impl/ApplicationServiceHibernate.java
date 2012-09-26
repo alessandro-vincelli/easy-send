@@ -49,7 +49,7 @@ public class ApplicationServiceHibernate<T extends BasicEntity> extends JpaDaoSu
     /**
      * @param entityManager
      */
-    @PersistenceContext(type = PersistenceContextType.TRANSACTION, unitName = "easySendPersistence")
+    @PersistenceContext(type = PersistenceContextType.TRANSACTION, unitName = "easyTrackPersistence")
     public void setInternalEntityManager(final EntityManager entityManager) {
         setEntityManager(entityManager);
     }

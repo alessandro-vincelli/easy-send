@@ -8,6 +8,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -64,6 +65,18 @@ public class User extends BasicEntity implements Comparable<User> {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date creationTime;
+    private String address;
+    private String zipcode;
+    private String province;
+    @ManyToOne
+    private City city;
+    @ManyToOne
+    private Country country;
+    private String phoneNumber;
+    private String faxNumber;
+    
+    private String codiceFiscaleNumber;
+    private String partitaIvaNumber;
 
     /**
      * used in sign up confirmation
@@ -206,6 +219,78 @@ public class User extends BasicEntity implements Comparable<User> {
 
     public void setCustomers(Set<Customer> customers) {
         this.customers = customers;
+    }
+    
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+
+    public String getProvince() {
+        return province;
+    }
+
+    public void setProvince(String province) {
+        this.province = province;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
+    }
+
+    public Country getCountry() {
+        return country;
+    }
+
+    public void setCountry(Country country) {
+        this.country = country;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public String getFaxNumber() {
+        return faxNumber;
+    }
+
+    public void setFaxNumber(String faxNumber) {
+        this.faxNumber = faxNumber;
+    }
+
+    public String getCodiceFiscaleNumber() {
+        return codiceFiscaleNumber;
+    }
+
+    public void setCodiceFiscaleNumber(String codiceFiscaleNumber) {
+        this.codiceFiscaleNumber = codiceFiscaleNumber;
+    }
+
+    public String getPartitaIvaNumber() {
+        return partitaIvaNumber;
+    }
+
+    public void setPartitaIvaNumber(String partitaIvaNumber) {
+        this.partitaIvaNumber = partitaIvaNumber;
     }
 
     public void addCustomer(Customer customer){

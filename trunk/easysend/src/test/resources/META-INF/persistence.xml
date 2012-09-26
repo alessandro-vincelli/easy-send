@@ -8,7 +8,7 @@
 
 	<!-- persistence.xml -->
 
-	<persistence-unit name="easySendPersistence">
+	<persistence-unit name="easyTrackPersistence">
 		<!-- The provider only needs to be set if you use several JPA providers -->
 		<provider>org.hibernate.ejb.HibernatePersistence</provider>
 	

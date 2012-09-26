@@ -1,5 +1,6 @@
 package it.av.es.model;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,6 +20,8 @@ public class Product extends BasicEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Price> prices;
+    private BigDecimal kilos;
+    private BigDecimal volume;
 
     public Product() {
         super();
@@ -40,10 +43,27 @@ public class Product extends BasicEntity {
         this.prices = prices;
     }
 
-    public void addPrice(Price price){
-        if (prices == null){
+    public void addPrice(Price price) {
+        if (prices == null) {
             prices = new ArrayList<Price>();
         }
         prices.add(price);
     }
+
+    public BigDecimal getKilos() {
+        return kilos;
+    }
+
+    public void setKilos(BigDecimal kilos) {
+        this.kilos = kilos;
+    }
+
+    public BigDecimal getVolume() {
+        return volume;
+    }
+
+    public void setVolume(BigDecimal volume) {
+        this.volume = volume;
+    }
+
 }

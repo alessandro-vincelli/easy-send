@@ -57,7 +57,7 @@
 			</build>
 			<properties>
 				<wicketApplication.configurationType>development</wicketApplication.configurationType>
-				<springPropertiesLocation>file:/Users/alessandro/Documents/workspace-sts/properties/easysend.properties</springPropertiesLocation>
+				<springPropertiesLocation>file:/Users/alessandro/Documents/workspace-sts/properties/easytrack.properties</springPropertiesLocation>
 			</properties>
 		</profile>
 		<profile>
@@ -379,6 +379,11 @@
 			<artifactId>httpclient</artifactId>
 			<version>4.0.1</version>
 		</dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.3.2</version>
+        </dependency>
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
