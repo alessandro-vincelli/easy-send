@@ -43,7 +43,7 @@
 		<profile>
 			<id>development</id>
 			<activation>
-				<activeByDefault>true</activeByDefault>
+				<!-- <activeByDefault>true</activeByDefault> -->
 				<property>
 					<name>env</name>
 					<value>development</value>
@@ -74,12 +74,13 @@
 			</build>
 			<properties>
 				<wicketApplication.configurationType>deployment</wicketApplication.configurationType>
-				<springPropertiesLocation>file:/etc/properties/easysend-ci.properties</springPropertiesLocation>
+				<springPropertiesLocation>file:/etc/properties/easytrack-ci.properties</springPropertiesLocation>
 			</properties>
 		</profile>
 		<profile>
 			<id>deployment</id>
 			<activation>
+            <activeByDefault>true</activeByDefault>
 				<property>
 					<name>env</name>
 					<value>deployment</value>
@@ -91,7 +92,7 @@
 			</build>
 			<properties>
 				<wicketApplication.configurationType>deployment</wicketApplication.configurationType>
-				<springPropertiesLocation>file:/etc/properties/easysend.properties</springPropertiesLocation>
+				<springPropertiesLocation>file:/etc/properties/easytrack.properties</springPropertiesLocation>
 			</properties>
 		</profile>
 	</profiles>
