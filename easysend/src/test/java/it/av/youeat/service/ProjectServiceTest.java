@@ -227,15 +227,15 @@ public class ProjectServiceTest extends EasySendTest {
         assertEquals(product.getName(), a.getProducts().iterator().next().getName());
         
         Order order = new Order();
-        order.setName("nome prodotto");
-        order.setProduct(product);
+//        order.setName("nome prodotto");
+//        order.setProduct(product);
         order.setProject(a);
         
         order = orderService.placeNewOrder(order, a, u);
         
         assertEquals(product.getName(), a.getProducts().iterator().next().getName());
-        assertEquals(order.getName(), a.getOrders().iterator().next().getName());
-        assertEquals(order.getName(), u.getOrders().iterator().next().getName());
+//        assertEquals(order.getName(), a.getOrders().iterator().next().getName());
+//        assertEquals(order.getName(), u.getOrders().iterator().next().getName());
         assertNotNull(order.getCreationTime());
         
         a.getOrders().remove(order);
