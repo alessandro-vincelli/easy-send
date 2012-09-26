@@ -53,13 +53,13 @@ import org.apache.wicket.validation.validator.StringValidator;
 public class SignUpPanel extends Panel {
     private static final long serialVersionUID = 1L;
     private Form<User> signUpForm;
-    private FeedbackPanel feedbackPanel;
     @SpringBean
     private UserService userService;
     private Link<String> goSignInAfterSignUp;
     private String passwordConfirm = "";
     @SpringBean
     private LanguageService languageService;
+    private FeedbackPanel feedbackPanel;
 
     /**
      * Constructor
@@ -68,10 +68,10 @@ public class SignUpPanel extends Panel {
      * @param feedbackPanel
      * @throws EasySendException
      */
-    public SignUpPanel(String id) throws EasySendException {
+    public SignUpPanel(String id, FeedbackPanel feedbackPanel) throws EasySendException {
         super(id);
+        this.feedbackPanel = feedbackPanel;
         Injector.get().inject(this);
-        this.feedbackPanel = new FeedbackPanel("feedBackPanel");
 
         RfcCompliantEmailAddressValidator emailAddressValidator = RfcCompliantEmailAddressValidator.getInstance();
         StringValidator pwdValidator = StringValidator.lengthBetween(6, 20);
@@ -87,8 +87,7 @@ public class SignUpPanel extends Panel {
         signUpForm.add(new RequiredTextField<String>(User.LASTNAME));
         signUpForm.add(new RequiredTextField<String>(User.EMAIL).add(emailAddressValidator).add(emailPresentValidator));
 
-        signUpForm.add(new DropDownChoice<Language>("language", languageService.getAll(), new LanguageRenderer())
-                .setRequired(true));
+        signUpForm.add(new DropDownChoice<Language>("language", languageService.getAll(), new LanguageRenderer()).setRequired(true));
         PasswordTextField pwd1 = new PasswordTextField(User.PASSWORD);
         pwd1.add(pwdValidator);
         signUpForm.add(pwd1);
@@ -170,8 +169,12 @@ public class SignUpPanel extends Panel {
         }
     }
 
-    public final FeedbackPanel getFeedbackPanel() {
+    public FeedbackPanel getFeedbackPanel() {
         return feedbackPanel;
+    }
+
+    public void setFeedbackPanel(FeedbackPanel feedbackPanel) {
+        this.feedbackPanel = feedbackPanel;
     }
 
     private class LanguageRenderer implements IChoiceRenderer<Language> {

@@ -16,6 +16,7 @@
 package it.av.es.web;
 
 
+
 /**
  * The page provides user sign up panel.
  * 
@@ -32,7 +33,8 @@ public class SignUpPage extends BasePageSimple {
      * @throws YoueatException
      */
     public SignUpPage() {
-        SignUpPanel signUpPanel = new SignUpPanel("userSignUpPanel");
+
+        SignUpPanel signUpPanel = new SignUpPanel("userSignUpPanel", getFeedbackPanel());
         add(signUpPanel);
     }
 

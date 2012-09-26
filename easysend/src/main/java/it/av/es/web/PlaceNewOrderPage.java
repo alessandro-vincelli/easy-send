@@ -398,7 +398,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         @Override
         public Collection<Customer> toChoices(Collection<String> ids) {
             Collection<Customer> results = new ArrayList<Customer>();
-            Set<Customer> customers = getSecuritySession().getLoggedInUser().getCustomers();
+            List<Customer> customers = customerService.get(getSecuritySession().getLoggedInUser(), 0, 0, "corporateName", true);
             for (String id : ids) {
                 for (Customer rcp : customers) {
                     if (rcp.getId().equals(id)) {
