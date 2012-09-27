@@ -22,19 +22,25 @@ import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
-import it.av.es.model.UserProfile;
 import it.av.es.service.OrderService;
 import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
+import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
+import it.av.es.util.DateUtil;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Currency;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.DateUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -57,7 +63,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private UserService userService;
     @Autowired
     private ProductService productService;
-    
+    @Autowired
+    private UserProfileService userProfileService;
+
     @Override
     @Transactional
     public Order placeNewOrder(Order order, Project project, User user) {
@@ -87,51 +95,52 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         int percentDiscount = 0;
         List<Price> prices = product.getPrices();
         for (Price price : prices) {
-            if(numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()){
-                amount= price.getAmount();
+            if (numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()) {
+                amount = price.getAmount();
                 currency = price.getCurrency();
                 percentDiscount = price.getPercentDiscount();
             }
         }
-        if(amount == BigDecimal.ZERO){
+        if (amount == BigDecimal.ZERO) {
             throw new EasySendException("Price not available");
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
         //apply discount if isPrepayment
-        if(order.getIsPrePayment() && order.getProject().getPrePaymentDiscount() > 0){
+        if (order.getIsPrePayment() && order.getProject().getPrePaymentDiscount() > 0) {
             BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getProject().getPrePaymentDiscount())));
-            ordered.setAmount(ordered.getAmount().subtract(discount));    
+            ordered.setAmount(ordered.getAmount().subtract(discount));
         }
         ordered.setDiscount(percentDiscount);
         return ordered;
     }
 
     @Override
-    public Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
+    public Collection<Order> get(User user, Project project, Date filterDate, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
-        
-        if(user.getUserProfile().equals(UserProfile.OPERATOR) || user.getUserProfile().equals(UserProfile.ADMIN)){
+
+        if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile())) {
             //sees all the orders
-        }
-        else{
+        } else {
             // sees only his orders 
-            Criterion critByUser = Restrictions.eq(Order.USER_FIELD, user);
-            criteria.add(critByUser);
+            criteria.add(Restrictions.eq(Order.USER_FIELD, user));
         }
         
+        if(filterDate != null){
+            criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
+        }
+
         Criterion critByProject = Restrictions.eq(Order.PROJECT_FIELD, project);
 
         org.hibernate.criterion.Order order = org.hibernate.criterion.Order.desc(Order.CREATIONTIME_FIELD);
-        if(StringUtils.isNotBlank(sortProperty)){
-            if(isAscending){
-                order = org.hibernate.criterion.Order.asc(sortProperty);    
-            }
-            else{
+        if (StringUtils.isNotBlank(sortProperty)) {
+            if (isAscending) {
+                order = org.hibernate.criterion.Order.asc(sortProperty);
+            } else {
                 order = org.hibernate.criterion.Order.desc(sortProperty);
             }
         }
         criteria.add(critByProject);
-        
+
         //Crea l'alias per permetter il sort su property annidate come customer.corporateName 
         criteria.createAlias("customer", "customer");
         if (order != null) {
@@ -146,5 +155,15 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return criteria.list();
     }
 
+    @Override
+    public List<Date> getDates(User user, Project project) {
+        Set<Date> d = new HashSet<Date>();
+        d.add(null);
+        Collection<Order> list = get(user, project, null, 0, 0, null, true);
+        for (Order o : list) {
+            d.add(DateUtils.truncate(o.getCreationTime(), Calendar.DAY_OF_MONTH));
+        }
+        return new ArrayList<Date>(d);
+    }
 
 }

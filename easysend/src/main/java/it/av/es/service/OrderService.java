@@ -22,6 +22,8 @@ import it.av.es.model.Project;
 import it.av.es.model.User;
 
 import java.util.Collection;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Services on the Order
@@ -49,13 +51,14 @@ public interface OrderService {
      * 
      * @param user
      * @param project
+     * @param filterDate
      * @param firstResult
      * @param maxResult
      * @param sortProperty
      * @param isAscending
      * @return all the user profile
      */
-    Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty, boolean isAscending);
+    Collection<Order> get(User user, Project project, Date filterDate, int firstResult, int maxResult, String sortProperty, boolean isAscending);
 
     /**
      * Remove a profile
@@ -93,5 +96,13 @@ public interface OrderService {
      * @return
      */
     ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds);
+
+    /**
+     * 
+     * @param user
+     * @param project
+     * @return
+     */
+    List<Date> getDates(User user, Project project);
 
 }

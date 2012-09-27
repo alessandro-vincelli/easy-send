@@ -1,4 +1,12 @@
 <wicket:extend xmlns:wicket="http://wicket.apache.org">
+
+<!--  styled select box script version 3 --> 
+<script src="js/jquery/jquery.selectbox-0.5_style_2.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.styledselect_pages').selectbox({ inputClass: "styledselect_pages" });
+});
+</script>
 <!-- start content-outer -->
 <div id="content-outer">
 <!-- start content -->
@@ -174,7 +182,7 @@
             <th valign="top">Costo spedizione Û:</th>
             <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
-            <td><select wicket:id="paymentType"></select></td>
+            <td><select wicket:id="paymentType" ></select></td>
         </tr>        
         <tr>
             <th valign="top">Note:</th>

@@ -23,6 +23,7 @@ import it.av.es.service.OrderService;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.Iterator;
 
 import org.apache.wicket.extensions.markup.html.repeater.util.SortParam;
@@ -44,6 +45,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private long size;
     private User user;
     private Project project;
+    private Date filterDate;
 
     public OrderSortableDataProvider(User user, Project project) {
         super();
@@ -51,7 +53,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         this.project = project;
         Injector.get().inject(this);
         setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
-        results = orderService.get(user, project, 0, 0, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, 0, 0, getSort().getProperty(), getSort().isAscending());
     }
 
     /**
@@ -59,7 +61,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        size = orderService.get(user, project, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
+        size = orderService.get(user, project, filterDate, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
         return size;
 
     }
@@ -82,8 +84,17 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.get(user, project, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
     }
 
+    public Date getFilterDate() {
+        return filterDate;
+    }
+
+    public void setFilterDate(Date filterDate) {
+        this.filterDate = filterDate;
+    }
+
+    
 }
