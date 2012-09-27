@@ -433,7 +433,12 @@
     		<artifactId>jackson-jaxrs</artifactId>
     		<version>${jackson.version}</version>
 		</dependency> -->
-		
+		<dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20090211</version>
+            <type>jar</type>
+        </dependency>
 		<dependency>
 			<groupId>javax.xml.bind</groupId>
 			<artifactId>jaxb-api</artifactId>
