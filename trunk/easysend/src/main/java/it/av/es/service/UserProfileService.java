@@ -53,6 +53,13 @@ public interface UserProfileService {
      * @return VendorProfile
      */
     UserProfile getRegolarUserProfile();
+    
+    /**
+     * Return the operator user profile, it must be the "USER" profile
+     * 
+     * @return VendorProfile
+     */
+    UserProfile getOperatorUserProfile();
 
     /**
      * Return the admin user profile, it must be the "ADMIN" profile

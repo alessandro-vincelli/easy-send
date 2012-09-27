@@ -48,6 +48,14 @@ public class UserProfileServiceHibernate extends ApplicationServiceHibernate<Use
     public UserProfile getAdminUserProfile() {
         return getByName(UserProfile.ADMIN);
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public UserProfile getOperatorUserProfile() {
+        return getByName(UserProfile.OPERATOR);
+    }
 
     /**
      * {@inheritDoc}
