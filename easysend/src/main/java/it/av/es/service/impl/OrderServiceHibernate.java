@@ -22,6 +22,7 @@ import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.model.UserProfile;
 import it.av.es.service.OrderService;
 import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
@@ -36,7 +37,6 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
-import org.hibernate.criterion.LogicalExpression;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -108,9 +108,19 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
 
     @Override
     public Collection<Order> get(User user, Project project, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
-        Criterion critByUser = Restrictions.eq(Order.USER_FIELD, user);
+        Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
+        
+        if(user.getUserProfile().equals(UserProfile.OPERATOR) || user.getUserProfile().equals(UserProfile.ADMIN)){
+            //sees all the orders
+        }
+        else{
+            // sees only his orders 
+            Criterion critByUser = Restrictions.eq(Order.USER_FIELD, user);
+            criteria.add(critByUser);
+        }
+        
         Criterion critByProject = Restrictions.eq(Order.PROJECT_FIELD, project);
-        LogicalExpression expression = Restrictions.and(critByProject, critByUser);
+
         org.hibernate.criterion.Order order = org.hibernate.criterion.Order.desc(Order.CREATIONTIME_FIELD);
         if(StringUtils.isNotBlank(sortProperty)){
             if(isAscending){
@@ -120,9 +130,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
                 order = org.hibernate.criterion.Order.desc(sortProperty);
             }
         }
+        criteria.add(critByProject);
         
-        Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
-        criteria.add(critByUser).add(critByProject);
         //Crea l'alias per permetter il sort su property annidate come customer.corporateName 
         criteria.createAlias("customer", "customer");
         if (order != null) {

@@ -37,6 +37,10 @@ public class UserProfile extends BasicEntity {
      */
     public final static String VENDOR = "VENDOR";
     /**
+     * operator
+     */
+    public final static String OPERATOR = "OPERATOR";
+    /**
      * admin user name
      */
     public final static String ADMIN = "ADMIN";

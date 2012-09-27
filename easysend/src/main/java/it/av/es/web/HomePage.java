@@ -8,7 +8,7 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation( { "ADMIN", "VENDOR" })
+@AuthorizeInstantiation( { "ADMIN", "VENDOR", "OPERATOR" })
 public class HomePage extends BasePageSimple{
 
     public HomePage() {

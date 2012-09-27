@@ -4,7 +4,6 @@ import it.av.es.model.Order;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
-import it.av.es.service.OrderService;
 import it.av.es.util.NumberUtil;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
@@ -25,7 +24,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 
 /**
  * 
@@ -33,13 +31,9 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation({ "USER", "VENDOR" })
+@AuthorizeInstantiation({ "USER", "VENDOR", "OPERATOR" })
 public class OrderManagerPage extends BasePageSimple {
 
-    @SpringBean
-    private OrderService userService;
-    @SpringBean
-    private OrderService orderService;
 
     public OrderManagerPage() {
         super();
