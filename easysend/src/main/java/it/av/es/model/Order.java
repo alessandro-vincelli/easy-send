@@ -59,6 +59,10 @@ public class Order extends BasicEntity {
     @Column(nullable = false)
     private Date creationTime;
     private String notes;
+    /**
+     * usaere tipo pagamento
+     */
+    @Deprecated
     private boolean isPrePayment;
     private boolean isInCharge;
     private Boolean isCancelled;
@@ -83,6 +87,7 @@ public class Order extends BasicEntity {
     public Order() {
         super();
         customer = new Customer();
+        productsOrdered = new ArrayList<ProductOrdered>();
     }
 
     /**
@@ -128,6 +133,7 @@ public class Order extends BasicEntity {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
+        setPaymentType(customer.getPaymentType());
     }
 
     public void addProductOrdered(ProductOrdered productOrdered) {
@@ -157,10 +163,12 @@ public class Order extends BasicEntity {
         this.notes = notes;
     }
 
+    @Deprecated
     public Boolean getIsPrePayment() {
         return isPrePayment;
     }
 
+    @Deprecated
     public void setIsPrePayment(Boolean isPrePayment) {
         this.isPrePayment = isPrePayment;
     }
@@ -204,7 +212,7 @@ public class Order extends BasicEntity {
     public void setIsCancelled(Boolean isCancelled) {
         this.isCancelled = isCancelled;
     }
-
+    @Deprecated
     public void setPrePayment(boolean isPrePayment) {
         this.isPrePayment = isPrePayment;
     }
@@ -273,7 +281,7 @@ public class Order extends BasicEntity {
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
         //apply discount if isPrepayment
-        if(getIsPrePayment() && getProject().getPrePaymentDiscount() > 0){
+        if(getPaymentType().equals(PaymentType.PREPAYMENT) && getProject().getPrePaymentDiscount() > 0){
             BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(getProject().getPrePaymentDiscount())));
             ordered.setAmount(ordered.getAmount().subtract(discount)); 
             percentDiscount = percentDiscount + prePaymentDiscount; 
