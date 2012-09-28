@@ -8,7 +8,8 @@ package it.av.es.model;
 public enum DeliveryType {
 
     HISTORIC_CENTER ,    
-    ZTL
+    ZTL,
+    ZONADISAGIATA
 
 //    private String value;
 //

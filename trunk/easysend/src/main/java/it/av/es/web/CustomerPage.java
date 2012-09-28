@@ -23,6 +23,8 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.wicket.AttributeModifier;
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
@@ -43,6 +45,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.validation.IValidatable;
+import org.apache.wicket.validation.IValidator;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
@@ -139,6 +143,7 @@ public class CustomerPage extends BasePageSimple {
         formNewOrder.add(new TextField<String>("iban"));
         formNewOrder.add(new TextField<String>("bankName"));
         formNewOrder.add(new DropDownChoice<ClosingDays>("closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()));
+
         formNewOrder.add(new DropDownChoice<ClosingRange>("closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()));
         formNewOrder.add(new DropDownChoice<DeploingType>("deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()));
 
@@ -155,7 +160,11 @@ public class CustomerPage extends BasePageSimple {
                 Check<DeliveryDays> check = new Check<DeliveryDays>("check", item.getModel());
                 check.setLabel(new Model<String>(getString(item.getModel().getObject().name())));
                 item.add(check);
-                item.add(new SimpleFormComponentLabel("number", check));
+                Component label = new SimpleFormComponentLabel("number", check);
+                item.add(label);
+                if(check.getModelObject().equals(DeliveryDays.SUNDAY) || check.getModelObject().equals(DeliveryDays.SATURDAY)){
+                    label.add(AttributeModifier.replace("style", "color:red;"));
+                }
             }
         }.setReuseItems(true);
         checks.add(checksList);
@@ -186,7 +195,7 @@ public class CustomerPage extends BasePageSimple {
         });
 
     }
-
+    
     private class CityProvider extends ChoiceProvider<City> {
 
         @Override
