@@ -24,6 +24,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * 
@@ -78,7 +79,12 @@ public class CustomerManagerPage extends BasePageSimple {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    customerService.remove(getModelObject());
+                    try {
+                        customerService.remove(getModelObject());
+                    } catch (Exception e) {
+                        getFeedbackPanel().error("Impossibile rimuovere il cliente, ci sono ordini associati al cliente.");
+                        target.add(getFeedbackPanel());
+                    }
                     target.add(dataTable);
                 }
             });
