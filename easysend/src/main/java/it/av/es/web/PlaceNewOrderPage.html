@@ -13,7 +13,7 @@ $(document).ready(function() {
 <div id="content">
 
 
-<div id="page-heading"><h1>Inserimento nuovo ordine</h1></div>
+<div id="page-heading"><h1><wicket:message key="pno.title"/></h1></div>
 
 
 <table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
@@ -38,13 +38,13 @@ $(document).ready(function() {
         <!--  start step-holder -->
         <div id="step-holder" wicket:id="tabs">
             <div class="step-no" wicket:id="step1-number">1</div>
-            <div class="step-dark-left" wicket:id="step1-left">Selezione cliente</div>
+            <div class="step-dark-left" wicket:id="step1-left"><wicket:message key="pno.step1title"/></div>
             <div class="step-dark-right" wicket:id="step1-right">&nbsp;</div>
             <div class="step-no-off" wicket:id="step2-number">2</div>
-            <div class="step-light-left" wicket:id="step2-left">Selezione prodotti</div>
+            <div class="step-light-left" wicket:id="step2-left"><wicket:message key="pno.step2title"/></div>
             <div class="step-light-right" wicket:id="step2-right">&nbsp;</div>
             <div class="step-no-off" wicket:id="step3-number">3</div>
-            <div class="step-light-left" wicket:id="step3-left">Ordine inserito</div>
+            <div class="step-light-left" wicket:id="step3-left"><wicket:message key="pno.step3title"/></div>
             <div class="step-light-round" wicket:id="step3-right">&nbsp;</div>            
             <div class="clear"></div>
         </div>
@@ -113,7 +113,7 @@ $(document).ready(function() {
             <td><select wicket:id="customer.deployngType" ></select></td>
         </tr>                     
         <tr>
-            <th valign="top">Orario carico:</th>
+            <th valign="top"><wicket:message key="pno.loadingTime"/>:</th>
             <td colspan="2">
             mattina da:
             <span wicket:id="customer.loadTimeAMFrom"/>
@@ -161,7 +161,7 @@ $(document).ready(function() {
             <tr valign="top">
             <th>Prodotto</th>
             <th>N. Cartoni</th>
-            <th>Importo €</th>
+            <th>Importo</th>
             <th>Sconto %</th>
             </tr>
             <tr valign="top" wicket:id="productsOrdered">
@@ -179,7 +179,7 @@ $(document).ready(function() {
             <td></td>
         </tr>
         <tr>
-            <th valign="top">Costo spedizione €:</th>
+            <th valign="top">Costo spedizione:</th>
             <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
             <td><select wicket:id="paymentType" ></select></td>
@@ -228,8 +228,8 @@ $(document).ready(function() {
                                 
                 <div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
                 <div class="right">
-                    <h5>Nuovo ordine</h5>
-                    In questa pagina è possibile inserire un ordine
+                    <h5><wicket:message key="pno.help.newOrderTitle"/></h5>
+                    <wicket:message key="pno.help.newOrderDesc"/>
                     <ul class="greyarrow">
                         <li>1. Selezionare il Cliente</li> 
                         <li>2. Selezione prodotti </li>
