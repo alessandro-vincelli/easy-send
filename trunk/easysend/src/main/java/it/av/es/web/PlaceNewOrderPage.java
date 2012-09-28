@@ -35,6 +35,7 @@ import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.yui.calendar.TimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.AbstractChoice;
 import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
@@ -232,16 +233,16 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         
         step2.add(new TextArea<String>("notes"));
-        step2.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
-        CheckBox isPrepayment = new CheckBox("isPrePayment");
-        step2.add(isPrepayment);
-        isPrepayment.add(new OnChangeAjaxBehavior() {
+        AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
+        step2.add(paymentType);
+
+        paymentType.add(new OnChangeAjaxBehavior() {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 formNewOrder.getModelObject().applyDiscountIfApplicable();
                 formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
-                if(formNewOrder.getModel().getObject().getIsPrePayment()){
+                if(formNewOrder.getModel().getObject().getPaymentType().equals(PaymentType.PREPAYMENT)){
                     getFeedbackPanel().info("Applicato Sconto del 5% per pagamento anticipato.");                    
                 }
                 else{
