@@ -290,5 +290,20 @@ public class Order extends BasicEntity {
         return ordered;
     }
     
+    public Integer getTotalNumberOfItems(){
+        int n = 0;
+        for (ProductOrdered p : productsOrdered) {
+            n = n + p.getNumber();
+        }
+        return n;
+    }
+    
+    public BigDecimal getTotalAmount(){
+        BigDecimal n = BigDecimal.ZERO;
+        for (ProductOrdered p : productsOrdered) {
+            n = n.add(p.getAmount());
+        }
+        return n;
+    }
     
 }
