@@ -6,6 +6,8 @@ public enum DeliveryDays {
     TUESDAY,
     WEDNDESDAY,
     THURSDAY,
-    FRIDAY
+    FRIDAY,
+    SATURDAY,
+    SUNDAY
 
 }

@@ -7,6 +7,9 @@ package it.av.es.model;
 public enum PaymentType {
 
     PREPAYMENT, 
-    CONTRASSEGNO
+    CONTRASSEGNO,
+    RIMESSADIRETTA,
+    RIBA_30_GG_DATA_FATTURA_FINE_MESE,
+    RID_30_GG_DATA_FATTURA_FINE_MESE
 
 }
