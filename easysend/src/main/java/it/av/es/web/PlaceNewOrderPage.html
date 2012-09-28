@@ -158,7 +158,7 @@ $(document).ready(function() {
         <tr wicket:id="productsOrderedContanier">
             <td colspan="4">
             <table id="product-ordered" width="100%" cellspacing="0" cellpadding="0" border="0" >
-            <tr valign="top">
+            <tr valign="top" style="border-top: 1px solid gray;">
             <th>Prodotto</th>
             <th>N. Cartoni</th>
             <th>Importo</th>
@@ -169,6 +169,12 @@ $(document).ready(function() {
             <td><input type="text" wicket:id="number" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
+            </tr>
+            <tr valign="top" style="border-top: 1px solid gray; border-bottom: 1px solid gray;">
+            <th>Totali:</th>
+            <td><input type="text" wicket:id="totalNumberOfItems" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td></td>
             </tr>
             </table>
             </td>
