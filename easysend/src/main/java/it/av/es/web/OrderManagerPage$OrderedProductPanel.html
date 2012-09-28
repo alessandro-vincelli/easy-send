@@ -3,7 +3,7 @@
 <table style="width: 100%;">
 <tr >
     <th style="width: 250px; text-align: left; height: 16px;">Prodotto</th>
-    <th style="width: 50px; text-align: center; height: 16px;">Numero</th>
+    <th style="width: 50px; text-align: center; height: 16px;">N.</th>
     <th style="width: 50px; text-align: center; height: 16px;">Importo</th>
     <th style="width: 50px; text-align: center; height: 16px;">% Sconto</th>
 </tr>
@@ -12,6 +12,12 @@
     <td><span wicket:id="productNumber"></span></td>
     <td><span wicket:id="productAmount"></span></td>
     <td><span wicket:id="productDiscount"></span>%</td>
+</tr>
+<tr style="padding-left: 10px; padding-right:10px; text-align: right;">
+    <th style="text-align: right;">totali:</th>
+    <td><span wicket:id="numberOfItemsInProductOrdered"></span></td>
+    <td><span wicket:id="totalAmount"></span></td>
+    <td></td>
 </tr>
 </table>
 

@@ -9,6 +9,7 @@ import it.av.es.util.NumberUtil;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -127,6 +129,8 @@ public class OrderManagerPage extends BasePageSimple {
                     item.add(new Label("productDiscount", new Model<Integer>(p.getDiscount())));
                 }
             };
+            add(new Label("numberOfItemsInProductOrdered", new Model<Integer>(model.getObject().getNumberOfItemsInProductOrdered())));
+            add(new Label("totalAmount", new Model<String>(NumberUtil.italianCurrency.format(model.getObject().getTotalAmount()))));
             add(listView);
         }
 

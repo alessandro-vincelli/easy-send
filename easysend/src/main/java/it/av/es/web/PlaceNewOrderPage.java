@@ -231,7 +231,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 }
             }
         });
-        productsOrderedContanier.add(new TextField<Integer>("totalNumberOfItems").setEnabled(false));
+        productsOrderedContanier.add(new TextField<Integer>("numberOfItemsInProductOrdered").setEnabled(false));
         productsOrderedContanier.add(new TextField<BigDecimal>("totalAmount", BigDecimal.class).setEnabled(false));
         step2.add(new TextArea<String>("notes"));
         AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
