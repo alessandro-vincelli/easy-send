@@ -17,11 +17,13 @@ public class Product extends BasicEntity {
     public static final String NAME_FIELD = "name";
 
     private String name;
+    private String shortName;
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<Price> prices;
     private BigDecimal kilos;
     private BigDecimal volume;
+    private Integer itemsInside;
 
     public Product() {
         super();
@@ -64,6 +66,23 @@ public class Product extends BasicEntity {
 
     public void setVolume(BigDecimal volume) {
         this.volume = volume;
+    }
+
+   
+    public Integer getItemsInside() {
+        return itemsInside;
+    }
+
+    public void setItemsInside(Integer itemsInside) {
+        this.itemsInside = itemsInside;
+    }
+
+    public String getShortName() {
+        return shortName;
+    }
+
+    public void setShortName(String shortName) {
+        this.shortName = shortName;
     }
 
 }

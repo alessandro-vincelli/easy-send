@@ -37,7 +37,9 @@ public class Order extends BasicEntity {
     public static final String CREATIONTIME_FIELD = "creationTime";
     public static final String NOTES_FIELD = "notes";
     public static final String CUSTOMER_FIELD = "customer";
+    @Deprecated
     public static final String ISPREPAYMENT_FIELD = "isPrePayment";
+    public static final String PAYMENTTYPE_FIELD = "paymentType";
     public static final String SHIPPINGCOST_FIELD = "shippingCost";
     public static final String REFERNCENUMBER_FIELD = "referenceNumber";
     public static final String ISINCHARGE_FIELD = "isInCharge";
@@ -245,6 +247,30 @@ public class Order extends BasicEntity {
         return n;
     }
 
+    public BigDecimal getTotalWeightInProductOrdered(){
+        BigDecimal n = BigDecimal.ZERO;
+        for (ProductOrdered p : productsOrdered) {
+            n = n.add(p.getTotalWeight());
+        }
+        return n;
+    }
+    
+    public BigDecimal getTotalVolumeInProductOrdered(){
+        BigDecimal n = BigDecimal.ZERO;
+        for (ProductOrdered p : productsOrdered) {
+            n = n.add(p.getTotalVolume());
+        }
+        return n;
+    }
+    
+    public int getTotalItemsInsideInProductOrdered(){
+        int n = 0;
+        for (ProductOrdered p : productsOrdered) {
+            n = n + p.getTotalItemsInside();
+        }
+        return n;
+    }
+    
     public void applyDiscountIfApplicable() {
         ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(productsOrdered.size());
         for (ProductOrdered p : productsOrdered) {
@@ -296,6 +322,36 @@ public class Order extends BasicEntity {
             n = n.add(p.getAmount());
         }
         return n;
+    }
+    
+    public String getCustomerAddressForDisplay(){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(customer.getCorporateName());
+        buffer.append("\n");
+        buffer.append(customer.getAddress());
+        buffer.append("\n");
+        buffer.append(customer.getZipcode());
+        buffer.append(customer.getCity());
+        buffer.append("\n");
+        buffer.append(customer.getPhoneNumber());
+        buffer.append("\n");
+        return buffer.toString();
+    }
+    
+    public String getUserAddressForDisplay(){
+        StringBuffer buffer = new StringBuffer();
+        buffer.append(user.getFirstname());
+        buffer.append(" ");
+        buffer.append(user.getLastname());
+        buffer.append("\n");
+        buffer.append(user.getAddress());
+        buffer.append("\n");
+        buffer.append(user.getZipcode());
+        buffer.append(user.getCity());
+        buffer.append("\n");
+        buffer.append(user.getPhoneNumber());
+        buffer.append("\n");
+        return buffer.toString();
     }
     
 }

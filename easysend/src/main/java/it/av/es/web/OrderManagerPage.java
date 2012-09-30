@@ -4,34 +4,46 @@ import it.av.es.model.Order;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.model.UserProfile;
 import it.av.es.service.OrderService;
+import it.av.es.service.pdf.PDFExporter;
+import it.av.es.service.pdf.PDFExporterImpl;
+import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
-import java.math.BigDecimal;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
-import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
+import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.resource.AbstractResourceStream;
+import org.apache.wicket.util.resource.IResourceStream;
+import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
 
 /**
  * 
@@ -46,11 +58,16 @@ public class OrderManagerPage extends BasePageSimple {
     private OrderService orderService;
     private OrderSortableDataProvider dataProvider;
     private CustomAjaxFallbackDefaultDataTable<Order, String> dataTable;
+    private AJAXDownload download;
+    private User user;
+    private Project project;
+    private AjaxLink<String> exportAsPDFButton;
+    private DropDownChoice<Date> orderDates;
 
     public OrderManagerPage() {
         super();
-        User user = getSecuritySession().getLoggedInUser();
-        Project project = getSecuritySession().getCurrentProject();
+        user = getSecuritySession().getLoggedInUser();
+        project = getSecuritySession().getCurrentProject();
 
         List<IColumn<Order, String>> columns = new ArrayList<IColumn<Order, String>>();
 
@@ -78,11 +95,11 @@ public class OrderManagerPage extends BasePageSimple {
                 item.add(AttributeModifier.prepend("style", "text-align: center;"));
             }
         });
-        columns.add(new PropertyColumn<Order, String>(new Model<String>("P.A."), Order.ISPREPAYMENT_FIELD, Order.ISPREPAYMENT_FIELD) {
+        columns.add(new PropertyColumn<Order, String>(new Model<String>("P.T."), Order.PAYMENTTYPE_FIELD, Order.PAYMENTTYPE_FIELD) {
 
             @Override
             public void populateItem(Item<ICellPopulator<Order>> item, String componentId, IModel<Order> rowModel) {
-                item.add(new Label(componentId, getString(rowModel.getObject().getIsPrePayment().toString())));
+                item.add(new Label(componentId, getString(rowModel.getObject().getPaymentType().toString())));
                 item.add(AttributeModifier.prepend("style", "text-align: center;"));
             }
         });
@@ -98,16 +115,73 @@ public class OrderManagerPage extends BasePageSimple {
         };
         columns.add(prodotti);
 
-        final DropDownChoice<Date> downChoice = new DropDownChoice<Date>("orderDates", new Model<Date>(new Date()), orderService.getDates(user, project));
-        add(downChoice);
-        downChoice.add(new OnChangeAjaxBehavior() {
+        orderDates = new DropDownChoice<Date>("orderDates", new Model<Date>(), orderService.getDates(user, project));
+        add(orderDates);
+        orderDates.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                dataProvider.setFilterDate(downChoice.getModelObject());
+                dataProvider.setFilterDate(orderDates.getModelObject());
                 target.add(dataTable);
             }
 
         });
+        exportAsPDFButton = new AjaxLink<String>("exportAsPDFButton") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                try {
+                    download.initiate(target);
+                } catch (Exception e) {
+                    getFeedbackPanel().error("Error generating PDF");
+                    target.add(getFeedbackPanel());
+                }
+            }
+
+        };
+        add(exportAsPDFButton);
+        download = new AJAXDownload() {
+
+            @Override
+            protected String getFileName() {
+                StringBuffer fileName = new StringBuffer(80);
+                //fileName.append(StringUtils.deleteWhitespace(message.getSender().getMessageboxAddress()));
+                fileName.append("_");
+                fileName.append(DateUtil.SDF2DATE.print(new Date().getTime()));
+                fileName.append("_");
+                fileName.append(DateUtil.SDF2TIME.print(new Date().getTime()));
+                fileName.append("_");
+                //fileName.append(StringUtils.deleteWhitespace(message.getSubject()));
+                fileName.append(".pdf");
+                return fileName.toString();
+            }
+
+            @Override
+            protected IResourceStream getResourceStream() {
+                AbstractResourceStream stream = new AbstractResourceStream() {
+                    InputStream is;
+
+                    @Override
+                    public InputStream getInputStream() throws ResourceStreamNotFoundException {
+                        PDFExporter pdfExporter = new PDFExporterImpl();
+                        try {
+                            Date dat = orderDates.getModelObject();
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, 0, 0, Order.REFERNCENUMBER_FIELD, true));
+                            is = pdfExporter.exportOrdersList(ord, dat, user, project, getLocalizer(), getPage());
+                            return is;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+                    @Override
+                    public void close() throws IOException {
+                        is.close();
+                    }
+                };
+                return stream;
+            }
+
+        };
+        add(download);
         dataProvider = new OrderSortableDataProvider(user, project);
         dataTable = new CustomAjaxFallbackDefaultDataTable<Order, String>("dataTable", columns, dataProvider, 25);
         add(dataTable);
@@ -136,4 +210,64 @@ public class OrderManagerPage extends BasePageSimple {
 
     }
 
+    public abstract class AJAXDownload extends AbstractAjaxBehavior {
+        private boolean addAntiCache;
+
+        public AJAXDownload() {
+            this(true);
+        }
+
+        public AJAXDownload(boolean addAntiCache) {
+            super();
+            this.addAntiCache = addAntiCache;
+        }
+
+        /**
+         * Call this method to initiate the download.
+         */
+        public void initiate(AjaxRequestTarget target) {
+            if(orderDates.getModelObject() != null){
+                String url = getCallbackUrl().toString();
+
+                if (addAntiCache) {
+                    url = url + (url.contains("?") ? "&" : "?");
+                    url = url + "antiCache=" + System.currentTimeMillis();
+                }
+
+                // the timeout is needed to let Wicket release the channel
+                target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");                
+            }
+            else{
+                getFeedbackPanel().info("Selezionare una data");
+                target.add(getFeedbackPanel());
+            }
+            
+
+        }
+
+        public void onRequest() {
+            ResourceStreamRequestHandler handler = new ResourceStreamRequestHandler(getResourceStream(), getFileName());
+            handler.setContentDisposition(ContentDisposition.ATTACHMENT);
+            getComponent().getRequestCycle().scheduleRequestHandlerAfterCurrent(handler);
+        }
+
+        /**
+         * Override this method for a file name which will let the browser prompt with a save/open dialog.
+         * @see ResourceStreamRequestTarget#getFileName()
+         */
+        protected String getFileName() {
+            return null;
+        }
+
+        /**
+         * Hook method providing the actual resource stream.
+         */
+        protected abstract IResourceStream getResourceStream();
+    }
+    @Override
+    public void onConfigure() {
+        User loggedInUser2 = getSecuritySession().getLoggedInUser();
+        boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
+        exportAsPDFButton.setVisible(operator);
+    }
 }
