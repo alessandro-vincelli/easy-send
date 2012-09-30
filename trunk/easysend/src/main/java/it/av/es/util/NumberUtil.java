@@ -29,7 +29,12 @@ public final class NumberUtil {
      * format italian currency
      */
     public static NumberFormat italianCurrency = NumberFormat.getCurrencyInstance(Locale.ITALY);
-
-
+    
+    public final static NumberFormat getItalian(){
+        NumberFormat italianNumber = NumberFormat.getInstance(Locale.ITALY);
+        italianNumber.setMaximumFractionDigits(1);
+        italianNumber.setMinimumFractionDigits(1);
+        return italianNumber;
+    }
 
 }

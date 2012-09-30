@@ -33,6 +33,8 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Currency;
 import java.util.Date;
 import java.util.HashSet;
@@ -124,8 +126,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             // sees only his orders 
             criteria.add(Restrictions.eq(Order.USER_FIELD, user));
         }
-        
-        if(filterDate != null){
+
+        if (filterDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
         }
 
@@ -158,12 +160,18 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public List<Date> getDates(User user, Project project) {
         Set<Date> d = new HashSet<Date>();
-        d.add(null);
-        Collection<Order> list = get(user, project, null, 0, 0, null, true);
+        Collection<Order> list = get(user, project, null, 0, 0, Order.CREATIONTIME_FIELD, false);
         for (Order o : list) {
             d.add(DateUtils.truncate(o.getCreationTime(), Calendar.DAY_OF_MONTH));
         }
-        return new ArrayList<Date>(d);
+        ArrayList<Date> dates = new ArrayList<Date>(d);
+        Collections.sort(dates, new Comparator<Date>() {
+            @Override
+            public int compare(Date s1, Date s2) {
+                return s2.compareTo(s1);
+            }
+        });
+        return dates;
     }
 
 }

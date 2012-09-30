@@ -31,13 +31,28 @@ public final class DateUtil {
      * Format used in the UI. dd/MM/yyyy HH:mm:ss
      */
     public static final DateTimeFormatter SDF2SHOW = DateTimeFormat.forPattern("dd/MM/yyyy HH:mm:ss");
+    
+    /**
+     * Format used in the UI. dd/MM/yyyy
+     */
+    public static final DateTimeFormatter SDF2SHOWDATE = DateTimeFormat.forPattern("dd/MM/yyyy");
 
     /**
      * Format yyyy-MM-dd
      */
     public static final DateTimeFormatter SDF2SIMPLEUSA = DateTimeFormat.forPattern("yyyy-MM-dd");
 
+    /**
+     * Format used in the UI. dd-MM-yyyy
+     */
+    public static final DateTimeFormatter SDF2DATE = DateTimeFormat.forPattern("dd-MM-yyyy");
 
+    /**
+     * Format used in the UI. hhmmss
+     */
+    public static final DateTimeFormatter SDF2TIME = DateTimeFormat.forPattern("HHmmss");
+    
+    
     /**
      * Return the actual time
      * 

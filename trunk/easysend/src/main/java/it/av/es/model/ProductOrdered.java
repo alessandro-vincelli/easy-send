@@ -63,4 +63,15 @@ public class ProductOrdered extends BasicEntity {
         this.discount = discount;
     }
 
+    public BigDecimal getTotalWeight(){
+        return getProduct().getKilos().multiply(BigDecimal.valueOf(number));
+    }
+    
+    public BigDecimal getTotalVolume(){
+        return getProduct().getVolume().multiply(BigDecimal.valueOf(number));
+    }
+    
+    public int getTotalItemsInside(){
+        return getProduct().getItemsInside() * number;
+    }
 }
