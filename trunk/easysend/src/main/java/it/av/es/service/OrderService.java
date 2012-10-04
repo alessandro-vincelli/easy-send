@@ -112,4 +112,12 @@ public interface OrderService {
      */
     List<Date> getDates(User user, Project project);
 
+    /**
+     * Send mail notification
+     * 
+     * @param order
+     * @return
+     */
+    Order sendNotificationNewOrder(Order order);
+
 }
