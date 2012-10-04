@@ -226,7 +226,6 @@ public class CustomerPage extends BasePageSimple {
                 item.add(new TextField<String>("phoneNumber").setRequired(true));
             }
         };
-
         formNewOrder.add(addresses);
         
         AjaxLink<String> addNewAddress = new AjaxLink<String>("addNewAddress") {
@@ -252,10 +251,16 @@ public class CustomerPage extends BasePageSimple {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 Customer c = (Customer) form.getModelObject();
-                formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
-                //formNewOrder.setEnabled(false);
-                getFeedbackPanel().success("cliente salvato con successo");
-                target.add(getFeedbackPanel());
+                if(c.getAddresses() == null || c.getAddresses().isEmpty() || c.getDefaultShippingAddresses() == null){
+                    getFeedbackPanel().warn("È necessario inserire almeno un indirizzo di consegna predefinito");
+                    target.add(getFeedbackPanel());
+                }
+                else{
+                    formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
+                    //formNewOrder.setEnabled(false);
+                    getFeedbackPanel().success("cliente salvato con successo");
+                    target.add(getFeedbackPanel());
+                }
                 target.add(formNewOrder);
             }
 

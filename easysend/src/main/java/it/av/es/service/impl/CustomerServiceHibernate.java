@@ -99,12 +99,15 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
     public List<Customer> get(User user, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
         Order orderByName = null;
-        if (StringUtils.isNotBlank(sortProperty)) {
+        if (StringUtils.isNotBlank(sortProperty) && StringUtils.containsNone(sortProperty, "defaultShippingAddresses")) {
             if (isAscending) {
                 orderByName = Order.asc(sortProperty);
             } else {
                 orderByName = Order.desc(sortProperty);
             }
+        }
+        else{
+            orderByName = Order.desc(Customer.CORPORATENAME_FIELD);
         }
         return findByCriteria(orderByName, firstResult, maxResult, critByUser);
 

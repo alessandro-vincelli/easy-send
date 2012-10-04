@@ -44,10 +44,10 @@ public class CustomerManagerPage extends BasePageSimple {
 
         List<IColumn<Customer, String>> columns = new ArrayList<IColumn<Customer, String>>();
         columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.corporateName", this, null), Customer.CORPORATENAME_FIELD, Customer.CORPORATENAME_FIELD));
-        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.address", this, null), Customer.ADDRES_FIELD, Customer.ADDRES_FIELD));
-        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.zipcode", this, null), Customer.ZIPCODE_FIELD, Customer.ZIPCODE_FIELD));
-        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.city", this, null), Customer.CITY_FIELD, Customer.CITY_FIELD));
-        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.province", this, null), Customer.PROVINCE_FIELD, Customer.PROVINCE_FIELD));
+        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.defaultShippingAddresses.address", this, null), "defaultShippingAddresses.address", "defaultShippingAddresses.address"));
+        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.defaultShippingAddresses.zipcode", this, null), "defaultShippingAddresses.zipcode", "defaultShippingAddresses.zipcode"));
+        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.defaultShippingAddresses.city", this, null), "defaultShippingAddresses.city", "defaultShippingAddresses.city"));
+        columns.add(new PropertyColumn<Customer, String>(new StringResourceModel("customer.defaultShippingAddresses.province", this, null), "defaultShippingAddresses.province", "defaultShippingAddresses.province"));
 
         columns.add(new AbstractColumn<Customer, String>(new Model<String>("Azioni")) {
             public void populateItem(Item<ICellPopulator<Customer>> cellItem, String componentId, IModel<Customer> model) {
