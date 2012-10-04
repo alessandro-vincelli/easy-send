@@ -8,7 +8,6 @@ import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
@@ -24,7 +23,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.hibernate.exception.ConstraintViolationException;
 
 /**
  * 
@@ -54,7 +52,7 @@ public class CustomerManagerPage extends BasePageSimple {
         columns.add(new AbstractColumn<Customer, String>(new Model<String>("Azioni")) {
             public void populateItem(Item<ICellPopulator<Customer>> cellItem, String componentId, IModel<Customer> model) {
                 cellItem.add(new ActionPanel(componentId, model));
-                cellItem.add(AttributeModifier.replace("class", "options-width"));
+                //cellItem.add(AttributeModifier.replace("class", "options-width"));
             }
         });
 

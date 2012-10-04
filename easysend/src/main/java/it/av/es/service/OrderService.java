@@ -32,7 +32,7 @@ import java.util.List;
  */
 public interface OrderService {
     /**
-     * Save a VendorProfile
+     * Save a order
      * 
      * @param object
      * @return just saved profile
@@ -40,9 +40,9 @@ public interface OrderService {
     Order save(Order object);
 
     /**
-     * Get all the user profile
+     * Get all the order
      * 
-     * @return all the user profile
+     * @return all the order
      */
     Collection<Order> getAll();
     
@@ -63,9 +63,16 @@ public interface OrderService {
     /**
      * Remove a profile
      * 
-     * @param profile
+     * @param order
      */
-    void remove(Order profile);
+    void remove(Order order);
+    
+    /**
+     * Cancel an order
+     * 
+     * @param order
+     */
+    Order cancel(Order order);
     
     /**
      * Return the order by id

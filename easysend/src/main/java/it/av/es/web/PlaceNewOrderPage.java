@@ -1,5 +1,7 @@
 package it.av.es.web;
 
+import it.av.es.model.Address;
+import it.av.es.model.AddressType;
 import it.av.es.model.City;
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
@@ -33,8 +35,10 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
+import org.apache.wicket.extensions.yui.calendar.DateField;
 import org.apache.wicket.extensions.yui.calendar.TimeField;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.AbstractChoice;
 import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckBox;
@@ -43,6 +47,8 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
+import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
@@ -51,7 +57,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -82,9 +87,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private CittaService cittaService;
     @SpringBean
     private CountryService countryService;
-    private Select2Choice<String> zipCode;
     private List<String> zipcodes = new ArrayList<String>();
-    private DropDownChoice<String> province;
+    private WebMarkupContainer step3;
     private WebMarkupContainer step2;
     private WebMarkupContainer step1;
     private WebMarkupContainer step1Number;
@@ -96,6 +100,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private WebMarkupContainer step3Number;
     private WebMarkupContainer step3Left;
     private WebMarkupContainer step3Right;
+    private WebMarkupContainer step4Number;
+    private WebMarkupContainer step4Left;
+    private WebMarkupContainer step4Right;    
     private WebMarkupContainer fakeTabs;
     private AjaxSubmitLink submitConfirm;
     private AjaxSubmitLink submitNext;
@@ -121,10 +128,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 Customer rcp = customer.getModelObject();
                 Customer customer2 = customerService.getByID(rcp.getId());
                 model.getObject().setCustomer(customer2);
+                model.getObject().setShippingAddress(customer2.getDefaultShippingAddresses());
                 model.getObject().setPaymentType(customer2.getPaymentType());
                 model.getObject().setNotes(customer2.getDeliveryNote());
-                zipcodes = (cittaService.findCapByComune(rcp.getCity().getName(), 0));
-                province.setChoices(cittaService.findProvinciaByComune(rcp.getCity().getName(), 0));
                 target.add(formNewOrder);
             }
         });
@@ -132,18 +138,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         formNewOrder.add(step1);
         
         step1.add(new TextField<String>("customer.corporateName").setRequired(true).setEnabled(false));
-        step1.add(new TextField<String>("customer.address").setRequired(true).setEnabled(false));
-        province = new DropDownChoice<String>("customer.province", new ArrayList<String>());
-        province.setRequired(true).setOutputMarkupId(true).setEnabled(false);
-        step1.add(province);
 
-        final Select2Choice<City> city = new Select2Choice<City>("customer.city", new PropertyModel<City>(model, "customer.city"), new CityProvider() {
-        });
-        step1.add(city);
-        zipCode = new Select2Choice<String>("customer.zipcode", new PropertyModel<String>(model, "customer.zipcode"), new ZipcodeProvider() {
-        });
-        zipCode.setRequired(true).setEnabled(false);
-        step1.add(zipCode);
 
         step1.add(new TextField<String>("customer.email").setEnabled(false));
         step1.add(new TextField<String>("customer.phoneNumber").setRequired(true).setEnabled(false));
@@ -180,20 +175,49 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
                 .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()).setEnabled(false));
 
+        /****** STEP 2 *****/
         step2 = new WebMarkupContainer("step2");
-
+        step2.setVisible(false).setOutputMarkupId(true);
         formNewOrder.add(step2);
+        RadioGroup<Address> group = new RadioGroup<Address>("shippingAddress");
+        step2.add(group.setRequired(true));
+        final PropertyListView<Address> addresses = new PropertyListView<Address>("customer.shippingAddresses") {
+
+            @Override
+            protected void populateItem(final ListItem<Address> item) {
+                item.add(new Label("addressNumber", Integer.toString(item.getIndex() + 1)));
+                item.add(new TextField<String>("name").setEnabled(false));
+                item.add(new TextField<String>("address").setEnabled(false));
+                item.add(new CheckBox("defaultAddress").setEnabled(false));
+                item.add(new DropDownChoice<AddressType>("addressType", Arrays.asList(AddressType.values())).setChoiceRenderer(new EnumChoiceRenderer<AddressType>()).setEnabled(false));
+                TextField<String> province = new TextField<String>("province");
+                item.add(province.setEnabled(false));
+                TextField<String> zipCode = new TextField<String>("zipcode");
+                item.add(zipCode.setEnabled(false));
+                TextField<City> city = new TextField<City>("city");
+                item.add(city.setEnabled(false));
+                item.add(new TextField<String>("phoneNumber").setEnabled(false));;
+                item.add(new Radio<Address>("selectedAddress", item.getModel()));
+            }
+        };
+
+        group.add(addresses);
+        
+        /****** STEP 3 *****/
+        step3 = new WebMarkupContainer("step3");
+
+        formNewOrder.add(step3);
 
         final ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
-        step2.setVisible(false).setOutputMarkupId(true);
+        step3.setVisible(false).setOutputMarkupId(true);
         final DropDownChoice<Product> productToAdd = new DropDownChoice<Product>("product", new Model<Product>() ,products, new ProductChoiceRenderer());
         final DropDownChoice<Integer> productNumberToAdd = new DropDownChoice<Integer>("number", new Model<Integer>(), Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         productNumberToAdd.setNullValid(false);
-        step2.add(productToAdd);
-        step2.add(productNumberToAdd);
+        step3.add(productToAdd);
+        step3.add(productNumberToAdd);
         final WebMarkupContainer productsOrderedContanier = new WebMarkupContainer("productsOrderedContanier");
         productsOrderedContanier.setOutputMarkupId(true);
-        step2.add(productsOrderedContanier);
+        step3.add(productsOrderedContanier);
         PropertyListView<ProductOrdered> listViewProductsOrdered = new PropertyListView<ProductOrdered>(Order.PRODUCTSORDERED_FIELD) {
 
             @Override
@@ -206,7 +230,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         };
         productsOrderedContanier.add(listViewProductsOrdered);
         
-        step2.add(new AjaxSubmitLink("addProductOrdered"){
+        step3.add(new AjaxSubmitLink("addProductOrdered"){
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
@@ -233,9 +257,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         productsOrderedContanier.add(new TextField<Integer>("numberOfItemsInProductOrdered").setEnabled(false));
         productsOrderedContanier.add(new TextField<BigDecimal>("totalAmount", BigDecimal.class).setEnabled(false));
-        step2.add(new TextArea<String>("notes"));
+        step3.add(new TextArea<String>("notes"));
         AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
-        step2.add(paymentType);
+        step3.add(paymentType.setRequired(true));
 
         paymentType.add(new OnChangeAjaxBehavior() {
             
@@ -256,12 +280,14 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         });
         
-        step2.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
+        step3.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
+        step3.add(new DateField("deliveryTimeRequired"));
         
         submitNext = new AjaxSubmitLink("submitNext") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
+                customer.setEnabled(false);
                 Order o = (Order) form.getModelObject();
                 if(o.getCustomer().getCorporateName() == null){
                     getFeedbackPanel().warn("È necessario selezionare un cliente come destinatario");
@@ -328,11 +354,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step2Right.add(AttributeModifier.replace("class", "step-dark-right"));
             step3Number.add(AttributeModifier.replace("class", "step-no-off"));
             step3Left.add(AttributeModifier.replace("class", "step-light-left"));
-            step3Right.add(AttributeModifier.replace("class", "step-light-round"));
-            submitConfirm.setVisible(true);
-            submitNext.setVisible(false);
+            step3Right.add(AttributeModifier.replace("class", "step-light-right"));
         }
         else if (step2.isVisible()) {
+            step2.setVisible(false);
+            step3.setVisible(true);
             step1Number.add(AttributeModifier.replace("class", "step-no-off"));
             step1Left.add(AttributeModifier.replace("class", "step-light-left"));
             step1Right.add(AttributeModifier.replace("class", "step-light-right"));
@@ -341,7 +367,23 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step2Right.add(AttributeModifier.replace("class", "step-light-right"));
             step3Number.add(AttributeModifier.replace("class", "step-no"));
             step3Left.add(AttributeModifier.replace("class", "step-dark-left"));
-            step3Right.add(AttributeModifier.replace("class", "step-dark-round"));
+            step3Right.add(AttributeModifier.replace("class", "step-dark-right"));
+            submitConfirm.setVisible(true);
+            submitNext.setVisible(false);
+        }
+        else if (step3.isVisible()) {
+            step1Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step1Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step1Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step2Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step2Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step2Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step3Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step3Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step3Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step4Number.add(AttributeModifier.replace("class", "step-no"));
+            step4Left.add(AttributeModifier.replace("class", "step-dark-left"));
+            step4Right.add(AttributeModifier.replace("class", "step-dark-round"));
         }
     }
     
@@ -358,6 +400,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step3Number = new WebMarkupContainer("step3-number");
         step3Left = new WebMarkupContainer("step3-left");
         step3Right = new WebMarkupContainer("step3-right");
+        step4Number = new WebMarkupContainer("step4-number");
+        step4Left = new WebMarkupContainer("step4-left");
+        step4Right = new WebMarkupContainer("step4-right");
         fakeTabs.add(step1Number);
         fakeTabs.add(step1Left);
         fakeTabs.add(step1Right);
@@ -367,6 +412,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
         fakeTabs.add(step3Number);
         fakeTabs.add(step3Left);
         fakeTabs.add(step3Right);
+        fakeTabs.add(step4Number);
+        fakeTabs.add(step4Left);
+        fakeTabs.add(step4Right);        
     }
     
     

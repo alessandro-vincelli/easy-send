@@ -42,10 +42,13 @@ $(document).ready(function() {
             <div class="step-dark-right" wicket:id="step1-right">&nbsp;</div>
             <div class="step-no-off" wicket:id="step2-number">2</div>
             <div class="step-light-left" wicket:id="step2-left"><wicket:message key="pno.step2title"/></div>
-            <div class="step-light-right" wicket:id="step2-right">&nbsp;</div>
+            <div class="step-light-right" wicket:id="step2-right">&nbsp;</div>            
             <div class="step-no-off" wicket:id="step3-number">3</div>
             <div class="step-light-left" wicket:id="step3-left"><wicket:message key="pno.step3title"/></div>
-            <div class="step-light-round" wicket:id="step3-right">&nbsp;</div>            
+            <div class="step-light-right" wicket:id="step3-right">&nbsp;</div>
+            <div class="step-no-off" wicket:id="step4-number">4</div>
+            <div class="step-light-left" wicket:id="step4-left"><wicket:message key="pno.step4title"/></div>
+            <div class="step-light-round" wicket:id="step4-right">&nbsp;</div>            
             <div class="clear"></div>
         </div>
         <!--  end step-holder -->
@@ -64,9 +67,11 @@ $(document).ready(function() {
         <colgroup wicket:id="step1">
 		<tr>
 			<th valign="top"><wicket:message key="customer.corporateName"/></th>
-			<td colspan="2"><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
+			<td><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
+            <th valign="top"><wicket:message key="customer.email"/></th>
+            <td><input type="text" wicket:id="customer.email" class="inp-form-small" /></td>
 		</tr>
-		<tr>
+<!-- 		<tr>
 			<th valign="top"><wicket:message key="customer.address"/></th>
 			<td colspan="2"><input type="text" wicket:id="customer.address" class="inp-form" /></td>
 		</tr>
@@ -81,7 +86,7 @@ $(document).ready(function() {
             <td><input type="hidden" style="width: 200px;" wicket:id="customer.zipcode" ></input></td>
             <th valign="top"><wicket:message key="customer.email"/></th>
             <td><input type="text" wicket:id="customer.email" class="inp-form-small" /></td>
-        </tr>
+        </tr> -->
         <tr>
             <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
             <td><input type="text" wicket:id="customer.phoneNumber" class="inp-form-small" /></td>
@@ -149,6 +154,47 @@ $(document).ready(function() {
         </tr>
         </colgroup>
         <colgroup wicket:id="step2">
+        <span wicket:id="shippingAddress">
+        <tr wicket:id="customer.shippingAddresses" id="addresses">
+        <td colspan="4" style="border-top: 1px solid gray; padding-bottom: 10px;">
+        <table id="id-form">
+        <tr>
+            <th valign="top" colspan="4" ><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.addressType"/></th>
+            <td><select wicket:id="addressType"/></td>
+            <th valign="top"><wicket:message key="customer.defaultAddress"/></th>
+            <td><input type="checkbox" wicket:id="defaultAddress"></input></td>
+        </tr>             
+        <tr>
+            <th valign="top"><wicket:message key="customer.corporateName"/></th>
+            <td><input type="text" class="inp-form-small"  wicket:id="name" /></td>
+            <th valign="top"><wicket:message key="customer.address"/></th>
+            <td><input type="text" wicket:id="address" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+        <th valign="top"><wicket:message key="customer.city"/></th>
+            <td><input type="text" wicket:id="city" ></input></td>
+            <th valign="top"><wicket:message key="customer.province"/></th>
+            <td><input wicket:id="province"/></td>
+        </tr>     
+        <tr>
+            <th valign="top"><wicket:message key="customer.zipcode"/></th>
+            <td><input type="text" wicket:id="zipcode" ></input></td>
+            <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
+            <td><input type="text" wicket:id="phoneNumber" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="selectedAddress"/></th>
+            <td><input type="radio" wicket:id="selectedAddress" class="inp-form-small" /></td>
+        </tr>        
+        </table>
+        </td>
+        </tr>
+        </span>
+        </colgroup>
+        <colgroup wicket:id="step3">
         <tr>
             <th valign="top"><wicket:message key="product"/></th>
             <td><select wicket:id="product" ></select></td>
@@ -180,17 +226,17 @@ $(document).ready(function() {
             </td>
         </tr>
         <tr>
-            <th valign="top">Costo spedizione:</th>
+            <th valign="top"><wicket:message key="order.shippingCost"/></th>
             <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
             <td><select wicket:id="paymentType" ></select></td>
         </tr>        
         <tr>
-            <th valign="top">Note:</th>
+            <th valign="top"><wicket:message key="order.note"/></th>
             <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>
-            <td></td>
+            <th valign="top"><wicket:message key="order.deliveryTimeRequired"/></th>
+            <td valign="top"><span  wicket:id="deliveryTimeRequired" ></span></td>
         </tr>
-        
         </colgroup>        
         <tr>
         <th>&nbsp;</th>

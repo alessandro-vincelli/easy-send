@@ -22,7 +22,6 @@ import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.ForeignKey;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
-import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.Store;
 
 /**
@@ -91,7 +90,7 @@ public class User extends BasicEntity implements Comparable<User> {
     private Language language;
     @ManyToOne(optional = false)
     @ForeignKey(name = "user_to_profile_fk")
-    @IndexedEmbedded
+    //@IndexedEmbedded
     private UserProfile userProfile;
     @Version
     private int version;

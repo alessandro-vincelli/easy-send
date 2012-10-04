@@ -174,4 +174,11 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return dates;
     }
 
+    @Override
+    public Order cancel(Order order) {
+        order = getByID(order.getId());
+        order.setIsCancelled(true);
+        return save(order);
+    }
+
 }

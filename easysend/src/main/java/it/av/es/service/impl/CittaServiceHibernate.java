@@ -25,6 +25,7 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceContextType;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Session;
 import org.hibernate.criterion.Criterion;
@@ -67,9 +68,15 @@ public class CittaServiceHibernate implements CittaService {
     @Transactional(readOnly = true)
     @Cacheable("cittaFindByComune")
     public List<Citta> findByComune(String comune, int maxResults) {
-        Criterion critByName = Restrictions.ilike("comune", comune, MatchMode.ANYWHERE);
         Order orderByName = Order.asc("cap");
-        return findByCriteria(orderByName, 0, maxResults, critByName);
+        if(StringUtils.isNotBlank(comune)){
+            Criterion critByName = Restrictions.ilike("comune", comune, MatchMode.ANYWHERE);
+            return findByCriteria(orderByName, 0, maxResults, critByName);
+        }
+        else{
+            return findByCriteria(orderByName, 0, maxResults);    
+        }
+        
     }
 
     /**
@@ -120,11 +127,29 @@ public class CittaServiceHibernate implements CittaService {
 
     @Override
     public List<String> findCapByComune(String comune, int maxResults) {
-        Criterion critByName = Restrictions.ilike("comune", comune);
         Order orderByName = Order.asc("cap");
         Criteria criteria = getHibernateSession().createCriteria(Citta.class);
         criteria.setProjection(Projections.distinct(Projections.property("cap")));
-        criteria.add(critByName);
+        if(StringUtils.isNotBlank(comune)){
+            Criterion critByName = Restrictions.ilike("comune", comune);
+            criteria.add(critByName);            
+        }
+        criteria.addOrder(orderByName);
+        if (maxResults > 0) {
+            criteria.setMaxResults(maxResults);
+        }
+        return criteria.list();
+    }
+    
+    @Override
+    public List<String> findCap(String pattern, int maxResults) {
+        Order orderByName = Order.asc("cap");
+        Criteria criteria = getHibernateSession().createCriteria(Citta.class);
+        criteria.setProjection(Projections.distinct(Projections.property("cap")));
+        if(StringUtils.isNotBlank(pattern)){
+            Criterion critByName = Restrictions.ilike("cap", pattern, MatchMode.ANYWHERE);
+            criteria.add(critByName);            
+        }
         criteria.addOrder(orderByName);
         if (maxResults > 0) {
             criteria.setMaxResults(maxResults);

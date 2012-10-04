@@ -48,6 +48,8 @@ public class Order extends BasicEntity {
     @ManyToOne(fetch=FetchType.EAGER)
     @JoinColumn(name = "customer_fk")
     private Customer customer;
+    @ManyToOne//(optional = false)
+    private Address shippingAddress;
     @ManyToOne
     @JoinColumn(name = "user_fk")
     private User user;
@@ -60,6 +62,9 @@ public class Order extends BasicEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date creationTime;
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    private Date deliveryTimeRequired;
     private String notes;
     /**
      * usaere tipo pagamento
@@ -67,7 +72,7 @@ public class Order extends BasicEntity {
     @Deprecated
     private boolean isPrePayment;
     private boolean isInCharge;
-    private Boolean isCancelled;
+    private boolean isCancelled;
     @Column(columnDefinition = "serial")
     @Generated(GenerationTime.INSERT)
     private Integer referenceNumber;
@@ -233,6 +238,14 @@ public class Order extends BasicEntity {
 
     public PaymentType getPaymentType() {
         return paymentType;
+    }
+
+    public Address getShippingAddress() {
+        return shippingAddress;
+    }
+
+    public void setShippingAddress(Address shippingAddress) {
+        this.shippingAddress = shippingAddress;
     }
 
     public void setPaymentType(PaymentType paymentType) {
