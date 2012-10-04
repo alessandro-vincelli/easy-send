@@ -323,6 +323,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 //save the order
                 else{
                     Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+                    orderService.sendNotificationNewOrder(newOrder);
                     formNewOrder.setEnabled(false);
                     target.add(form);
                     target.add(fakeTabs);

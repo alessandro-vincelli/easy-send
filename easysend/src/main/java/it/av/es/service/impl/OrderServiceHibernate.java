@@ -27,6 +27,7 @@ import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
+import it.av.es.service.system.MailService;
 import it.av.es.util.DateUtil;
 
 import java.math.BigDecimal;
@@ -67,6 +68,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private ProductService productService;
     @Autowired
     private UserProfileService userProfileService;
+    @Autowired
+    private MailService mailService;
 
     @Override
     @Transactional
@@ -83,6 +86,13 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         order = this.save(order);
         userService.update(user);
         projectService.save(project);
+        return order;
+    }
+    
+    @Override
+    @Transactional
+    public Order sendNotificationNewOrder(Order order) {
+        mailService.sendNewOrderNotification(order);
         return order;
     }
 
