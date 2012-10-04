@@ -46,6 +46,22 @@ public class MailServiceImpl implements MailService {
         m.setSentDate(new Date(System.currentTimeMillis()));
         javaMailSender.send(m);
     }
+    
+    /**
+     * Send an email to the given recipient mail address
+     * 
+     * @param subject subject of the e-mail
+     * @param message message to notify
+     * @param recipient a valid email address
+     */
+    private void sendMail(String subject, String message, String recipient) {
+        SimpleMailMessage m = new SimpleMailMessage(notificationTemplateMessage);
+        m.setTo(recipient);
+        m.setSubject(subject);
+        m.setText(message);
+        m.setSentDate(new Date(System.currentTimeMillis()));
+        javaMailSender.send(m);
+    }
 
     @Override
     public void sendNewOrderNotification(Order order) {
@@ -54,7 +70,6 @@ public class MailServiceImpl implements MailService {
         String subject = messageSource.getMessage("notification.newOrder.mailSubject", params, locale);
         String body = prepareMessage.mailTextNotifyNewOrder(order, locale);
         sendNotificationMail(subject, body, "");
-
     }
 
     @Override
@@ -63,7 +78,7 @@ public class MailServiceImpl implements MailService {
         Object[] params = { user.getFirstname() + " " + user.getLastname() };
         String subject = (messageSource.getMessage("pwdRecover.message.subject", params, locale));
         String message = prepareMessage.mailTextPasswordRecover(user, newPassword, locale);
-        sendNotificationMail(subject, message, user.getEmail());
+        sendMail(subject, message, user.getEmail());
 
     }
 }
