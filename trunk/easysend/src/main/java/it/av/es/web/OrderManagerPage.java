@@ -16,13 +16,13 @@ import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
@@ -30,6 +30,8 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
+import org.apache.wicket.injection.Injector;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -115,6 +117,13 @@ public class OrderManagerPage extends BasePageSimple {
         };
         columns.add(prodotti);
 
+        columns.add(new AbstractColumn<Order, String>(new Model<String>("Azioni")) {
+            public void populateItem(Item<ICellPopulator<Order>> cellItem, String componentId, IModel<Order> model) {
+                cellItem.add(new ActionPanel(componentId, model));
+                //cellItem.add(AttributeModifier.replace("class", "options-width"));
+            }
+        });
+
         orderDates = new DropDownChoice<Date>("orderDates", new Model<Date>(), orderService.getDates(user, project));
         add(orderDates);
         orderDates.add(new OnChangeAjaxBehavior() {
@@ -172,6 +181,7 @@ public class OrderManagerPage extends BasePageSimple {
                             throw new RuntimeException(e);
                         }
                     }
+
                     @Override
                     public void close() throws IOException {
                         is.close();
@@ -183,7 +193,29 @@ public class OrderManagerPage extends BasePageSimple {
         };
         add(download);
         dataProvider = new OrderSortableDataProvider(user, project);
-        dataTable = new CustomAjaxFallbackDefaultDataTable<Order, String>("dataTable", columns, dataProvider, 25);
+        dataTable = new CustomAjaxFallbackDefaultDataTable<Order, String>("dataTable", columns, dataProvider, 25) {
+
+            @Override
+            protected Item<Order> newRowItem(String id, int index, IModel<Order> model) {
+                if (true) {
+                    return new Item<Order>(id, index, model) {
+
+                        @Override
+                        protected void onComponentTag(ComponentTag tag) {
+                            super.onComponentTag(tag);
+                            Order order = getModelObject();
+                            if (order != null && order.getIsCancelled()) {
+                                tag.put("style", "background-color: #D8D8D8;");
+                            }
+
+                        }
+
+                    };
+                }
+                return super.newRowItem(id, index, model);
+            }
+
+        };
         add(dataTable);
     }
 
@@ -226,7 +258,7 @@ public class OrderManagerPage extends BasePageSimple {
          * Call this method to initiate the download.
          */
         public void initiate(AjaxRequestTarget target) {
-            if(orderDates.getModelObject() != null){
+            if (orderDates.getModelObject() != null) {
                 String url = getCallbackUrl().toString();
 
                 if (addAntiCache) {
@@ -235,13 +267,11 @@ public class OrderManagerPage extends BasePageSimple {
                 }
 
                 // the timeout is needed to let Wicket release the channel
-                target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");                
-            }
-            else{
+                target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");
+            } else {
                 getFeedbackPanel().info("Selezionare una data");
                 target.add(getFeedbackPanel());
             }
-            
 
         }
 
@@ -264,6 +294,29 @@ public class OrderManagerPage extends BasePageSimple {
          */
         protected abstract IResourceStream getResourceStream();
     }
+
+    public class ActionPanel extends Panel {
+
+        public ActionPanel(String id, IModel<Order> model) {
+            super(id, model);
+            Injector.get().inject(this);
+            add(new AjaxFallbackLink<Order>("remove", model) {
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    try {
+                        setModelObject(orderService.cancel(getModelObject()));
+                    } catch (Exception e) {
+                        getFeedbackPanel().error("Impossibile annullare l'ordine.");
+                        target.add(getFeedbackPanel());
+                    }
+                    target.add(dataTable);
+                }
+            });
+        }
+
+    }
+
     @Override
     public void onConfigure() {
         User loggedInUser2 = getSecuritySession().getLoggedInUser();

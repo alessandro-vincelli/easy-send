@@ -1,10 +1,13 @@
 package it.av.es.web;
 
+import it.av.es.model.Address;
+import it.av.es.model.AddressType;
 import it.av.es.model.City;
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
 import it.av.es.model.Country;
 import it.av.es.model.Customer;
+import it.av.es.model.CustomerType;
 import it.av.es.model.DeliveryDays;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
@@ -27,9 +30,11 @@ import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.yui.calendar.TimeField;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Check;
 import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.CheckGroup;
@@ -40,13 +45,12 @@ import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.validation.IValidatable;
-import org.apache.wicket.validation.IValidator;
 import org.json.JSONException;
 import org.json.JSONWriter;
 
@@ -79,7 +83,6 @@ public class CustomerPage extends BasePageSimple {
     @SpringBean
     private CountryService countryService;
     private Select2Choice<String> zipCode;
-    private List<String> zipcodes = new ArrayList<String>();
     private DropDownChoice<String> province;
     private Customer customer = new Customer();
 
@@ -101,40 +104,47 @@ public class CustomerPage extends BasePageSimple {
 
         final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(customer);
         final Form<Customer> formNewOrder = new Form<Customer>("newCustomer", model);
+        
         add(formNewOrder);
 
         formNewOrder.add(new TextField<String>("corporateName").setRequired(true));
-        formNewOrder.add(new TextField<String>("address").setRequired(true));
-        province = new DropDownChoice<String>("province", provinciaService.getAllSigle());
-        province.setRequired(true).setOutputMarkupId(true);
-        formNewOrder.add(province);
-
-        final Select2Choice<City> city = new Select2Choice<City>("city", new PropertyModel<City>(model, "city"), new CityProvider() {
-        });
-        city.add(new OnChangeAjaxBehavior() {
-
-            @Override
-            protected void onUpdate(AjaxRequestTarget target) {
-                zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
-                if (zipcodes != null && zipcodes.size() == 1) {
-                    formNewOrder.getModelObject().setZipcode(zipcodes.get(0));
-                }
-                List<String> provinces = cittaService.findProvinciaByComune(city.getModelObject().getName(), 0);
-                if (provinces != null && provinces.size() == 1) {
-                    formNewOrder.getModelObject().setProvince(provinces.get(0));
-                }
-                target.add(zipCode);
-                target.add(province);
-            }
-        });
-        city.setRequired(true);
-        formNewOrder.add(city);
-        zipCode = new Select2Choice<String>("zipcode", new PropertyModel<String>(model, "zipcode"), new ZipcodeProvider() {
-        });
-        zipCode.setRequired(true);
-        formNewOrder.add(zipCode);
+//        formNewOrder.add(new TextField<String>("address").setRequired(true));
+//        province = new DropDownChoice<String>("province", provinciaService.getAllSigle());
+//        province.setRequired(true).setOutputMarkupId(true);
+//        formNewOrder.add(province);
+//
+//        final Select2Choice<City> city = new Select2Choice<City>("city", new PropertyModel<City>(model, "city"), new CityProvider() {
+//        });
+//        city.add(new OnChangeAjaxBehavior() {
+//
+//            @Override
+//            protected void onUpdate(AjaxRequestTarget target) {
+//                List<String> zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
+//                if (zipcodes != null && zipcodes.size() == 1) {
+//                    formNewOrder.getModelObject().setZipcode(zipcodes.get(0));
+//                }
+//                List<String> provinces = cittaService.findProvinciaByComune(city.getModelObject().getName(), 0);
+//                if (provinces != null && provinces.size() == 1) {
+//                    formNewOrder.getModelObject().setProvince(provinces.get(0));
+//                }
+//                target.add(zipCode);
+//                target.add(province);
+//            }
+//        });
+//        city.setRequired(true);
+//        formNewOrder.add(city);
+//        zipCode = new Select2Choice<String>("zipcode", new PropertyModel<String>(model, "zipcode"), new ZipcodeProvider() {
+//        });
+//        zipCode.setRequired(true);
+//        formNewOrder.add(zipCode);
 
         formNewOrder.add(new TextField<String>("email"));
+        formNewOrder.add(new TextField<String>("www"));
+        formNewOrder.add(new TextField<String>("facebookAccount"));
+        formNewOrder.add(new TextField<String>("twitterAccount"));
+        formNewOrder.add(new TextField<String>("referenceName"));
+        formNewOrder.add(new TextField<String>("signboard"));
+        formNewOrder.add(new DropDownChoice<CustomerType>("customerType", Arrays.asList(CustomerType.values())).setChoiceRenderer(new EnumChoiceRenderer<CustomerType>()));
         formNewOrder.add(new TextField<String>("phoneNumber").setRequired(true));
         formNewOrder.add(new TextField<String>("faxNumber"));
         formNewOrder.add(new TextField<String>("partitaIvaNumber"));
@@ -142,7 +152,7 @@ public class CustomerPage extends BasePageSimple {
         formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
         formNewOrder.add(new TextField<String>("iban"));
         formNewOrder.add(new TextField<String>("bankName"));
-        formNewOrder.add(new DropDownChoice<ClosingDays>("closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()));
+        formNewOrder.add(new DropDownChoice<ClosingDays>("closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setRequired(true));
 
         formNewOrder.add(new DropDownChoice<ClosingRange>("closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()));
         formNewOrder.add(new DropDownChoice<DeploingType>("deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()));
@@ -175,6 +185,68 @@ public class CustomerPage extends BasePageSimple {
                 .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()));
         formNewOrder.add(new CheckBox("phoneForewarning"));
 
+        PropertyListView<Address> addresses = new PropertyListView<Address>("addresses") {
+
+            @Override
+            protected void populateItem(final ListItem<Address> item) {
+                item.add(new Label("addressNumber", Integer.toString(item.getIndex() + 1)));
+                item.add(new TextField<String>("name").setRequired(true));
+                item.add(new TextField<String>("address").setRequired(true));
+                item.add(new CheckBox("defaultAddress"));
+                item.add(new DropDownChoice<AddressType>("addressType", Arrays.asList(AddressType.values())).setChoiceRenderer(new EnumChoiceRenderer<AddressType>()).setRequired(true));
+                final DropDownChoice<String> province = new DropDownChoice<String>("province", provinciaService.getAllSigle());
+                province.setRequired(true).setOutputMarkupId(true);
+                item.add(province);
+                final Select2Choice<String> zipCode = new Select2Choice<String>("zipcode", new PropertyModel<String>(item.getModel(), "zipcode"), new ZipcodeProvider() {
+                });
+                zipCode.setRequired(true);
+                item.add(zipCode);
+                final Select2Choice<City> city = new Select2Choice<City>("city", new PropertyModel<City>(item.getModel(), "city"), new CityProvider() {
+                });
+                city.add(new OnChangeAjaxBehavior() {
+
+                    @Override
+                    protected void onUpdate(AjaxRequestTarget target) {
+                        List<String> zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
+                        zipcodes = (cittaService.findCapByComune(city.getModelObject().getName(), 0));
+                        if (zipcodes != null && zipcodes.size() == 1) {
+                            item.getModelObject().setZipcode(zipcodes.get(0));
+                        }
+                        List<String> provinces = cittaService.findProvinciaByComune(city.getModelObject().getName(), 0);
+                        if (provinces != null && provinces.size() == 1) {
+                            item.getModelObject().setProvince(provinces.get(0));
+                        }
+                        target.add(zipCode);
+                        target.add(province);
+                    }
+                });
+                city.setRequired(true);
+                item.add(city);
+
+                item.add(new TextField<String>("phoneNumber").setRequired(true));
+            }
+        };
+
+        formNewOrder.add(addresses);
+        
+        AjaxLink<String> addNewAddress = new AjaxLink<String>("addNewAddress") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                formNewOrder.getModelObject().addAddresses(new Address());
+                target.add(formNewOrder);
+            }
+        };
+        formNewOrder.add(addNewAddress);
+        
+        AjaxLink<String> addNewAddress2 = new AjaxLink<String>("addNewAddress2") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                formNewOrder.getModelObject().addAddresses(new Address());
+                target.add(formNewOrder);
+            }
+        };
+        add(addNewAddress2);
+        
         formNewOrder.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -239,11 +311,8 @@ public class CustomerPage extends BasePageSimple {
 
         @Override
         public void query(String term, int page, Response<String> response) {
-            for (String zc : zipcodes) {
-                if (StringUtils.contains(zc, term)) {
-                    response.add(zc);
-                }
-            }
+            List<String> zipcodes = cittaService.findCap(term, 30);
+            response.addAll(zipcodes);
         }
 
         @Override
