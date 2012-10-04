@@ -339,14 +339,14 @@ public class Order extends BasicEntity {
     
     public String getCustomerAddressForDisplay(){
         StringBuffer buffer = new StringBuffer();
-        buffer.append(customer.getCorporateName());
+        buffer.append(customer.getDefaultShippingAddresses().getName());
         buffer.append("\n");
-        buffer.append(customer.getAddress());
+        buffer.append(customer.getDefaultShippingAddresses().getAddress());
         buffer.append("\n");
-        buffer.append(customer.getZipcode());
-        buffer.append(customer.getCity());
+        buffer.append(customer.getDefaultShippingAddresses().getZipcode());
+        buffer.append(customer.getDefaultShippingAddresses().getCity());
         buffer.append("\n");
-        buffer.append(customer.getPhoneNumber());
+        buffer.append(customer.getDefaultShippingAddresses().getPhoneNumber());
         buffer.append("\n");
         return buffer.toString();
     }
