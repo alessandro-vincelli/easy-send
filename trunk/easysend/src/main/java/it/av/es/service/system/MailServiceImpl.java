@@ -59,7 +59,8 @@ public class MailServiceImpl implements MailService {
     @Override
     public void sendPassword(User user, String newPassword) {
         Locale locale = Locale.ITALIAN;
-        String subject = (messageSource.getMessage("pwdRecover.message.subject", null, locale));
+        Object[] params = { user.getFirstname() + " " + user.getLastname() };
+        String subject = (messageSource.getMessage("pwdRecover.message.subject", params, locale));
         String message = prepareMessage.mailTextPasswordRecover(user, newPassword, locale);
         sendNotificationMail(subject, message, user.getEmail());
 

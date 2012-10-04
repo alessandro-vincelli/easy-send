@@ -23,6 +23,7 @@ import it.av.es.model.UserProfile;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
+import it.av.es.service.system.MailService;
 import it.av.es.util.DateUtil;
 
 import java.util.Collection;
@@ -56,6 +57,8 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
     private UserProfileService userProfileService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    private MailService mailService;
 
     /**
      * {@inheritDoc}
@@ -172,7 +175,7 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
      */
     @Override
     public void sendPasswordByEmail(User user, String newPassword) {
-        //mailService.sendPassword(user, newPassword);
+        mailService.sendPassword(user, newPassword);
     }
 
     /**

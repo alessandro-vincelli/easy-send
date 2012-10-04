@@ -15,6 +15,8 @@
  */
 package it.av.es.web;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.https.RequireHttps;
@@ -35,31 +37,38 @@ public class SignIn extends WebPage {
      * Constructor
      */
     public SignIn() {
-        
+
         titlePage = new Label("pageTitle", ":: EasyTrack - Eurocargo ::");
         add(titlePage);
-        
+
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
         feedbackPanel.setOutputMarkupId(true);
         feedbackPanel.setOutputMarkupPlaceholderTag(true);
         add(feedbackPanel);
-        
+
         //to eliminate duplicated feedback panel
         feedbackPanel.setVisible(false);
         appendToPageTile(" " + getString("basepage.goSignIn"));
 
         add(new SignInPanel("signInPanel", true));
-        
-//        add(new AjaxFallbackLink<String>("signUp") {
-//            @Override
-//            public void onClick(AjaxRequestTarget target) {
-//                setResponsePage(SignUpPage.class);
-//            }
-//        });
-        
+
+        //        add(new AjaxFallbackLink<String>("signUp") {
+        //            @Override
+        //            public void onClick(AjaxRequestTarget target) {
+        //                setResponsePage(SignUpPage.class);
+        //            }
+        //        });
+
+        add(new AjaxFallbackLink<String>("passwordRecover") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                setResponsePage(PasswordRecoverPage.class);
+            }
+        });
+
     }
 
-    protected void appendToPageTile(String title){
+    protected void appendToPageTile(String title) {
         titlePage.setDefaultModelObject(titlePage.getDefaultModelObjectAsString().concat(title));
     }
 }
