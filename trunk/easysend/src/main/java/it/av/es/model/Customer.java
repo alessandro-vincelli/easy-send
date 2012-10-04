@@ -38,11 +38,16 @@ public class Customer extends BasicEntity {
     private String www;
     private String facebookAccount;
     private String twitterAccount;
+    @Deprecated
     private String address;
+    @Deprecated
     private String zipcode;
+    @Deprecated
     private String province;
+    @Deprecated
     @ManyToOne
     private City city;
+    @Deprecated
     @ManyToOne
     private Country country;
     @ManyToOne
@@ -92,6 +97,7 @@ public class Customer extends BasicEntity {
     public Customer() {
         super();
         deliveryDays = new HashSet<DeliveryDays>();
+        addresses = new ArrayList<Address>();
     }
 
     public String getAddress() {

@@ -6,9 +6,9 @@ package it.av.es.model;
  *
  */
 public enum AddressType {
-
-    BILLINGADDRESS ,    
-    SHIPPINGADDRESS
+    SHIPPINGADDRESS,
+    BILLINGADDRESS    
+    
 
 //    private String value;
 //
