@@ -37,8 +37,9 @@ public class MailServiceImpl implements MailService {
      */
     private void sendNotificationMail(String subject, String message, String recipient) {
         SimpleMailMessage m = new SimpleMailMessage(notificationTemplateMessage);
-        String[] re = {"a.vincelli@gmail.com" };
+        String[] re = {"g.missineo@alice.it" };
         m.setTo(re);
+        m.setCc("acoppola@eurocargo.com");
         m.setBcc("alessandro.vincelli@me.com");
         m.setSubject(subject);
         m.setText(message);
