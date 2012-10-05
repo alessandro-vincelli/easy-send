@@ -60,6 +60,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.json.JSONException;
 import org.json.JSONWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.vaynberg.wicket.select2.ChoiceProvider;
 import com.vaynberg.wicket.select2.Response;
@@ -108,6 +110,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private AjaxSubmitLink submitNext;
     private Form<Order> formNewOrder;
     private Project currentProject;
+    private static Logger log = LoggerFactory.getLogger(PlaceNewOrderPage.class);
 
     public PlaceNewOrderPage() {
         super();
@@ -323,7 +326,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 //save the order
                 else{
                     Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                    orderService.sendNotificationNewOrder(newOrder);
+                    try {
+                        orderService.sendNotificationNewOrder(newOrder);
+                    } catch (Exception e) {
+                        getFeedbackPanel().warn("Si sono verificati dei problemi durante l'invio dell'email di notifica");
+                        log.error("Error sending new order notification", e);
+                    }
                     formNewOrder.setEnabled(false);
                     target.add(form);
                     target.add(fakeTabs);

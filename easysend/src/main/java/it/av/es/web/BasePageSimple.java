@@ -23,6 +23,7 @@ import java.util.Locale;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
@@ -37,7 +38,7 @@ import org.apache.wicket.util.cookies.CookieUtils;
  * 
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
-public class BasePageSimple extends WebPage {
+public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
     
     private CustomFeedbackPanel feedbackPanel;
     private Label titlePage;
@@ -72,7 +73,7 @@ public class BasePageSimple extends WebPage {
             }
         }
         
-        //BookmarkablePageLink goAccount = new BookmarkablePageLink<String>("goAccount", EaterAccountPage.class, goAccountParameters);
+        //BookmarkablePageLink goAccount = new BookmarkablePageLink<String>("goAccount", UserAccountPage.class, goAccountParameters);
         
         Label name = new Label("loggedInUser", loggedInUser != null ? loggedInUser.getFirstname() + " " +loggedInUser.getLastname() : "");
         add(name);
@@ -141,6 +142,14 @@ public class BasePageSimple extends WebPage {
                         .isInstantiationAuthorized(SignOut.class)));
             }
         });        
+        add(new BookmarkablePageLink<String>("goUserAccountPage", UserAccountPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(UserAccountPage.class)));
+            }
+        });        
 
         
 //        BookmarkablePageLink goInfo = new BookmarkablePageLink("goInfo", AboutPage.class);
@@ -177,4 +186,13 @@ public class BasePageSimple extends WebPage {
 //        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/colour.css")));
 //        response.render(CssHeaderItem.forReference(new CssResourceReference(HomePage.class, "/text.css")));
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getAjaxIndicatorMarkupId() {
+        return "bysy_indicator";
+    }
+    
 }

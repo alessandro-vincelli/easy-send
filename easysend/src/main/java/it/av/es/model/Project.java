@@ -15,20 +15,23 @@ import org.hibernate.annotations.FetchMode;
 
 @Entity
 public class Project extends BasicEntity {
-    
+
     public static final String NAME_FIELD = "name";
     public static final String USERS_FIELD = "users";
     public static final String ORDERS_FIELD = "order";
     public static final String PRODUCTS_FIELD = "products";
 
     private String name;
-    @ManyToMany(targetEntity = User.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch=FetchType.EAGER)
+    @ManyToMany(targetEntity = User.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     //@JoinTable(joinColumns = @JoinColumn(name = "EMPER_ID"), inverseJoinColumns = @JoinColumn(name = "EMPEE_ID"))
     private Set<User> users;
+    @ManyToMany(targetEntity = User.class, cascade = { CascadeType.PERSIST, CascadeType.MERGE }, fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private Set<User> coordinators;
     @OneToMany
     public Set<Order> orders;
-    @OneToMany(fetch=FetchType.EAGER)
+    @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private Set<Product> products;
     /**
@@ -64,7 +67,7 @@ public class Project extends BasicEntity {
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
-    
+
     public Set<Product> getProducts() {
         return products;
     }
@@ -79,7 +82,7 @@ public class Project extends BasicEntity {
         }
         this.products.add(prj);
     }
-    
+
     public void addOrder(Order order) {
         if (orders == null) {
             orders = new HashSet<Order>();
@@ -117,6 +120,5 @@ public class Project extends BasicEntity {
     public void setFreeShippingNumber(Integer freeShippingNumber) {
         this.freeShippingNumber = freeShippingNumber;
     }
-
 
 }
