@@ -43,7 +43,6 @@ $(document).ready(function() {
 });
 </script>
 
-
 	<wicket:link>
 		<link rel="shortcut icon" href="/images/favicon.ico" />
     </wicket:link>    
@@ -64,9 +63,7 @@ $(document).ready(function() {
     <!-- end logo -->
     
     <!--  start top-search -->
-<!--
-TODO
-     <div id="top-search">
+<!--      <div id="top-search">
         <table border="0" cellpadding="0" cellspacing="0">
         <tr>
         <td><input type="text" value="Search" onblur="if (this.value=='') { this.value='Search'; }" onfocus="if (this.value=='Search') { this.value=''; }" class="top-search-inp" /></td>
@@ -81,10 +78,10 @@ TODO
         </td>
         </tr>
         </table>
-    </div> -->
+    </div>
+     -->
     <!--  end top-search -->
     <div class="clear"></div>
-
 </div>
 <!-- End: page-top -->
 
@@ -103,13 +100,15 @@ TODO
         <div id="nav-right">
         
             <div class="nav-divider">&nbsp;</div>
-            <div><span wicket:id="loggedInUser"/></div>
+            <div class="showhide-account"><a wicket:id="goUserAccountPage"><img src="images/shared/nav/nav_myaccount.gif" width="93" height="14" alt="" /></a></div>
             <div class="nav-divider">&nbsp;</div>
             <a href="" wicket:id="goSignOut" id="logout"><img src="images/shared/nav/nav_logout.gif" width="64" height="14" alt="" /></a>
+            <div class="nav-divider">&nbsp;</div>
+            <div style="display: none;"><a  wicket:id="loggedInUser"></a></div>
             <div class="clear">&nbsp;</div>
         
             <!--  start account-content --> 
-            <div class="account-content">
+           <!--  <div class="account-content">
             <div class="account-drop-inner">
                 <a href="" id="acc-settings">Settings</a>
                 <div class="clear">&nbsp;</div>
@@ -125,7 +124,7 @@ TODO
                 <div class="acc-line">&nbsp;</div>
                 <a href="" id="acc-stats">Statistics</a> 
             </div>
-            </div>
+            </div> -->
             <!--  end account-content -->
         
         </div>
@@ -174,7 +173,7 @@ TODO
 <!--  start nav-outer -->
 </div>
 <!--  start nav-outer-repeat................................................... END -->
-
+<div id="bysy_indicator" style="display:none;" />
   <div class="clear"></div>
     
 	<wicket:child />

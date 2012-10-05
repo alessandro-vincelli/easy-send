@@ -156,7 +156,7 @@ $(document).ready(function() {
         <colgroup wicket:id="step2">
         <span wicket:id="shippingAddress">
         <tr wicket:id="customer.shippingAddresses" id="addresses">
-        <td colspan="4" style="border-top: 1px solid gray; padding-bottom: 10px;">
+        <td colspan="4" style="border-top: 1px solid #E8E8E8; padding-bottom: 10px;">
         <table id="id-form">
         <tr>
             <th valign="top" colspan="4" ><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
@@ -195,16 +195,16 @@ $(document).ready(function() {
         </span>
         </colgroup>
         <colgroup wicket:id="step3">
-        <tr>
-            <th valign="top"><wicket:message key="product"/></th>
+        <tr  style="border-top: 1px solid #E8E8E8;">
+            <th ><wicket:message key="productToAdd"/></th>
             <td><select wicket:id="product" ></select></td>
-            <td><wicket:message key="productNumber"/><select wicket:id="number" ></select></td>
+            <td><select wicket:id="number" ></select></td>
             <td style="padding-left: 5px;"><input type="button" value="" class="form-aggiungi" wicket:id="addProductOrdered" ></input></td>
         </tr>
         <tr wicket:id="productsOrderedContanier">
             <td colspan="4">
             <table id="product-ordered" width="100%" cellspacing="0" cellpadding="0" border="0" >
-            <tr valign="top" style="border-top: 1px solid gray;">
+            <tr valign="top" style="border-top: 1px solid #E8E8E8;">
             <th>Prodotto</th>
             <th>N. Cartoni</th>
             <th>Importo</th>
@@ -216,7 +216,7 @@ $(document).ready(function() {
             <td><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
             </tr>
-            <tr valign="top" style="border-top: 1px solid gray; border-bottom: 1px solid gray;">
+            <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
             <th>Totali:</th>
             <td><input type="text" wicket:id="numberOfItemsInProductOrdered" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
