@@ -15,7 +15,6 @@
  */
 package it.av.es.web;
 
-import it.av.es.model.Country;
 import it.av.es.model.Language;
 import it.av.es.model.User;
 import it.av.es.service.CountryService;

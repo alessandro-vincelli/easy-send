@@ -10,6 +10,8 @@ import it.av.es.service.pdf.PDFExporter;
 import it.av.es.service.pdf.PDFExporterImpl;
 import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
+import it.av.es.web.component.ButtonName;
+import it.av.es.web.component.MessageDialog;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
@@ -297,20 +299,31 @@ public class OrderManagerPage extends BasePageSimple {
 
     public class ActionPanel extends Panel {
 
-        public ActionPanel(String id, IModel<Order> model) {
+        public ActionPanel(String id, final IModel<Order> model) {
             super(id, model);
             Injector.get().inject(this);
+            final MessageDialog warningDialog = new MessageDialog("warningDialog", getString("dialog.confirmCancelOrderTitle"), getString("dialog.confirmCancelOrder")) {
+
+                @Override
+                protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                    if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                        try {
+                            orderService.cancel(model.getObject());
+                        } catch (Exception e) {
+                            getFeedbackPanel().error("Impossibile annullare l'ordine.");
+                            target.add(getFeedbackPanel());
+                        }
+                        target.add(dataTable);
+                    }
+                }
+
+            };
+            add(warningDialog);
             add(new AjaxFallbackLink<Order>("remove", model) {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    try {
-                        setModelObject(orderService.cancel(getModelObject()));
-                    } catch (Exception e) {
-                        getFeedbackPanel().error("Impossibile annullare l'ordine.");
-                        target.add(getFeedbackPanel());
-                    }
-                    target.add(dataTable);
+                    warningDialog.show(target);
                 }
             });
         }
