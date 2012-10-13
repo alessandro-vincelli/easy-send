@@ -103,8 +103,11 @@ public class OrderManagerPage extends BasePageSimple {
 
             @Override
             public void populateItem(Item<ICellPopulator<Order>> item, String componentId, IModel<Order> rowModel) {
-                item.add(new Label(componentId, getString(rowModel.getObject().getPaymentType().toString())));
+                Label label = new Label(componentId, getString(rowModel.getObject().getPaymentType().toString() + "-short"));
+                label.add(AttributeModifier.prepend("title", getString(rowModel.getObject().getPaymentType().toString())));
+                item.add(label);
                 item.add(AttributeModifier.prepend("style", "text-align: center;"));
+                item.add(AttributeModifier.prepend("title", "Tipo Pagamento"));
             }
         });
         AbstractColumn<Order, String> prodotti = new AbstractColumn<Order, String>(new Model<String>("Prodotti"), "Prodotti") {

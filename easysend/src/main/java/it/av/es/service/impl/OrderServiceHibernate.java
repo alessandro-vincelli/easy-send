@@ -92,7 +92,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     @Transactional
     public Order sendNotificationNewOrder(Order order) {
-        mailService.sendNewOrderNotification(order);
+        //mailService.sendNewOrderNotification(order);
         return order;
     }
 
