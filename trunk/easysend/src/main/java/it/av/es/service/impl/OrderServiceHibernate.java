@@ -127,7 +127,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     }
 
     @Override
-    public Collection<Order> get(User user, Project project, Date filterDate, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
+    public Collection<Order> get(User user, Project project, Date filterDate, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
 
         if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile())) {
@@ -137,6 +137,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             criteria.add(Restrictions.eq(Order.USER_FIELD, user));
         }
 
+        if (excludeCancelled) {
+            criteria.add(Restrictions.eq(Order.ISCANCELLED_FIELD, Boolean.FALSE));
+        }
+        
         if (filterDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
         }
@@ -170,7 +174,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public List<Date> getDates(User user, Project project) {
         Set<Date> d = new HashSet<Date>();
-        Collection<Order> list = get(user, project, null, 0, 0, Order.CREATIONTIME_FIELD, false);
+        Collection<Order> list = get(user, project, null, false, 0, 0, Order.CREATIONTIME_FIELD, false);
         for (Order o : list) {
             d.add(DateUtils.truncate(o.getCreationTime(), Calendar.DAY_OF_MONTH));
         }

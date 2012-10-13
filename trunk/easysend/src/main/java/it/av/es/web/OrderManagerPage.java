@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.OnChangeAjaxBehavior;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -68,6 +69,7 @@ public class OrderManagerPage extends BasePageSimple {
     private Project project;
     private AjaxLink<String> exportAsPDFButton;
     private DropDownChoice<Date> orderDates;
+    private AjaxCheckBox excludeCancelledOrders;
 
     public OrderManagerPage() {
         super();
@@ -180,7 +182,8 @@ public class OrderManagerPage extends BasePageSimple {
                         PDFExporter pdfExporter = new PDFExporterImpl();
                         try {
                             Date dat = orderDates.getModelObject();
-                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, 0, 0, Order.REFERNCENUMBER_FIELD, true));
+                            Boolean excludeCanccelled = excludeCancelledOrders.getModelObject();
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, excludeCanccelled, 0, 0, Order.REFERNCENUMBER_FIELD, true));
                             is = pdfExporter.exportOrdersList(ord, dat, user, project, getLocalizer(), getPage());
                             return is;
                         } catch (Exception e) {
@@ -223,6 +226,16 @@ public class OrderManagerPage extends BasePageSimple {
 
         };
         add(dataTable);
+        
+        excludeCancelledOrders = new AjaxCheckBox("excludeCancelledOrders", new Model<Boolean>(false)) {
+            
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                dataProvider.setExcludeCancelledOrder(getModelObject());
+                target.add(dataTable);
+            }
+        };
+        add(excludeCancelledOrders);
     }
 
     public class OrderedProductPanel extends Panel {

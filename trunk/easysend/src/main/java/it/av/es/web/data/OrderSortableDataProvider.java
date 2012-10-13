@@ -46,6 +46,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private User user;
     private Project project;
     private Date filterDate;
+    private boolean excludeCancelledOrder;
 
     public OrderSortableDataProvider(User user, Project project) {
         super();
@@ -53,7 +54,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         this.project = project;
         Injector.get().inject(this);
         setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
-        results = orderService.get(user, project, filterDate, 0, 0, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());
     }
 
     /**
@@ -61,7 +62,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        size = orderService.get(user, project, filterDate, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
+        size = orderService.get(user, project, filterDate, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
         return size;
 
     }
@@ -84,7 +85,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.get(user, project, filterDate, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, excludeCancelledOrder, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
     }
 
@@ -94,6 +95,14 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     public void setFilterDate(Date filterDate) {
         this.filterDate = filterDate;
+    }
+
+    public boolean isExcludeCancelledOrder() {
+        return excludeCancelledOrder;
+    }
+
+    public void setExcludeCancelledOrder(boolean excludeCancelledOrder) {
+        this.excludeCancelledOrder = excludeCancelledOrder;
     }
 
     
