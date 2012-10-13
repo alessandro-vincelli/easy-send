@@ -20,15 +20,20 @@ import it.av.es.util.CookieUtil;
 import it.av.es.web.security.SecuritySession;
 
 import java.util.Locale;
+import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxRequestTarget.IJavaScriptResponse;
+import org.apache.wicket.ajax.AjaxRequestTarget.IListener;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
-import org.apache.wicket.markup.html.panel.FeedbackPanel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.http.WebResponse;
 import org.apache.wicket.util.cookies.CookieUtils;
@@ -54,6 +59,40 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
         add(titlePage);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
+        feedbackPanel.add(new AbstractDefaultAjaxBehavior() {
+            
+//            @Override
+//            public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {
+//            }
+//            
+//            @Override
+//            public void onAfterRespond(Map<String, Component> map, IJavaScriptResponse response) {
+//                response.addJavaScript("jQuery('#" + electionContainer.getMarkupId() + "').fadeTo(300, 0.5, function() {})");
+//                response.addJavaScript("jQuery('#" + electionContainer.getMarkupId() + "').fadeTo(300, 1.0, function() {})");
+//            }
+//            
+            @Override
+            protected void respond(AjaxRequestTarget target) {
+                target.appendJavaScript("jQuery('#" + feedbackPanel.getMarkupId() + "').fadeTo(300, 0.5, function() {})");
+                
+             // register the onSuccess listener that will execute Handlebars logic
+                target.addListener(new IListener() {
+                    
+                    @Override
+                    public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {
+                        System.out.println("");
+                    }
+                    
+                    @Override
+                    public void onAfterRespond(Map<String, Component> map, IJavaScriptResponse response) {
+                        response.addJavaScript("jQuery('#" + feedbackPanel.getMarkupId() + "').fadeTo(300, 0.5, function() {})");
+                        response.addJavaScript("jQuery('#" + feedbackPanel.getMarkupId() + "').fadeTo(300, 1.0, function() {})");
+                    }
+                });
+            }
+        });
+        ;
+        
         feedbackPanel.setOutputMarkupId(true);
         feedbackPanel.setOutputMarkupPlaceholderTag(true);
         add(feedbackPanel);
@@ -159,7 +198,7 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
 //        add(goPrivacy);
     }
 
-    public final FeedbackPanel getFeedbackPanel() {
+    public final CustomFeedbackPanel getFeedbackPanel() {
         return feedbackPanel;
     }
 

@@ -91,7 +91,7 @@ public class UserAccountPage extends BaseUserAccountPage {
             success(getString("info.accountSaved"));
             if (target != null) {
                 target.add(getFeedbackPanel());
-                target.add(form);
+                getFeedbackPanel().publishWithEffects(target);
             }
         }
 

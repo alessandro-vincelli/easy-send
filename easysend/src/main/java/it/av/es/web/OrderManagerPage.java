@@ -309,11 +309,13 @@ public class OrderManagerPage extends BasePageSimple {
                     if (buttonName.equals(ButtonName.BUTTON_YES)) {
                         try {
                             orderService.cancel(model.getObject());
+                            getFeedbackPanel().info(getString("order.orderCancelled"));
                         } catch (Exception e) {
-                            getFeedbackPanel().error("Impossibile annullare l'ordine.");
+                            getFeedbackPanel().error(getString("order.orderCancellNotPossible"));
                             target.add(getFeedbackPanel());
                         }
                         target.add(dataTable);
+                        target.add(getFeedbackPanel());
                     }
                 }
 

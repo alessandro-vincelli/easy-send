@@ -253,13 +253,13 @@ public class CustomerPage extends BasePageSimple {
                 Customer c = (Customer) form.getModelObject();
                 if(c.getAddresses() == null || c.getAddresses().isEmpty() || c.getDefaultShippingAddresses() == null){
                     getFeedbackPanel().warn("È necessario inserire almeno un indirizzo di consegna predefinito");
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().publishWithEffects(target);
                 }
                 else{
                     formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
                     //formNewOrder.setEnabled(false);
-                    getFeedbackPanel().success("cliente salvato con successo");
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().success("Cliente salvato con successo");
+                    getFeedbackPanel().publishWithEffects(target);
                 }
                 target.add(formNewOrder);
             }
@@ -267,7 +267,7 @@ public class CustomerPage extends BasePageSimple {
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
                 getFeedbackPanel().anyErrorMessage();
-                target.add(getFeedbackPanel());
+                getFeedbackPanel().publishWithEffects(target);
             }
         });
 
