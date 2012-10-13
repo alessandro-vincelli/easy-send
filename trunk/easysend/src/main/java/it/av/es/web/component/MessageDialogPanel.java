@@ -12,11 +12,11 @@ import org.apache.wicket.markup.html.panel.Panel;
 public class MessageDialogPanel extends Panel {
 
     private Label label;
-    private final MessageDialog messageDialog;
 
     /**
      * Constructor.
      * @param id the markupId, an html div suffice to host a dialog.
+     * @param messageDialog parent
      * @param title the title of the dialog 
      * @param string the message to be displayed
      * @param icon the predefined icon to display
@@ -24,7 +24,6 @@ public class MessageDialogPanel extends Panel {
     public MessageDialogPanel(String id, final MessageDialog messageDialog, String title, String string) {
 
         super(id);
-        this.messageDialog = messageDialog;
 
         WebMarkupContainer container = new WebMarkupContainer("container");
         this.add(container);

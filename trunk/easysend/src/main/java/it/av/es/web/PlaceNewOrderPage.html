@@ -119,7 +119,7 @@ $(document).ready(function() {
         </tr>                     
         <tr>
             <th valign="top"><wicket:message key="pno.deploymentTime"/>:</th>
-            <td colspan="2">
+            <td colspan="3">
             mattina da:
             <span wicket:id="customer.loadTimeAMFrom"/>
             a
@@ -132,15 +132,14 @@ $(document).ready(function() {
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.deliveryDay"/></th>
-            <td>
+            <td colspan="2">
                 <span wicket:id="customer.deliveryDays">             
                 <span wicket:id="deliveryDaysList">
                     <input type="checkbox" wicket:id="check"/><label wicket:id="number" style="display:inline; color: black;"></label>
                 </span>
                 </span>
             </td>
-            <th valign="top"><wicket:message key="customer.phoneForewarning"/></th>
-            <td><input type="checkbox" wicket:id="customer.phoneForewarning" /></td>
+            <th valign="top"><wicket:message key="customer.phoneForewarning"/><input type="checkbox" wicket:id="customer.phoneForewarning" /></th>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.deliveryType"/></th>
@@ -159,7 +158,7 @@ $(document).ready(function() {
         <td colspan="4" style="border-top: 1px solid #E8E8E8; padding-bottom: 10px;">
         <table id="id-form">
         <tr>
-            <th valign="top" colspan="4" ><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
+            <th valign="top" colspan="4"><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.addressType"/></th>
@@ -187,7 +186,7 @@ $(document).ready(function() {
         </tr>
         <tr>
             <th valign="top"><wicket:message key="selectedAddress"/></th>
-            <td><input type="radio" wicket:id="selectedAddress" class="inp-form-small" /></td>
+            <td><input type="radio" wicket:id="selectedAddress" /></td>
         </tr>        
         </table>
         </td>
@@ -249,7 +248,7 @@ $(document).ready(function() {
     </table>
     </form>
     <!-- end id-form  -->
-    <span wicket:id="feedBackPanel">message will be here</span>
+    <div class="feedbackPanelContainer" wicket:id="feedBackPanel">message will be here</div>
     </td>
     <td>
 

@@ -3,6 +3,12 @@
  */
 package it.av.es.web;
 
+import java.util.Map;
+
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.AjaxRequestTarget.IJavaScriptResponse;
+import org.apache.wicket.ajax.AjaxRequestTarget.IListener;
 import org.apache.wicket.feedback.FeedbackMessage;
 import org.apache.wicket.feedback.IFeedbackMessageFilter;
 import org.apache.wicket.markup.html.panel.FeedbackPanel;
@@ -27,6 +33,22 @@ public class CustomFeedbackPanel extends FeedbackPanel {
      */
     public CustomFeedbackPanel(String id) {
         super(id);
+        setOutputMarkupId(true);
+    }
+    
+    public void publishWithEffects(AjaxRequestTarget target){
+        target.addListener(new IListener() {
+            
+            @Override
+            public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {}
+            @Override
+            public void onAfterRespond(Map<String, Component> map, IJavaScriptResponse response) {
+                //response.addJavaScript("alert('" + getMarkupId() + "')");
+                //response.addJavaScript("$('#" + getFeedbackPanel().getMarkupId() + "').fadeTo(300, 0.5, function() {})");
+                response.addJavaScript("$('#" + getMarkupId() + "').delay(10000).fadeTo(2000, 0.25, function() {})");
+            }
+        });
+        target.add(this);
     }
 
     /**

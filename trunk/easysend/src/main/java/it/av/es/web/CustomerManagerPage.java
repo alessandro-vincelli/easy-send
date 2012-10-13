@@ -81,7 +81,7 @@ public class CustomerManagerPage extends BasePageSimple {
                         customerService.remove(getModelObject());
                     } catch (Exception e) {
                         getFeedbackPanel().error("Impossibile rimuovere il cliente, ci sono ordini associati al cliente.");
-                        target.add(getFeedbackPanel());
+                        getFeedbackPanel().publishWithEffects(target);
                     }
                     target.add(dataTable);
                 }

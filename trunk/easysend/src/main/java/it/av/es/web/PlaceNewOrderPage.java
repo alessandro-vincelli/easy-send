@@ -246,15 +246,15 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
                     getFeedbackPanel().info("Prodotto aggiunto all'ordine");
                     target.add(formNewOrder);
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().publishWithEffects(target);
                 }
                 else if (product == null){
                     getFeedbackPanel().warn("Selezionare un prodotto");
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().publishWithEffects(target);
                 }
                 else if (numberToAdd == null){
                     getFeedbackPanel().warn("Selezionare il numero di prodotti");
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().publishWithEffects(target);
                 }
             }
         });
@@ -278,7 +278,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 }
 
                 target.add(formNewOrder);
-                target.add(getFeedbackPanel());
+                getFeedbackPanel().publishWithEffects(target);
             }
 
         });
@@ -337,13 +337,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     target.add(fakeTabs);
                     getFeedbackPanel().success("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
                 }
-                target.add(getFeedbackPanel());
+                getFeedbackPanel().publishWithEffects(target);
             }
 
             @Override
             protected void onError(AjaxRequestTarget target, Form form) {
                 getFeedbackPanel().anyErrorMessage();
-                target.add(getFeedbackPanel());
+                getFeedbackPanel().publishWithEffects(target);
             }
         };
         submitConfirm.setVisible(false);
