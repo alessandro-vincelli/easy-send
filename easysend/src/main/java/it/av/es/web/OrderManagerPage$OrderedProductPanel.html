@@ -1,6 +1,6 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 
-<table style="width: 100%;">
+<table style="width: 100%;" id="product-ordered-table">
 <tr >
     <th style="width: 250px; text-align: left; height: 16px;">Prodotto</th>
     <th style="width: 50px; text-align: center; height: 16px;">N.</th>
@@ -13,8 +13,14 @@
     <td><span wicket:id="productAmount"></span></td>
     <td><span wicket:id="productDiscount"></span>%</td>
 </tr>
+<tr style="padding-left: 10px; padding-right:10px; ; padding-top:3px; padding-bottom:3px; text-align: right;">
+    <th style="text-align: right;"><wicket:message key="order.shippingCost"/>:</th>
+    <td></td>
+    <td><span wicket:id="shippingCost"></span></td>
+    <td></td>
+</tr>
 <tr style="padding-left: 10px; padding-right:10px; text-align: right;">
-    <th style="text-align: right;">totali:</th>
+    <th style="text-align: right;"><wicket:message key="total"/>:</th>
     <td><span wicket:id="numberOfItemsInProductOrdered"></span></td>
     <td><span wicket:id="totalAmount"></span></td>
     <td></td>
