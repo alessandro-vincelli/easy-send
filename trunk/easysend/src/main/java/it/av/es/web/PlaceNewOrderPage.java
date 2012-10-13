@@ -58,6 +58,7 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.apache.wicket.util.convert.converter.BigDecimalConverter;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.slf4j.Logger;
@@ -260,6 +261,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         productsOrderedContanier.add(new TextField<Integer>("numberOfItemsInProductOrdered").setEnabled(false));
         productsOrderedContanier.add(new TextField<BigDecimal>("totalAmount", BigDecimal.class).setEnabled(false));
+        productsOrderedContanier.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
         step3.add(new TextArea<String>("notes"));
         AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
         step3.add(paymentType.setRequired(true));
@@ -283,7 +285,6 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
         });
         
-        step3.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
         step3.add(new DateField("deliveryTimeRequired"));
         
         submitNext = new AjaxSubmitLink("submitNext") {

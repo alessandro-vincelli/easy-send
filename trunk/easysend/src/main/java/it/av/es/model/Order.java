@@ -3,6 +3,7 @@ package it.av.es.model;
 import it.av.es.EasySendException;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;
@@ -334,6 +335,7 @@ public class Order extends BasicEntity {
         for (ProductOrdered p : productsOrdered) {
             n = n.add(p.getAmount());
         }
+        n = n.add(getShippingCost());
         return n;
     }
     

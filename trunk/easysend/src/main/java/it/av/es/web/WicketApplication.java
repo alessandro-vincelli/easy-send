@@ -1,5 +1,7 @@
 package it.av.es.web;
 
+import java.math.BigDecimal;
+
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
 import it.av.es.model.DeliveryDays;
@@ -8,6 +10,7 @@ import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.PaymentType;
 import it.av.es.web.converter.ClosingDaysConverter;
 import it.av.es.web.converter.ClosingRangeConverter;
+import it.av.es.web.converter.CustomBigDecimalConverter;
 import it.av.es.web.converter.DeliveryDaysConverter;
 import it.av.es.web.converter.DeliveryTypeConverter;
 import it.av.es.web.converter.DeliveryVehicleConverter;
@@ -95,6 +98,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
             set(DeliveryDays.class, new DeliveryDaysConverter());
             set(ClosingDays.class, new ClosingDaysConverter());
             set(ClosingRange.class, new ClosingRangeConverter());
+            set(BigDecimal.class, new CustomBigDecimalConverter());
         }
     }
 }

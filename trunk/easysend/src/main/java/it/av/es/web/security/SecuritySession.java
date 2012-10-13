@@ -15,6 +15,8 @@
  */
 package it.av.es.web.security;
 
+import java.util.Locale;
+
 import it.av.es.model.Project;
 import it.av.es.model.User;
 
@@ -47,6 +49,7 @@ public class SecuritySession extends AuthenticatedWebSession {
     public SecuritySession(Request request) {
         super(request);
         Injector.get().inject(this);
+        setLocale(Locale.ITALIAN);
     }
 
     private Authentication auth;

@@ -216,7 +216,13 @@ $(document).ready(function() {
             <td><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
             </tr>
             <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
-            <th>Totali:</th>
+            <th><wicket:message key="order.shippingCost"/>:</th>
+            <td></td>
+            <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
+            <td></td>
+            </tr>            
+            <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
+            <th>Totale:</th>
             <td><input type="text" wicket:id="numberOfItemsInProductOrdered" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td></td>
@@ -225,16 +231,14 @@ $(document).ready(function() {
             </td>
         </tr>
         <tr>
-            <th valign="top"><wicket:message key="order.shippingCost"/></th>
-            <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
             <td><select wicket:id="paymentType" ></select></td>
+            <th valign="top"><wicket:message key="order.deliveryTimeRequired"/></th>
+            <td valign="top"><span  wicket:id="deliveryTimeRequired" ></span></td>            
         </tr>        
         <tr>
             <th valign="top"><wicket:message key="order.note"/></th>
             <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>
-            <th valign="top"><wicket:message key="order.deliveryTimeRequired"/></th>
-            <td valign="top"><span  wicket:id="deliveryTimeRequired" ></span></td>
         </tr>
         </colgroup>        
         <tr>
