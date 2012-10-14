@@ -198,7 +198,7 @@ $(document).ready(function() {
             <th ><wicket:message key="productToAdd"/></th>
             <td><select wicket:id="product" ></select></td>
             <td><select wicket:id="number" ></select></td>
-            <td style="padding-left: 5px;"><input type="button" value="" class="form-aggiungi" wicket:id="addProductOrdered" ></input></td>
+            <td style="padding-left: 5px;"><input type="button" value="" wicket:message="value:button.addProduct" class="button-green-small" wicket:id="addProductOrdered" ></input></td>
         </tr>
         <tr wicket:id="productsOrderedContanier">
             <td colspan="4">
@@ -244,8 +244,8 @@ $(document).ready(function() {
         <tr>
         <th>&nbsp;</th>
         <td valign="top">
-            <input type="button" value="" class="form-avanti" wicket:id="submitNext" ></input>
-            <input type="button" value="" class="form-inserisci" wicket:id="submitConfirm" ></input>
+            <input type="button" value="Avanti" wicket:message="value:button.next"  class="button-green" wicket:id="submitNext" ></input>
+            <input type="button" value="Inserisci" wicket:message="value:button.saveNewOrder" class="button-green" wicket:id="submitConfirm" ></input>
         </td>
         <td></td>
     </tr>
