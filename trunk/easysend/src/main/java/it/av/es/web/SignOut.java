@@ -31,7 +31,6 @@ public class SignOut extends BasePageSimple {
      */
     public SignOut() {
         super();
-        getSession().invalidateNow();
         
     }
 
