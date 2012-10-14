@@ -28,9 +28,9 @@
 			<!--  start table-content  -->
 			<div id="table-content">
             
-            <table>
+            <table class="table-actions">
             <tr>
-            <td><select wicket:id="orderDates"/><a wicket:id="exportAsPDFButton" value="Esporta">Esporta</a></td>
+            <td><select wicket:id="orderDates"/> <a wicket:id="exportAsPDFButton" class="button-gray-small" ><wicket:message key="button.exportAsPdf"/></a></td>
             <td><input type="checkbox" wicket:id="excludeCancelledOrders"/> Escludi annullati</td>
             </tr>
             </table>            
