@@ -3,7 +3,6 @@ package it.av.es.model;
 import it.av.es.EasySendException;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.ArrayList;
 import java.util.Currency;
 import java.util.Date;

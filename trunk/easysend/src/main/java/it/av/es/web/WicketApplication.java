@@ -1,7 +1,5 @@
 package it.av.es.web;
 
-import java.math.BigDecimal;
-
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
 import it.av.es.model.DeliveryDays;
@@ -16,6 +14,8 @@ import it.av.es.web.converter.DeliveryTypeConverter;
 import it.av.es.web.converter.DeliveryVehicleConverter;
 import it.av.es.web.converter.PaymentTypeConverter;
 import it.av.es.web.security.SecuritySession;
+
+import java.math.BigDecimal;
 
 import org.apache.wicket.ConverterLocator;
 import org.apache.wicket.IConverterLocator;
