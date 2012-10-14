@@ -1,65 +1,71 @@
-<wicket:extend xmlns:wicket="http://wicket.apache.org">
-<!-- start content-outer ........................................................................................................................START -->
-<div id="content-outer">
-<!-- start content -->
-<div id="content">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:wicket="http://wicket.apache.org">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title><wicket:container wicket:id="pageTitle"/></title>
+<link rel="stylesheet" href="css/screen.css" type="text/css" media="screen" title="default" />
 
-    <table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
-    <tr>
-        <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
-        <th class="topleft"></th>
-        <td id="tbl-border-top">&nbsp;</td>
-        <th class="topright"></th>
-        <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
-    </tr>
-    <tr>
-        <td id="tbl-border-left"></td>
-        <td>
-        <!--  start content-table-inner ...................................................................... START -->
-        <div id="content-table-inner">
-        
-            <!--  start table-content  -->
-            <div id="table-content">
-            
-            <div class="feedbackPanelContainer" wicket:id="feedBackPanel">message will be here</div>
-            
-            <h2 class="sbtitle"></h2>
-            <br/>
-            <br/>
-            <p>
-            
-            </p>
-            
-            <h3>EasyTrack - Eurocargo</h3>
-            <h3><wicket:message key="signout.goodbye"/></h3>
-            <a href="/signIn"><wicket:message key="signout.signinAgain"/></a>
-            <br />            
-            </div>
-            <!--  end table-content  -->
+<wicket:link>
+    <link rel="shortcut icon" href="/images/favicon.ico" />
+</wicket:link>    
+</head>
+<body id="login-bg"> 
+ 
+<!-- Start: login-holder -->
+<div id="login-holder">
+
+    <!-- start logo -->
+    <div id="logo-login">
+        <a href="index.html"><img src="images/shared/logo.png" width="300" height="40" alt="" /></a>
+    </div>
+    <!-- end logo -->
     
-            <div class="clear"></div>
-         
-        </div>
-        <!--  end content-table-inner ............................................END  -->
-        </td>
-        <td id="tbl-border-right"></td>
-    </tr>
-    <tr>
-        <th class="sized bottomleft"></th>
-        <td id="tbl-border-bottom">&nbsp;</td>
-        <th class="sized bottomright"></th>
-    </tr>
-    </table>
-    <div class="clear">&nbsp;</div>
+    <div class="clear"></div>
+    
+    <!--  start loginbox ................................................................................. -->
+    <div id="loginbox">
+    
+    <!--  start login-inner -->
 
+    <div id="login-inner">
+        <!-- <div wicket:id="feedback" /> -->
+        <form >
+        <table border="0" cellpadding="0" cellspacing="0">
+        <tr><td><h2><wicket:message key="signout.goodbye"/></h2></td></tr>
+        <tr><td><a style="text-decoration: none; color: white;" href="/signIn"><wicket:message key="signout.signinAgain"/></a></td></tr>
+        </table>
+        </form>
+    </div>
+
+
+    <div class="clear"></div>
+
+ </div>
+ <!--  end loginbox -->
+ 
 </div>
-<!--  end content -->
-<div class="clear">&nbsp;</div>
-</div>
-<!--  end content-outer........................................................END -->
-
-<div class="clear">&nbsp;</div>
-</wicket:extend>
+<!-- End: login-holder -->
+</body>
+</html>
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            
+          

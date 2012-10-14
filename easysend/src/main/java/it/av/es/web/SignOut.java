@@ -15,6 +15,8 @@
  */
 package it.av.es.web;
 
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.protocol.https.RequireHttps;
 
 /**
@@ -24,13 +26,17 @@ import org.apache.wicket.protocol.https.RequireHttps;
  * 
  */
 @RequireHttps
-public class SignOut extends BasePageSimple {
+public class SignOut extends WebPage {
 
     /**
      * Constructor
      */
     public SignOut() {
         super();
+        
+        Label titlePage = new Label("pageTitle", ":: EasyTrack - Eurocargo ::");
+        add(titlePage);
+        getSession().invalidate();
         
     }
 
