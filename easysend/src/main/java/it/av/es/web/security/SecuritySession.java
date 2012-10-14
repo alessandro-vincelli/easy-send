@@ -15,10 +15,10 @@
  */
 package it.av.es.web.security;
 
-import java.util.Locale;
-
 import it.av.es.model.Project;
 import it.av.es.model.User;
+
+import java.util.Locale;
 
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;

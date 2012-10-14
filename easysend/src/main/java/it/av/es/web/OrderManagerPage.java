@@ -17,7 +17,6 @@ import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

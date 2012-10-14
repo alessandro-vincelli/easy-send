@@ -58,7 +58,6 @@ import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.apache.wicket.util.convert.converter.BigDecimalConverter;
 import org.json.JSONException;
 import org.json.JSONWriter;
 import org.slf4j.Logger;
