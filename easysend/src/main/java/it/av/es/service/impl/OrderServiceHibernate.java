@@ -236,4 +236,16 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return save(order);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void setAsInCharge(User user, Project project, Date date) {
+        Collection<Order> collection = get(user, project, date, true, 0, 0, null, true);
+        for (Order order : collection) {
+            order.setInCharge(true);
+            save(order);
+        }
+    }
+
 }

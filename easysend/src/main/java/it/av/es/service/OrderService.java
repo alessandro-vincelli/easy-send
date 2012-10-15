@@ -138,5 +138,15 @@ public interface OrderService {
      * @return
      */
     Order removeInCharge(Order order);
+
+    /**
+     * Set order on the given dates/project in charge
+     * 
+     * @param user
+     * @param project
+     * @param date
+     * @return
+     */
+    void setAsInCharge(User user, Project project, Date date);
     
 }

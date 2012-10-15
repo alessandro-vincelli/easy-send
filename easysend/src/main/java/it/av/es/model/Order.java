@@ -41,7 +41,7 @@ public class Order extends BasicEntity {
     public static final String ISPREPAYMENT_FIELD = "isPrePayment";
     public static final String PAYMENTTYPE_FIELD = "paymentType";
     public static final String SHIPPINGCOST_FIELD = "shippingCost";
-    public static final String REFERNCENUMBER_FIELD = "referenceNumber";
+    public static final String REFERENCENUMBER_FIELD = "referenceNumber";
     public static final String ISINCHARGE_FIELD = "isInCharge";
     public static final String ISCANCELLED_FIELD = "isCancelled";
 

@@ -78,7 +78,7 @@ public class OrderManagerPage extends BasePageSimple {
 
         List<IColumn<Order, String>> columns = new ArrayList<IColumn<Order, String>>();
 
-        columns.add(new PropertyColumn<Order, String>(new Model<String>("N"), Order.REFERNCENUMBER_FIELD, Order.REFERNCENUMBER_FIELD) {
+        columns.add(new PropertyColumn<Order, String>(new Model<String>("N"), Order.REFERENCENUMBER_FIELD, Order.REFERENCENUMBER_FIELD) {
             @Override
             public void populateItem(Item<ICellPopulator<Order>> item, String componentId, IModel<Order> rowModel) {
                 super.populateItem(item, componentId, rowModel);
@@ -143,18 +143,48 @@ public class OrderManagerPage extends BasePageSimple {
             }
 
         });
+        
+        final MessageDialog exportAsPDFButtonDialog = new MessageDialog("exportAsPDFButtonDialog", getString("dialog.exportAsPDFButtonDialogTitle"), getString("dialog.exportAsPDFButtonDialog")) {
+
+            @Override
+            protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                //put selected in Charge
+                if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                    try {
+                        Date date = orderDates.getModelObject();
+                        orderService.setAsInCharge(user, project, date);
+                    } catch (Exception e) {
+                        getFeedbackPanel().error("Error setting orders in charge");
+                    }
+                }
+                // then create the PDF
+                try {
+                    download.initiate(target);
+                } catch (Exception e) {
+                    getFeedbackPanel().error("Error generating PDF");
+                }
+                target.add(dataTable);
+                getFeedbackPanel().publishWithEffects(target);
+            }
+        };
+        add(exportAsPDFButtonDialog);
+        
         exportAsPDFButton = new AjaxLink<String>("exportAsPDFButton") {
 
             @Override
             public void onClick(AjaxRequestTarget target) {
                 try {
-                    download.initiate(target);
+                    if(orderDates.getModelObject() == null){
+                        getFeedbackPanel().warn(getString("message.noOrderDatesSelectForExport"));                        
+                    }
+                    else{
+                        exportAsPDFButtonDialog.show(target);   
+                    }
                 } catch (Exception e) {
-                    getFeedbackPanel().error("Error generating PDF");
-                    target.add(getFeedbackPanel());
+                    getFeedbackPanel().error(e.getMessage());
                 }
+                getFeedbackPanel().publishWithEffects(target);
             }
-
         };
         add(exportAsPDFButton);
         download = new AJAXDownload() {
@@ -162,8 +192,10 @@ public class OrderManagerPage extends BasePageSimple {
             @Override
             protected String getFileName() {
                 StringBuffer fileName = new StringBuffer(80);
-                //fileName.append(StringUtils.deleteWhitespace(message.getSender().getMessageboxAddress()));
-                fileName.append("_");
+                fileName.append(getSecuritySession().getCurrentProject().getName());
+                fileName.append("_of_");
+                fileName.append(DateUtil.SDF2DATE.print(orderDates.getModelObject().getTime()));
+                fileName.append("_print_");
                 fileName.append(DateUtil.SDF2DATE.print(new Date().getTime()));
                 fileName.append("_");
                 fileName.append(DateUtil.SDF2TIME.print(new Date().getTime()));
@@ -182,9 +214,9 @@ public class OrderManagerPage extends BasePageSimple {
                     public InputStream getInputStream() throws ResourceStreamNotFoundException {
                         PDFExporter pdfExporter = new PDFExporterImpl();
                         try {
-                            Date dat = orderDates.getModelObject();
-                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, excludeCancelledOrders, 0, 0, Order.REFERNCENUMBER_FIELD, true));
-                            is = pdfExporter.exportOrdersList(ord, dat, user, project, getLocalizer(), getPage());
+                            Date date = orderDates.getModelObject();
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
+                            is = pdfExporter.exportOrdersList(ord, date, user, project, getLocalizer(), getPage());
                             return is;
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -291,7 +323,7 @@ public class OrderManagerPage extends BasePageSimple {
                 // the timeout is needed to let Wicket release the channel
                 target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");
             } else {
-                getFeedbackPanel().info("Selezionare una data");
+                getFeedbackPanel().warn("Selezionare una data");
                 target.add(getFeedbackPanel());
             }
 
