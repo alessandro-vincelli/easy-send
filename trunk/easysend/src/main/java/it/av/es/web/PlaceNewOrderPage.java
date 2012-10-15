@@ -22,6 +22,8 @@ import it.av.es.service.CountryService;
 import it.av.es.service.CustomerService;
 import it.av.es.service.OrderService;
 import it.av.es.util.DateUtil;
+import it.av.es.web.component.ButtonName;
+import it.av.es.web.component.MessageDialog;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -111,6 +113,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private Form<Order> formNewOrder;
     private Project currentProject;
     private static Logger log = LoggerFactory.getLogger(PlaceNewOrderPage.class);
+    private int currentStep = 1;
+    private AjaxSubmitLink submitBack;
 
     public PlaceNewOrderPage() {
         super();
@@ -223,7 +227,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
 
             @Override
             protected void populateItem(final ListItem<ProductOrdered> item) {
-                item.add(new Label(Integer.toString(item.getIndex() + 1)));
+                item.add(new Label("index", Integer.toString(item.getIndex() + 1)));
                 item.add(new TextField<Product>("product.name").setEnabled(false));;
                 item.add(new TextField<Integer>("number").setEnabled(false));
                 item.add(new TextField<BigDecimal>("amount", BigDecimal.class).setEnabled(false));
@@ -313,7 +317,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     target.add(getFeedbackPanel());
                 }
                 else{
-                    moveStep();
+                    currentStep = currentStep + 1;
+                    moveStep(currentStep);
                     target.add(form);
                     target.add(fakeTabs);
                     target.add(getFeedbackPanel());
@@ -328,11 +333,55 @@ public class PlaceNewOrderPage extends BasePageSimple {
         };
         formNewOrder.add(submitNext);
         
+        submitBack = new AjaxSubmitLink("submitBack") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                currentStep = currentStep - 1;
+                moveStep(currentStep);
+                target.add(form);
+                target.add(fakeTabs);
+                target.add(getFeedbackPanel());
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form form) {
+                getFeedbackPanel().anyErrorMessage();
+                target.add(getFeedbackPanel());
+            }
+        };
+        formNewOrder.add(submitBack.setVisible(false));
+        
+        final MessageDialog warningDialog = new MessageDialog("warningDialog", getString("dialog.confirmSaveNewOrderTitle"), getString("dialog.confirmSaveNewOrder")) {
+            
+            @Override
+            protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                    Order o = (Order) formNewOrder.getModelObject();
+                    Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+                  currentStep = currentStep + 1;
+                  moveStep(currentStep);
+                    try {
+                        orderService.sendNotificationNewOrder(newOrder);
+
+                    } catch (Exception e) {
+                        getFeedbackPanel().warn("Si sono verificati dei problemi durante l'invio dell'email di notifica");
+                        log.error("Error sending new order notification", e);
+                    }
+                    getFeedbackPanel().success("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
+//                    formNewOrder.setEnabled(false);
+                    target.add(formNewOrder);
+                    target.add(fakeTabs);
+                    getFeedbackPanel().publishWithEffects(target);
+                }
+            }
+        };
+        formNewOrder.add(warningDialog);
+        
         submitConfirm = new AjaxSubmitLink("submitConfirm") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                moveStep();
                 Order o = (Order) form.getModelObject();
                 //some validations
                 if(o.getProductsOrdered() == null || o.getProductsOrdered().size() == 0){
@@ -341,17 +390,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 }
                 //save the order
                 else{
-                    Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                    try {
-                        orderService.sendNotificationNewOrder(newOrder);
-                    } catch (Exception e) {
-                        getFeedbackPanel().warn("Si sono verificati dei problemi durante l'invio dell'email di notifica");
-                        log.error("Error sending new order notification", e);
-                    }
-                    formNewOrder.setEnabled(false);
-                    target.add(form);
-                    target.add(fakeTabs);
-                    getFeedbackPanel().success("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
+                    warningDialog.show(target);
                 }
                 getFeedbackPanel().publishWithEffects(target);
             }
@@ -367,10 +406,30 @@ public class PlaceNewOrderPage extends BasePageSimple {
     }
     
 
-    private void moveStep(){
-        if (step1.isVisible()) {
+    private void moveStep(int step){
+        if (step == 1) {
+            step1.setVisible(true);
+            step2.setVisible(false);
+            step3.setVisible(false);
+            submitBack.setVisible(false);
+            submitNext.setVisible(true);
+            step1Number.add(AttributeModifier.replace("class", "step-no"));
+            step1Left.add(AttributeModifier.replace("class", "step-dark-left"));
+            step1Right.add(AttributeModifier.replace("class", "step-dark-right"));
+            step2Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step2Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step2Right.add(AttributeModifier.replace("class", "step-light-right"));
+            step3Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step3Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step3Right.add(AttributeModifier.replace("class", "step-light-right"));
+        }
+        else if (step == 2) {
             step1.setVisible(false);
             step2.setVisible(true);
+            step3.setVisible(false);
+            submitBack.setVisible(true);
+            submitNext.setVisible(true);
+            submitConfirm.setVisible(false);
             step1Number.add(AttributeModifier.replace("class", "step-no-off"));
             step1Left.add(AttributeModifier.replace("class", "step-light-left"));
             step1Right.add(AttributeModifier.replace("class", "step-light-right"));
@@ -381,9 +440,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step3Left.add(AttributeModifier.replace("class", "step-light-left"));
             step3Right.add(AttributeModifier.replace("class", "step-light-right"));
         }
-        else if (step2.isVisible()) {
+        else if (step == 3) {
+            step1.setVisible(false);
             step2.setVisible(false);
             step3.setVisible(true);
+            submitBack.setVisible(true);
             step1Number.add(AttributeModifier.replace("class", "step-no-off"));
             step1Left.add(AttributeModifier.replace("class", "step-light-left"));
             step1Right.add(AttributeModifier.replace("class", "step-light-right"));
@@ -393,10 +454,13 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step3Number.add(AttributeModifier.replace("class", "step-no"));
             step3Left.add(AttributeModifier.replace("class", "step-dark-left"));
             step3Right.add(AttributeModifier.replace("class", "step-dark-right"));
+            step4Number.add(AttributeModifier.replace("class", "step-no-off"));
+            step4Left.add(AttributeModifier.replace("class", "step-light-left"));
+            step4Right.add(AttributeModifier.replace("class", "step-light-right"));
             submitConfirm.setVisible(true);
             submitNext.setVisible(false);
         }
-        else if (step3.isVisible()) {
+        else if (step == 4) {
             step1Number.add(AttributeModifier.replace("class", "step-no-off"));
             step1Left.add(AttributeModifier.replace("class", "step-light-left"));
             step1Right.add(AttributeModifier.replace("class", "step-light-right"));
@@ -409,6 +473,10 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step4Number.add(AttributeModifier.replace("class", "step-no"));
             step4Left.add(AttributeModifier.replace("class", "step-dark-left"));
             step4Right.add(AttributeModifier.replace("class", "step-dark-round"));
+            step3.setEnabled(false);
+            submitConfirm.setEnabled(false);
+            submitBack.setVisible(false);
+            submitNext.setVisible(false);
         }
     }
     

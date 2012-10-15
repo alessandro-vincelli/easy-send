@@ -329,7 +329,6 @@ public class OrderManagerPage extends BasePageSimple {
                             getFeedbackPanel().info(getString("order.orderCancelled"));
                         } catch (Exception e) {
                             getFeedbackPanel().error(getString("order.orderCancellNotPossible"));
-                            target.add(getFeedbackPanel());
                         }
                         target.add(dataTable);
                         target.add(getFeedbackPanel());
