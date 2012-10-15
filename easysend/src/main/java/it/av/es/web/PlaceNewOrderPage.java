@@ -140,17 +140,15 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1 = new WebMarkupContainer("step1");
         formNewOrder.add(step1);
         
-        step1.add(new TextField<String>("customer.corporateName").setRequired(true).setEnabled(false));
-
-
-        step1.add(new TextField<String>("customer.email").setEnabled(false));
-        step1.add(new TextField<String>("customer.phoneNumber").setRequired(true).setEnabled(false));
-        step1.add(new TextField<String>("customer.faxNumber").setEnabled(false));
-        step1.add(new TextField<String>("customer.partitaIvaNumber").setEnabled(false));
-        step1.add(new TextField<String>("customer.codiceFiscaleNumber").setEnabled(false));
+        step1.add(new Label("customer.corporateName"));
+        step1.add(new Label("customer.email"));
+        step1.add(new Label("customer.phoneNumber"));
+        step1.add(new Label("customer.faxNumber"));
+        step1.add(new Label("customer.partitaIvaNumber"));
+        step1.add(new Label("customer.codiceFiscaleNumber"));
         step1.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setEnabled(false));
-        step1.add(new TextField<String>("customer.iban").setEnabled(false));
-        step1.add(new TextField<String>("customer.bankName").setEnabled(false));
+        step1.add(new Label("customer.iban"));
+        step1.add(new Label("customer.bankName"));
         step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setEnabled(false));
         step1.add(new DropDownChoice<ClosingRange>("customer.closingRange", Arrays.asList(ClosingRange.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingRange>()).setEnabled(false));
         step1.add(new DropDownChoice<DeploingType>("customer.deployngType", Arrays.asList(DeploingType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeploingType>()).setEnabled(false));
@@ -174,7 +172,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         checks.add(checksList);
 
         step1.add(new DropDownChoice<DeliveryType>("customer.deliveryType", Arrays.asList(DeliveryType.values())).setChoiceRenderer(new EnumChoiceRenderer<DeliveryType>()).setEnabled(false));
-        step1.add(new TextField<String>("customer.deliveryNote").setEnabled(false));
+        step1.add(new Label("customer.deliveryNote"));
         step1.add(new DropDownChoice<DeliveryVehicle>("customer.deliveryVehicle", Arrays.asList(DeliveryVehicle.values()))
                 .setChoiceRenderer(new EnumChoiceRenderer<DeliveryVehicle>()).setEnabled(false));
 
@@ -224,11 +222,29 @@ public class PlaceNewOrderPage extends BasePageSimple {
         PropertyListView<ProductOrdered> listViewProductsOrdered = new PropertyListView<ProductOrdered>(Order.PRODUCTSORDERED_FIELD) {
 
             @Override
-            protected void populateItem(ListItem<ProductOrdered> item) {
+            protected void populateItem(final ListItem<ProductOrdered> item) {
+                item.add(new Label(Integer.toString(item.getIndex() + 1)));
                 item.add(new TextField<Product>("product.name").setEnabled(false));;
                 item.add(new TextField<Integer>("number").setEnabled(false));
                 item.add(new TextField<BigDecimal>("amount", BigDecimal.class).setEnabled(false));
                 item.add(new TextField<Integer>("discount", Integer.class).setEnabled(false));
+                AjaxSubmitLink removeProduct = new AjaxSubmitLink("removeProduct", formNewOrder) {
+
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        super.onSubmit(target, form);
+                        formNewOrder.getModelObject().getProductsOrdered().remove(item.getIndex());
+                        target.add(form);
+                        getFeedbackPanel().publishWithEffects(target);
+                    }
+
+                    @Override
+                    protected void onError(AjaxRequestTarget target, Form<?> form) {
+                        super.onError(target, form);
+                        getFeedbackPanel().publishWithEffects(target);
+                    }
+                };
+                item.add(removeProduct);
             }
         };
         productsOrderedContanier.add(listViewProductsOrdered);

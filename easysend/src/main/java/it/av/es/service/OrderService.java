@@ -121,4 +121,22 @@ public interface OrderService {
      */
     Order sendNotificationNewOrder(Order order);
 
+    
+    /**
+     * Sets this order as in charge 
+     * 
+     * @param order
+     * @return
+     */
+    Order setAsInCharge(Order order);
+        
+    
+    /**
+     * Remove this order as in charge 
+     * 
+     * @param order
+     * @return
+     */
+    Order removeInCharge(Order order);
+    
 }

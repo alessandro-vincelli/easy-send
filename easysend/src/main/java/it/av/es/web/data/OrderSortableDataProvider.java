@@ -46,12 +46,13 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private User user;
     private Project project;
     private Date filterDate;
-    private boolean excludeCancelledOrder;
+    private Boolean excludeCancelledOrder;
 
-    public OrderSortableDataProvider(User user, Project project) {
+    public OrderSortableDataProvider(User user, Project project, Boolean excludeCancelledOrder) {
         super();
         this.user = user;
         this.project = project;
+        this.excludeCancelledOrder = excludeCancelledOrder;
         Injector.get().inject(this);
         setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
         results = orderService.get(user, project, filterDate, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());

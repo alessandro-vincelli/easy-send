@@ -82,7 +82,7 @@ public class CustomerPage extends BasePageSimple {
     private ProvinciaService provinciaService;
     @SpringBean
     private CountryService countryService;
-    private Select2Choice<String> zipCode;
+    //private Select2Choice<String> zipCode;
     private DropDownChoice<String> province;
     private Customer customer = new Customer();
 
@@ -197,10 +197,11 @@ public class CustomerPage extends BasePageSimple {
                 final DropDownChoice<String> province = new DropDownChoice<String>("province", provinciaService.getAllSigle());
                 province.setRequired(true).setOutputMarkupId(true);
                 item.add(province);
-                final Select2Choice<String> zipCode = new Select2Choice<String>("zipcode", new PropertyModel<String>(item.getModel(), "zipcode"), new ZipcodeProvider() {
-                });
-                zipCode.setRequired(true);
-                item.add(zipCode);
+                item.add(new TextField<String>("zipcode").setRequired(true));
+//                final Select2Choice<String> zipCode = new Select2Choice<String>("zipcode", new PropertyModel<String>(item.getModel(), "zipcode"), new ZipcodeProvider() {
+//                });
+//                zipCode.setRequired(true);
+                //item.add(zipCode);
                 final Select2Choice<City> city = new Select2Choice<City>("city", new PropertyModel<City>(item.getModel(), "city"), new CityProvider() {
                 });
                 city.add(new OnChangeAjaxBehavior() {
@@ -216,7 +217,7 @@ public class CustomerPage extends BasePageSimple {
                         if (provinces != null && provinces.size() == 1) {
                             item.getModelObject().setProvince(provinces.get(0));
                         }
-                        target.add(zipCode);
+                        //target.add(zipCode);
                         target.add(province);
                     }
                 });
@@ -228,24 +229,37 @@ public class CustomerPage extends BasePageSimple {
         };
         formNewOrder.add(addresses);
         
-        AjaxLink<String> addNewAddress = new AjaxLink<String>("addNewAddress") {
+        AjaxSubmitLink addNewAddress = new AjaxSubmitLink("addNewAddress", formNewOrder) {
+
             @Override
-            public void onClick(AjaxRequestTarget target) {
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
                 formNewOrder.getModelObject().addAddresses(new Address());
-                target.add(formNewOrder);
+                target.add(form);
+                getFeedbackPanel().publishWithEffects(target);
             }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                super.onError(target, form);
+                getFeedbackPanel().publishWithEffects(target);
+            }
+            
         };
         formNewOrder.add(addNewAddress);
         
-        AjaxLink<String> addNewAddress2 = new AjaxLink<String>("addNewAddress2") {
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                formNewOrder.getModelObject().addAddresses(new Address());
-                target.add(formNewOrder);
-            }
-        };
-        add(addNewAddress2);
-        
+//        AjaxSubmitLink addNewAddress2 = new AjaxSubmitLink("addNewAddress2", formNewOrder) {
+//
+//            @Override
+//            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+//                super.onSubmit(target, form);
+//                formNewOrder.getModelObject().addAddresses(new Address());
+//                target.add(formNewOrder);
+//            }
+//            
+//        };
+//        formNewOrder.add(addNewAddress2);
+                
         formNewOrder.add(new AjaxSubmitLink("submit") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {

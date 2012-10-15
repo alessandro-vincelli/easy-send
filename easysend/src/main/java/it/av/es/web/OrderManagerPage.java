@@ -43,6 +43,7 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -68,7 +69,7 @@ public class OrderManagerPage extends BasePageSimple {
     private Project project;
     private AjaxLink<String> exportAsPDFButton;
     private DropDownChoice<Date> orderDates;
-    private AjaxCheckBox excludeCancelledOrders;
+    private boolean excludeCancelledOrders = true;
 
     public OrderManagerPage() {
         super();
@@ -181,8 +182,7 @@ public class OrderManagerPage extends BasePageSimple {
                         PDFExporter pdfExporter = new PDFExporterImpl();
                         try {
                             Date dat = orderDates.getModelObject();
-                            Boolean excludeCanccelled = excludeCancelledOrders.getModelObject();
-                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, excludeCanccelled, 0, 0, Order.REFERNCENUMBER_FIELD, true));
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, dat, excludeCancelledOrders, 0, 0, Order.REFERNCENUMBER_FIELD, true));
                             is = pdfExporter.exportOrdersList(ord, dat, user, project, getLocalizer(), getPage());
                             return is;
                         } catch (Exception e) {
@@ -200,7 +200,7 @@ public class OrderManagerPage extends BasePageSimple {
 
         };
         add(download);
-        dataProvider = new OrderSortableDataProvider(user, project);
+        dataProvider = new OrderSortableDataProvider(user, project, excludeCancelledOrders);
         dataTable = new CustomAjaxFallbackDefaultDataTable<Order, String>("dataTable", columns, dataProvider, 25) {
 
             @Override
@@ -226,7 +226,7 @@ public class OrderManagerPage extends BasePageSimple {
         };
         add(dataTable);
         
-        excludeCancelledOrders = new AjaxCheckBox("excludeCancelledOrders", new Model<Boolean>(false)) {
+        AjaxCheckBox excludeCancelledOrders = new AjaxCheckBox("excludeCancelledOrders", new PropertyModel<Boolean>(this, "excludeCancelledOrders")) {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
@@ -338,13 +338,40 @@ public class OrderManagerPage extends BasePageSimple {
 
             };
             add(warningDialog);
-            add(new AjaxFallbackLink<Order>("remove", model) {
+            AjaxFallbackLink<Order> buttonCancelOrder = new AjaxFallbackLink<Order>("remove", model) {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
                     warningDialog.show(target);
                 }
-            });
+            };
+            if((model.getObject().getIsCancelled()))buttonCancelOrder.setEnabled(false);
+            add(buttonCancelOrder);
+            
+            AjaxFallbackLink<Order> buttonInCharge = new AjaxFallbackLink<Order>("buttonInCharge", model) {
+
+                @Override
+                protected void onComponentTag(ComponentTag tag) {
+                    super.onComponentTag(tag);
+                    if(getModelObject().getIsInCharge()){
+                        tag.addBehavior(AttributeModifier.replace("title", getString("button.removeInChargeOrder")));    
+                    }
+                    else{
+                        tag.addBehavior(AttributeModifier.replace("title", getString("button.inChargeOrder")));
+                    }   
+                }
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    orderService.setAsInCharge(getModelObject());
+                    target.add(dataTable);
+                }
+            };
+            User loggedInUser2 = getSecuritySession().getLoggedInUser();
+            boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
+            buttonInCharge.setVisible(operator);
+            if((model.getObject().getIsInCharge()))buttonInCharge.setEnabled(false);
+            add(buttonInCharge);
         }
 
     }
