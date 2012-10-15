@@ -157,7 +157,7 @@ public final class PDFExporterImpl implements PDFExporter {
                 table.addCell(builderNormalLeft(commodity.toString()));
                 table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
                 table.addCell(builderNormalLeft(o.getCustomerAddressForDisplay()));
-                table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name(), component)));
+                table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
                 table.addCell(builderNormalLeft(o.getNotes()));                
 
             }
