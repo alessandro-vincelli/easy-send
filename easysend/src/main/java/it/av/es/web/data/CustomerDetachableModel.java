@@ -19,6 +19,7 @@ import it.av.es.EasySendException;
 import it.av.es.model.Customer;
 import it.av.es.service.CustomerService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -48,18 +49,10 @@ public class CustomerDetachableModel extends LoadableDetachableModel<Customer> {
      * @param id
      */
     public CustomerDetachableModel(String id) {
-        if (id.equals("")) {
+        if (StringUtils.isBlank(id)) {
             throw new IllegalArgumentException();
         }
         this.id = id;
-    }
-
-    /**
-     * @see java.lang.Object#hashCode()
-     */
-    @Override
-    public final int hashCode() {
-        return Long.valueOf(id).hashCode();
     }
 
     /**

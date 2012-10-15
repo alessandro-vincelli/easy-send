@@ -19,6 +19,7 @@ import it.av.es.EasySendException;
 import it.av.es.model.Order;
 import it.av.es.service.OrderService;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.injection.Injector;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -48,7 +49,7 @@ public class OrderDetachableModel extends LoadableDetachableModel<Order> {
      * @param id
      */
     public OrderDetachableModel(String id) {
-        if (id.equals("")) {
+        if (StringUtils.isBlank(id)) {
             throw new IllegalArgumentException();
         }
         this.id = id;
