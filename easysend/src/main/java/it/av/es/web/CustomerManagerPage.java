@@ -2,10 +2,13 @@ package it.av.es.web;
 
 import it.av.es.model.Customer;
 import it.av.es.service.CustomerService;
+import it.av.es.web.component.ButtonName;
+import it.av.es.web.component.MessageDialog;
 import it.av.es.web.data.CustomerSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -63,7 +66,7 @@ public class CustomerManagerPage extends BasePageSimple {
 
     public class ActionPanel extends Panel {
 
-        public ActionPanel(String id, IModel<Customer> model) {
+        public ActionPanel(String id, final IModel<Customer> model) {
             super(id, model);
             Injector.get().inject(this);
             add(new AjaxFallbackLink<Customer>("edit", model) {
@@ -73,17 +76,30 @@ public class CustomerManagerPage extends BasePageSimple {
                     setResponsePage(CustomerPage.class, new PageParameters().add(CustomHttpParams.CUSTOMER_ID, getModelObject().getId()));
                 }
             });
+            
+            final MessageDialog warningDialog = new MessageDialog("warningDialog", getString("dialog.warningDialogOnDeleteCustomerDialogTitle"), getString("dialog.warningDialogOnDeleteCustomerDialog")) {
+
+                @Override
+                protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                    if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                        try {
+                            customerService.remove(model.getObject());
+                        } catch (Exception e) {
+                            getFeedbackPanel().error(getString("message.impossibleRemoveCustomer"));
+                            getFeedbackPanel().publishWithEffects(target);
+                        }
+                    }
+                    target.add(dataTable);
+                    getFeedbackPanel().publishWithEffects(target);
+                }
+            };
+            add(warningDialog);
+            
             add(new AjaxFallbackLink<Customer>("remove", model) {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    try {
-                        customerService.remove(getModelObject());
-                    } catch (Exception e) {
-                        getFeedbackPanel().error("Impossibile rimuovere il cliente, ci sono ordini associati al cliente.");
-                        getFeedbackPanel().publishWithEffects(target);
-                    }
-                    target.add(dataTable);
+                    warningDialog.show(target);
                 }
             });
         }
