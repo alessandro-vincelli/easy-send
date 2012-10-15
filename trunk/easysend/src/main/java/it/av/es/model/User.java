@@ -2,6 +2,7 @@ package it.av.es.model;
 
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -73,7 +74,7 @@ public class User extends BasicEntity implements Comparable<User> {
     private Country country;
     private String phoneNumber;
     private String faxNumber;
-    
+
     private String codiceFiscaleNumber;
     private String partitaIvaNumber;
 
@@ -95,12 +96,12 @@ public class User extends BasicEntity implements Comparable<User> {
     private UserProfile userProfile;
     @Version
     private int version;
-    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch=FetchType.EAGER )
+    @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE }, targetEntity = Project.class, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private Set<Project> projects;
     @OneToMany
     public Set<Order> orders;
-    @OneToMany(fetch=FetchType.EAGER )
+    @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     public Set<Customer> customers;
 
@@ -195,7 +196,7 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setVersion(int version) {
         this.version = version;
     }
-    
+
     public Set<Project> getProjects() {
         return projects;
     }
@@ -211,7 +212,7 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setOrders(Set<Order> orders) {
         this.orders = orders;
     }
-        
+
     public Set<Customer> getCustomers() {
         return customers;
     }
@@ -219,7 +220,7 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setCustomers(Set<Customer> customers) {
         this.customers = customers;
     }
-    
+
     public String getAddress() {
         return address;
     }
@@ -292,15 +293,15 @@ public class User extends BasicEntity implements Comparable<User> {
         this.partitaIvaNumber = partitaIvaNumber;
     }
 
-    public void addCustomer(Customer customer){
-        if(customers ==null){
+    public void addCustomer(Customer customer) {
+        if (customers == null) {
             customers = new HashSet<Customer>();
         }
         customers.add(customer);
     }
-    
-    public void addProject(Project prj){
-        if(projects ==null){
+
+    public void addProject(Project prj) {
+        if (projects == null) {
             projects = new HashSet<Project>();
         }
         projects.add(prj);
@@ -319,6 +320,16 @@ public class User extends BasicEntity implements Comparable<User> {
             return o.getLastname().compareToIgnoreCase(getLastname());
         } else {
             return o.getFirstname().compareToIgnoreCase(getFirstname());
+        }
+    }
+
+    public void removeCustomer(Customer customer) {
+        Iterator<Customer> it = customers.iterator();
+        while (it.hasNext()) {
+            Customer item = it.next();
+            if (item.equals(customer)) {
+                it.remove();
+            }
         }
     }
 }
