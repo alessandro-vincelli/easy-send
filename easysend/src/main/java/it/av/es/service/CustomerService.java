@@ -43,14 +43,14 @@ public interface CustomerService extends ApplicationService<Customer> {
      * 
      * @param customer
      * @param user user that relates to the recipient
-     * @return just saved profile
+     * @return just saved customer
      */
     Customer save(Customer customer, User user);
 
     /**
-     * Get all the user profile
+     * Get all the customers
      * 
-     * @return all the user profile
+     * @return all the customers
      */
     List<Customer> getAll();
     
@@ -67,11 +67,11 @@ public interface CustomerService extends ApplicationService<Customer> {
     List<Customer> get(User user, int firstResult, int maxResult, String sortProperty, boolean isAscending);
 
     /**
-     * Remove a profile
+     * Remove a customer
      * 
-     * @param profile
+     * @param customer
      */
-    void remove(Customer profile);
+    void remove(Customer customer);
     
     /**
      * Return the order by id

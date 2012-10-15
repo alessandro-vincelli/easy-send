@@ -15,6 +15,7 @@
  */
 package it.av.es.service;
 
+import it.av.es.model.Customer;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 
@@ -189,4 +190,12 @@ public interface UserService {
      * @param prj
      */
     void removeUserFromProject(User user, Project prj);
+    
+    /**
+     * Remove a customer from a user
+     * 
+     * @param user
+     * @param customer
+     */
+    void removeCustomer(User user, Customer customer);
 }

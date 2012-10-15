@@ -113,4 +113,15 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
 
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
+    public void remove(Customer customer) {
+        User u = userService.getByID(customer.getUser().getId());
+        userService.removeCustomer(u, customer);
+        super.remove(customer);
+    }
+
 }

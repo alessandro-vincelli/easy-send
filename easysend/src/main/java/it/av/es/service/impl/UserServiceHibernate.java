@@ -17,6 +17,7 @@ package it.av.es.service.impl;
 
 import it.av.es.EasySendException;
 import it.av.es.UserAlreadyExistsException;
+import it.av.es.model.Customer;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.model.UserProfile;
@@ -259,5 +260,12 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
         prj.getUsers().remove(user);
         update(user);
         projectService.save(prj);
+    }
+
+    @Override
+    public void removeCustomer(User user, Customer customer) {
+        user = getByID(user.getId());
+        user.removeCustomer(customer);
+        save(user);
     }
 }
