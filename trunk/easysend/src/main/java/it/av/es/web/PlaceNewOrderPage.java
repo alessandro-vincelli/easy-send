@@ -115,6 +115,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private static Logger log = LoggerFactory.getLogger(PlaceNewOrderPage.class);
     private int currentStep = 1;
     private AjaxSubmitLink submitBack;
+    private Select2Choice<Customer> customerField;
 
     public PlaceNewOrderPage() {
         super();
@@ -126,13 +127,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
         add(formNewOrder);
         addFakeTabs(this);
         
-        // add the single-select component
-        final Select2Choice<Customer> customer = new Select2Choice<Customer>("customer", new Model<Customer>(new Customer()), new RecipientProvider());
-        formNewOrder.add(customer);
-        customer.add(new OnChangeAjaxBehavior() {
+        customerField = new Select2Choice<Customer>("customer", new Model<Customer>(new Customer()), new RecipientProvider());
+        formNewOrder.add(customerField);
+        customerField.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                Customer rcp = customer.getModelObject();
+                Customer rcp = customerField.getModelObject();
                 Customer customer2 = customerService.getByID(rcp.getId());
                 model.getObject().setCustomer(customer2);
                 model.getObject().setShippingAddress(customer2.getDefaultShippingAddresses());
@@ -310,7 +310,6 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                customer.setEnabled(false);
                 Order o = (Order) form.getModelObject();
                 if(o.getCustomer().getCorporateName() == null){
                     getFeedbackPanel().warn("È necessario selezionare un cliente come destinatario");
@@ -413,6 +412,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step3.setVisible(false);
             submitBack.setVisible(false);
             submitNext.setVisible(true);
+            customerField.setEnabled(true);
             step1Number.add(AttributeModifier.replace("class", "step-no"));
             step1Left.add(AttributeModifier.replace("class", "step-dark-left"));
             step1Right.add(AttributeModifier.replace("class", "step-dark-right"));
@@ -427,6 +427,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step1.setVisible(false);
             step2.setVisible(true);
             step3.setVisible(false);
+            customerField.setEnabled(false);
             submitBack.setVisible(true);
             submitNext.setVisible(true);
             submitConfirm.setVisible(false);
@@ -444,6 +445,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step1.setVisible(false);
             step2.setVisible(false);
             step3.setVisible(true);
+            customerField.setEnabled(false);
             submitBack.setVisible(true);
             step1Number.add(AttributeModifier.replace("class", "step-no-off"));
             step1Left.add(AttributeModifier.replace("class", "step-light-left"));
