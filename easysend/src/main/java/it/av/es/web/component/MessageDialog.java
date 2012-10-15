@@ -27,6 +27,13 @@ public abstract class MessageDialog extends ModalWindow {
         setInitialWidth(400);
     }
 
+  @Override
+  public void show(AjaxRequestTarget target) {
+      super.show(target);
+//      target.appendJavaScript("Wicket.Window.create(settings).show()");
+  }
+
+    
     protected abstract void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName);
 
 }
