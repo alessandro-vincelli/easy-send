@@ -90,6 +90,7 @@ public class OrderManagerPage extends BasePageSimple {
             public void populateItem(Item<ICellPopulator<Order>> item, String componentId, IModel<Order> rowModel) {
                 item.add(new Label(componentId, getString(rowModel.getObject().getIsInCharge().toString())));
                 item.add(AttributeModifier.prepend("style", "text-align: center;"));
+                item.add(AttributeModifier.prepend("title", "In Lavorazione"));
             }
         });
         columns.add(new PropertyColumn<Order, String>(new Model<String>("Cliente"), Order.CUSTOMER_FIELD + ".corporateName", Order.CUSTOMER_FIELD + ".corporateName"));
@@ -213,9 +214,11 @@ public class OrderManagerPage extends BasePageSimple {
                             super.onComponentTag(tag);
                             Order order = getModelObject();
                             if (order != null && order.getIsCancelled()) {
-                                tag.put("style", "background-color: #D8D8D8;");
+                                tag.put("style", "background-color: #EBEBEB;");
                             }
-
+                            else if (order != null && order.getIsInCharge()) {
+                                tag.put("style", "background-color: #E2FFEC;");
+                            }
                         }
 
                     };
@@ -362,14 +365,18 @@ public class OrderManagerPage extends BasePageSimple {
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    orderService.setAsInCharge(getModelObject());
+                    if(getModelObject().getIsInCharge()){
+                        orderService.removeInCharge(getModelObject());
+                    }
+                    else{
+                        orderService.setAsInCharge(getModelObject());    
+                    }
                     target.add(dataTable);
                 }
             };
             User loggedInUser2 = getSecuritySession().getLoggedInUser();
             boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
             buttonInCharge.setVisible(operator);
-            if((model.getObject().getIsInCharge()))buttonInCharge.setEnabled(false);
             add(buttonInCharge);
         }
 
