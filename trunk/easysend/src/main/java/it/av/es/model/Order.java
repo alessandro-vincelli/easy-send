@@ -299,7 +299,7 @@ public class Order extends BasicEntity {
             setShippingCost(project.getShippingCost());
         }
     }
-    
+        
     public ProductOrdered addProductOrdered(Product product, int numberOfProds) {
         ProductOrdered ordered = new ProductOrdered();
         ordered.setProduct(product);

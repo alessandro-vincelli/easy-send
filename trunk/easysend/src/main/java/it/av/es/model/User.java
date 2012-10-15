@@ -46,6 +46,7 @@ public class User extends BasicEntity implements Comparable<User> {
     public static final String SOCIALTYPE = "socialType";
     public static final String SOCIALUID = "socialUID";
     public static final String CREATIONTIME = "creationTime";
+    public static final String PHONENUMBER = "phoneNumber";
     public static final String SEX = "sex";
 
     @Column(nullable = false)

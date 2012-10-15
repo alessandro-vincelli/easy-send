@@ -67,9 +67,9 @@ $(document).ready(function() {
         <colgroup wicket:id="step1">
 		<tr>
 			<th valign="top"><wicket:message key="customer.corporateName"/></th>
-			<td><input type="text" class="inp-form"  wicket:id="customer.corporateName" /></td>
+			<td><span wicket:id="customer.corporateName"></span></td>
             <th valign="top"><wicket:message key="customer.email"/></th>
-            <td><input type="text" wicket:id="customer.email" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.email"></span></td>
 		</tr>
 <!-- 		<tr>
 			<th valign="top"><wicket:message key="customer.address"/></th>
@@ -89,25 +89,25 @@ $(document).ready(function() {
         </tr> -->
         <tr>
             <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
-            <td><input type="text" wicket:id="customer.phoneNumber" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.phoneNumber"></span></td>
             <th valign="top"><wicket:message key="customer.faxNumber"/></th>
-            <td><input type="text" wicket:id="customer.faxNumber" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.faxNumber"></span></td>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.partitaIvaNumber"/></th>
-            <td><input type="text" wicket:id="customer.partitaIvaNumber" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.partitaIvaNumber"></span></td>
             <th valign="top"><wicket:message key="customer.codiceFiscaleNumber"/></th>
-            <td><input type="text" wicket:id="customer.codiceFiscaleNumber" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.codiceFiscaleNumber"></span></td>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
             <td><select wicket:id="customer.paymentType"></select></td>
             <th valign="top"><wicket:message key="customer.iban"/></th>
-            <td><input type="text" wicket:id="customer.iban" class="inp-form-small" /></td>
+            <td><span wicket:id="customer.iban"></span></td>
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.bankName"/></th>
-            <td><input type="text" wicket:id="customer.bankName" class="inp-form" /></td>
+            <td><span wicket:id="customer.bankName"></span></td>
             <td></td>
         </tr>
         <tr>
@@ -149,7 +149,7 @@ $(document).ready(function() {
         </tr>
         <tr>
             <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
-            <td><input type="text" wicket:id="customer.deliveryNote" class="inp-form" /></td>
+            <td><span wicket:id="customer.deliveryNote"></span></td>
         </tr>
         </colgroup>
         <colgroup wicket:id="step2">
@@ -204,27 +204,31 @@ $(document).ready(function() {
             <td colspan="4">
             <table id="product-ordered" width="100%" cellspacing="0" cellpadding="0" border="0" >
             <tr valign="top" style="border-top: 1px solid #E8E8E8;">
-            <th>Prodotto</th>
-            <th>N. Cartoni</th>
-            <th>Importo</th>
-            <th>Sconto %</th>
+            <th style="min-width: 5px; width: 5px; padding: 2px;">N.</th>
+            <th style="min-width: 250px; width: 250px; padding: 2px;">Prodotto</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">N. Cartoni</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">Importo</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">Sconto %</th>
+            <th style="min-width: 30px; width: 30px; padding: 2px;"></th>
             </tr>
             <tr valign="top" wicket:id="productsOrdered">
-            <td><input type="text" wicket:id="product.name" class="inp-form" /></td>
-            <td><input type="text" wicket:id="number" class="inp-form-xsmall" style="text-align: right;"/></td>
-            <td><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
-            <td><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
+            <td style="min-width: 5px; width: 5px; padding: 2px;"><span wicket:id="index"/></td>
+            <td style="min-width: 250px; width: 250px; padding: 2px;"><input type="text" wicket:id="product.name" class="inp-form" /></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="number" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="button" wicket:id="removeProduct" class="button-green-small" value="Ð" style="text-align: center;"/></td>
             </tr>
             <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
-            <th><wicket:message key="order.shippingCost"/>:</th>
+            <th style="min-width: 250px; width: 250px; padding: 2px;"><wicket:message key="order.shippingCost"/>:</th>
             <td></td>
-            <td><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
             <td></td>
             </tr>            
             <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
-            <th>Totale:</th>
-            <td><input type="text" wicket:id="numberOfItemsInProductOrdered" class="inp-form-xsmall" style="text-align: right;"/></td>
-            <td><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <th style="min-width: 250px; width: 250px; padding: 2px;">Totale:</th>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" wicket:id="numberOfItemsInProductOrdered" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
             <td></td>
             </tr>
             </table>

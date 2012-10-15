@@ -38,7 +38,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  */
 @RequireHttps
-@AuthorizeInstantiation({ "USER", "ADMIN" })
+@AuthorizeInstantiation( { "USER", "ADMIN" , "VENDOR", "OPERATOR" })
 public class BaseUserAccountPage extends BasePageSimple {
 
     @SpringBean
@@ -59,6 +59,7 @@ public class BaseUserAccountPage extends BasePageSimple {
         add(accountForm);
         accountForm.add(new RequiredTextField<String>("firstname"));
         accountForm.add(new RequiredTextField<String>("lastname"));
+        accountForm.add(new RequiredTextField<String>(User.PHONENUMBER));
         accountForm.add(new DropDownChoice<Language>("language", languageService.getAll(), new LanguageRenderer()));
 
     }

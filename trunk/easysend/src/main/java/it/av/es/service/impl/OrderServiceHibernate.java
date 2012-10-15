@@ -71,6 +71,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Autowired
     private MailService mailService;
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Order placeNewOrder(Order order, Project project, User user) {
@@ -89,6 +92,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return order;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
     @Transactional
     public Order sendNotificationNewOrder(Order order) {
@@ -96,6 +102,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return order;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds) {
         order.setProject(project);
@@ -126,6 +135,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return ordered;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Collection<Order> get(User user, Project project, Date filterDate, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
@@ -171,6 +183,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return criteria.list();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public List<Date> getDates(User user, Project project) {
         Set<Date> d = new HashSet<Date>();
@@ -188,10 +203,36 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return dates;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Order cancel(Order order) {
         order = getByID(order.getId());
         order.setIsCancelled(true);
+        return save(order);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order setAsInCharge(Order order) {
+        if(order.getIsCancelled()){
+            throw new EasySendException("You cannot puth in charge a cancelled order.");
+        }
+        order = getByID(order.getId());
+        order.setInCharge(true);
+        return save(order);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order removeInCharge(Order order) {
+        order = getByID(order.getId());
+        order.setInCharge(false);
         return save(order);
     }
 

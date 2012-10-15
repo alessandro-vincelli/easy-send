@@ -131,7 +131,7 @@
         </tr>
         <tr style="border-top: 1px solid #E8E8E8;">
             <th valign="top"><wicket:message key="customer.addressTitle"/></th>
-            <td><input type="button" value="" class="form-aggiungi" wicket:id="addNewAddress" ></input></td>
+            <td><input type="button" value="" class="button-green" wicket:message="value:button.aggiungiIndirizzo" wicket:id="addNewAddress" ></input></td>
         </tr>        
         <tr wicket:id="addresses" id="addresses" style="border-top: 1px solid #E8E8E8 ; padding-bottom: 10px;">
         <td colspan="4" >
@@ -159,7 +159,8 @@
         </tr>     
         <tr>
             <th valign="top"><wicket:message key="customer.zipcode"/></th>
-            <td><input type="hidden" style="width: 200px;" wicket:id="zipcode" ></input></td>
+            <!-- <td><input type="hidden" style="width: 200px;" wicket:id="zipcode" ></input></td> -->
+            <td><input type="text" wicket:id="zipcode" class="inp-form-small" /></td>
             <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
             <td><input type="text" wicket:id="phoneNumber" class="inp-form-small" /></td>
         </tr>
@@ -169,8 +170,8 @@
         <tr style="border-top: 1px solid #E8E8E8 ; padding-top: 10px;">
         <th>&nbsp;</th>
         <td valign="top">
-            <input type="button" value="" class="form-salva" wicket:id="submit" ></input>
-            <input type="reset" value="" class="form-cancella"  />
+            <input type="button" value="" class="button-green" wicket:id="submit" wicket:message="value:button.save" ></input>
+            <input type="reset" value="" class="button-green" wicket:message="value:button.reset" />
         </td>
         <td></td>
     </tr>
@@ -209,9 +210,9 @@
                 <div class="right">
                     <h5>Indirizzi Clienti</h5>
                     Gestione degli indirizzi aggiuntivi di un cliente
-                    <ul class="greyarrow"> 
+<!--                     <ul class="greyarrow"> 
                         <li><a href="#" wicket:id="addNewAddress2">Nuovo indirizzo</a> </li>
-                    </ul>
+                    </ul> -->
                 </div>
                 <div class="clear"></div>
                 

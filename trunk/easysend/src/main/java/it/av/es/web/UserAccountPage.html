@@ -42,6 +42,10 @@
                     <td><input class="inp-form-small"  type="text" wicket:id="lastname"></input></td>
                     </tr>
                     <tr>
+                    <th><wicket:message key="phoneNumber"/></th>
+                    <td><input class="inp-form-small"  type="text" wicket:id="phoneNumber"></input></td>
+                    </tr>                    
+                    <tr>
                     <th><wicket:message key="userLanguage"/></th>
                     <td><select wicket:id="language"></select></td>
                     </tr>
@@ -60,7 +64,7 @@
                     <tr style="border-top: 1px solid #E8E8E8 ; padding-top: 10px;">
                         <th>&nbsp;</th>
                         <td valign="top">
-                            <input type="button" value="" class="form-salva" wicket:id="saveAccount" ></input>
+                            <input type="button" value="" class="button-green" wicket:message="value:button.save" wicket:id="saveAccount" ></input>
                         </td>
                         <td></td>
                     </tr>
