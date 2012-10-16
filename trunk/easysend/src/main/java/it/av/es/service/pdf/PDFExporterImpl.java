@@ -1,5 +1,11 @@
 package it.av.es.service.pdf;
 
+import it.av.es.model.ClosingDays;
+import it.av.es.model.ClosingRange;
+import it.av.es.model.DeliveryDays;
+import it.av.es.model.DeliveryType;
+import it.av.es.model.DeliveryVehicle;
+import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
@@ -16,6 +22,7 @@ import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
 
@@ -44,11 +51,15 @@ public final class PDFExporterImpl implements PDFExporter {
     private Font fontNormal;
     private Font fontSmall;
     private Font fontBold;
+    private Component component;
+    private Localizer localizer;
 
     /**
      * {@inheritDoc}
      */
     public final InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component) {
+        this.localizer = localizer;
+        this.component = component;
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
@@ -86,9 +97,9 @@ public final class PDFExporterImpl implements PDFExporter {
             document.add(tableHeader);
             
             
-            PdfPTable table = new PdfPTable(10);
+            PdfPTable table = new PdfPTable(9);
             table.setWidthPercentage(100f);
-            float[] widthsTabel = { 0.2f, 0.2f, 0.2f, 0.2f, 0.25f, 0.3f, 0.5f, 0.5f, 0.2f, 0.3f };
+            float[] widthsTabel = { 0.2f, 0.2f, 0.2f, 0.2f, 0.25f, 0.3f, 0.6f, 0.2f, 0.6f };
             //table.setWidthPercentage(288 / 5.23f);
             table.setWidths(widthsTabel);
             table.setSpacingBefore(10);
@@ -101,7 +112,7 @@ public final class PDFExporterImpl implements PDFExporter {
             
           
             PdfPCell h1Cell2 = builderNormalHLeft(project.getName() + " - " + localizer.getString("pdfOrder.ordersDate", component) + ": "+ DateUtil.SDF2SHOWDATE.print(date.getTime()));
-            h1Cell2.setColspan(10);
+            h1Cell2.setColspan(9);
             h1Cell2.setPadding(3);
             table.addCell(h1Cell2);
             table.getDefaultCell().setBorder(1);
@@ -111,7 +122,7 @@ public final class PDFExporterImpl implements PDFExporter {
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.pairs", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.volume", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.commodity", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.shipr", component)));
+            //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.shipr", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.cnee", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.terms", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.note", component)));
@@ -123,7 +134,7 @@ public final class PDFExporterImpl implements PDFExporter {
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalItemInside(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalVolumes(orders))));
             PdfPCell fCell = builderNormalHRight("");
-            fCell.setColspan(5);
+            fCell.setColspan(4);
             table.addCell(fCell);
             
             table.getDefaultCell().setColspan(1);
@@ -155,10 +166,10 @@ public final class PDFExporterImpl implements PDFExporter {
                 table.addCell(builderNormalRight(pairs.toString()));
                 table.addCell(builderNormalRight(volume.toString()));
                 table.addCell(builderNormalLeft(commodity.toString()));
-                table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
+                //table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
                 table.addCell(builderNormalLeft(o.getCustomerAddressForDisplay()));
                 table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
-                table.addCell(builderNormalLeft(o.getNotes()));                
+                table.addCell(builderSmallFontLeft(getNotesForDisplay(o)));                
 
             }
             
@@ -242,6 +253,15 @@ public final class PDFExporterImpl implements PDFExporter {
         cell.setPaddingBottom(3);
         return cell;
     }
+    
+    private PdfPCell builderSmallFontLeft(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setBorder(Rectangle.RIGHT + Rectangle.LEFT);
+        cell.setPaddingTop(3);
+        cell.setPaddingBottom(3);
+        return cell;
+    }
 
     private int totalPacks(List<Order> orders){
         int n = 0;
@@ -275,4 +295,59 @@ public final class PDFExporterImpl implements PDFExporter {
         return n;
     }
     
+    
+    private String getNotesForDisplay(Order order) {
+        StringBuilder buffer = new StringBuilder();
+        if(StringUtils.isNotBlank(order.getNotes())){
+            buffer.append(order.getNotes());
+            buffer.append("\n");
+        }
+        buffer.append("closed: ");
+        ClosingDays closingDay = order.getCustomer().getClosingDay();
+        ClosingRange closingRange = order.getCustomer().getClosingRange();
+        buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+        buffer.append(" ");
+        buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));
+        if(order.getDeliveryTimeRequired() != null){
+            buffer.append("\n");
+            buffer.append("cons. tass.: ");
+            buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
+        }
+        if(order.getCustomer().getSignboard() != null){
+            buffer.append("\n");
+            buffer.append(localizer.getString("customer.signboard", component));
+            buffer.append(": ");
+            buffer.append(order.getCustomer().getSignboard());
+        }
+        if(!order.getCustomer().getDeliveryDays().isEmpty()){
+            buffer.append("\n");
+            buffer.append("consegna: ");
+            for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
+                buffer.append(localizer.getString(d.name(), component));
+                buffer.append(" ");
+            }
+        }
+        if(order.getCustomer().isPhoneForewarning()){
+            buffer.append("\n");
+            buffer.append("preavv. tel: ");
+            buffer.append(order.getShippingAddress().getPhoneNumber());
+        }
+        if(order.getCustomer().getDeployngType() != null){
+            buffer.append("\n");
+            DeploingType type = order.getCustomer().getDeployngType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        if(order.getCustomer().getDeliveryVehicle() != null){
+            buffer.append("\n");
+            DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
+            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
+        }
+        if(order.getCustomer().getDeliveryType() != null){
+            buffer.append("\n");
+            DeliveryType type = order.getCustomer().getDeliveryType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        buffer.append("\n");
+        return buffer.toString();
+    }
 }
