@@ -300,14 +300,18 @@ public final class PDFExporterImpl implements PDFExporter {
         StringBuilder buffer = new StringBuilder();
         if(StringUtils.isNotBlank(order.getNotes())){
             buffer.append(order.getNotes());
-            buffer.append("\n");
         }
-        buffer.append("closed: ");
         ClosingDays closingDay = order.getCustomer().getClosingDay();
-        ClosingRange closingRange = order.getCustomer().getClosingRange();
-        buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
-        buffer.append(" ");
-        buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));
+        if(closingDay != null){
+            buffer.append("\n");
+            buffer.append("closed: ");
+            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+            ClosingRange closingRange = order.getCustomer().getClosingRange();
+            if(closingRange != null){
+                buffer.append(" ");
+                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
+            }
+        }
         if(order.getDeliveryTimeRequired() != null){
             buffer.append("\n");
             buffer.append("cons. tass.: ");
