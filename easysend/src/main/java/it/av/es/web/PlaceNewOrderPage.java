@@ -238,6 +238,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         super.onSubmit(target, form);
                         formNewOrder.getModelObject().getProductsOrdered().remove(item.getIndex());
+                        formNewOrder.getModelObject().applyDiscountIfApplicable();
+                        formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
                         target.add(form);
                         getFeedbackPanel().publishWithEffects(target);
                     }
