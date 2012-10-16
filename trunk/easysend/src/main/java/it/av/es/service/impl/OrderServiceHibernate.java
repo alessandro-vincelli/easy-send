@@ -17,6 +17,7 @@ package it.av.es.service.impl;
 
 import it.av.es.EasySendException;
 import it.av.es.model.Order;
+import it.av.es.model.PaymentType;
 import it.av.es.model.Price;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
@@ -127,7 +128,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
         //apply discount if isPrepayment
-        if (order.getIsPrePayment() && order.getProject().getPrePaymentDiscount() > 0) {
+        if (order.getPaymentType().equals(PaymentType.PREPAYMENT) && order.getProject().getPrePaymentDiscount() > 0) {
             BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getProject().getPrePaymentDiscount())));
             ordered.setAmount(ordered.getAmount().subtract(discount));
         }
