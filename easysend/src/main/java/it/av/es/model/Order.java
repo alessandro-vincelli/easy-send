@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Generated;
@@ -250,6 +251,14 @@ public class Order extends BasicEntity {
 
     public void setPaymentType(PaymentType paymentType) {
         this.paymentType = paymentType;
+    }
+
+    public Date getDeliveryTimeRequired() {
+        return deliveryTimeRequired;
+    }
+
+    public void setDeliveryTimeRequired(Date deliveryTimeRequired) {
+        this.deliveryTimeRequired = deliveryTimeRequired;
     }
 
     public Integer getNumberOfItemsInProductOrdered() {
