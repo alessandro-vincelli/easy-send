@@ -118,7 +118,9 @@
     
     <bean id="projectService" class="it.av.es.service.impl.ProjectServiceHibernate"/>
     
-    <bean id="orderService" class="it.av.es.service.impl.OrderServiceHibernate"/>
+    <bean id="orderService" class="it.av.es.service.impl.OrderServiceHibernate">
+        <property name="notificationEnabled" value="false"/>
+    </bean>
     
     <bean id="productService" class="it.av.es.service.impl.ProductServiceHibernate"/>
     
