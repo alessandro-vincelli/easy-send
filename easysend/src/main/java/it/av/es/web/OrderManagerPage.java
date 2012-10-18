@@ -379,7 +379,7 @@ public class OrderManagerPage extends BasePageSimple {
                     warningDialog.show(target);
                 }
             };
-            if((model.getObject().getIsCancelled()))buttonCancelOrder.setEnabled(false);
+            if((!model.getObject().canBeCancelled()))buttonCancelOrder.setEnabled(false);
             add(buttonCancelOrder);
             
             AjaxFallbackLink<Order> buttonInCharge = new AjaxFallbackLink<Order>("buttonInCharge", model) {

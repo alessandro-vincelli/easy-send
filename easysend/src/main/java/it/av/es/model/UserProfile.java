@@ -41,6 +41,10 @@ public class UserProfile extends BasicEntity {
      */
     public final static String OPERATOR = "OPERATOR";
     /**
+     * operator
+     */
+    public final static String PROJECT_MANAGER = "PROJECT_MANAGER";
+    /**
      * admin user name
      */
     public final static String ADMIN = "ADMIN";

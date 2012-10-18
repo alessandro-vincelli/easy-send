@@ -50,14 +50,14 @@ public interface UserProfileService {
     /**
      * Return the regular user profile, it must be the "USER" profile
      * 
-     * @return VendorProfile
+     * @return UserProfile
      */
     UserProfile getRegolarUserProfile();
     
     /**
-     * Return the operator user profile, it must be the "USER" profile
+     * Return the operator user profile, it must be the "OPERATOR" profile
      * 
-     * @return VendorProfile
+     * @return UserProfile
      */
     UserProfile getOperatorUserProfile();
 
@@ -75,4 +75,11 @@ public interface UserProfileService {
      * @return the user with the given name
      */
     UserProfile getByName(String id);
+
+    /**
+     * Return the ProjectManager user profile, it must be the "PROJECT_MANAGER" profile
+     * 
+     * @return UserProfile
+     */
+    UserProfile getProjectManagerUserProfile();
 }
