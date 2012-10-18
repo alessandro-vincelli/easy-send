@@ -360,17 +360,17 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 if (buttonName.equals(ButtonName.BUTTON_YES)) {
                     Order o = (Order) formNewOrder.getModelObject();
                     Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                  currentStep = currentStep + 1;
-                  moveStep(currentStep);
+                    currentStep = currentStep + 1;
+                    moveStep(currentStep);
                     try {
                         orderService.sendNotificationNewOrder(newOrder);
 
                     } catch (Exception e) {
-                        getFeedbackPanel().warn("Si sono verificati dei problemi durante l'invio dell'email di notifica");
+                        getFeedbackPanel().warn(getString("order.message.problemSendingMailNotification"));
                         log.error("Error sending new order notification", e);
                     }
-                    getFeedbackPanel().success("Ordine inserito con successo in data: " + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
-//                    formNewOrder.setEnabled(false);
+                    getFeedbackPanel().success(getString("order.message.insertedSuccess") + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
+                    //                    formNewOrder.setEnabled(false);
                     target.add(formNewOrder);
                     target.add(fakeTabs);
                     getFeedbackPanel().publishWithEffects(target);
@@ -386,7 +386,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 Order o = (Order) form.getModelObject();
                 //some validations
                 if(o.getProductsOrdered() == null || o.getProductsOrdered().size() == 0){
-                    getFeedbackPanel().warn("È necessario inserire almeno un prodotto");
+                    getFeedbackPanel().warn(getString("order.message.insertAtLeastOneOrder"));
                     target.add(getFeedbackPanel());
                 }
                 //save the order
@@ -478,7 +478,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step4Left.add(AttributeModifier.replace("class", "step-dark-left"));
             step4Right.add(AttributeModifier.replace("class", "step-dark-round"));
             step3.setEnabled(false);
-            submitConfirm.setEnabled(false);
+            submitConfirm.setVisible(false);
             submitBack.setVisible(false);
             submitNext.setVisible(false);
         }

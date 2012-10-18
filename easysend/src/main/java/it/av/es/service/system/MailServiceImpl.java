@@ -79,6 +79,5 @@ public class MailServiceImpl implements MailService {
         String subject = (messageSource.getMessage("pwdRecover.message.subject", params, locale));
         String message = prepareMessage.mailTextPasswordRecover(user, newPassword, locale);
         sendMail(subject, message, user.getEmail());
-
     }
 }

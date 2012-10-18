@@ -65,6 +65,9 @@ public class User extends BasicEntity implements Comparable<User> {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date creationTime;
+//    @Temporal(TemporalType.TIMESTAMP)
+//    @Column(nullable = false)
+//    private Date passwordModificationTime;
     private String address;
     private String zipcode;
     private String province;
