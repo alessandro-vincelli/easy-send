@@ -347,6 +347,15 @@ public class Order extends BasicEntity {
         return n;
     }
     
+    /**
+     * check if this order can be cancelled
+     * @return
+     */
+    public boolean canBeCancelled(){
+        if(isInCharge || isCancelled) return false;
+        return true;
+    }
+    
     public String getCustomerAddressForDisplay(){
         StringBuffer buffer = new StringBuffer();
         buffer.append(customer.getDefaultShippingAddresses().getName());

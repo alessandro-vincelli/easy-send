@@ -298,7 +298,10 @@ public final class PDFExporterImpl implements PDFExporter {
     
     private String getNotesForDisplay(Order order) {
         StringBuilder buffer = new StringBuilder();
+        buffer.append("total: ");
+        buffer.append(NumberUtil.italianCurrency.format(order.getTotalAmount()));
         if(StringUtils.isNotBlank(order.getNotes())){
+            buffer.append("\n");
             buffer.append(order.getNotes());
         }
         ClosingDays closingDay = order.getCustomer().getClosingDay();
