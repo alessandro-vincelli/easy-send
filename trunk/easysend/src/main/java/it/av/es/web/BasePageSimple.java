@@ -24,6 +24,7 @@ import java.util.Map;
 
 import javax.servlet.http.Cookie;
 
+import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -114,8 +115,8 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
         
         //BookmarkablePageLink goAccount = new BookmarkablePageLink<String>("goAccount", UserAccountPage.class, goAccountParameters);
         
-        Label name = new Label("loggedInUser", loggedInUser != null ? loggedInUser.getFirstname() + " " +loggedInUser.getLastname() : "");
-        add(name);
+//        Label name = new Label("loggedInUser", loggedInUser != null ? loggedInUser.getFirstname() + " " +loggedInUser.getLastname() : "");
+//        add(name);
         
         add(new BookmarkablePageLink<String>("goUserManagerPage", UserManagerPage.class) {
             @Override
@@ -187,6 +188,7 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
                 super.onBeforeRender();
                 setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
                         .isInstantiationAuthorized(UserAccountPage.class)));
+                add(AttributeModifier.replace("value", loggedInUser.getFirstname() + " " +loggedInUser.getLastname()));                
             }
         });        
 

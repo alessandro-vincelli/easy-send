@@ -71,6 +71,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private UserProfileService userProfileService;
     @Autowired
     private MailService mailService;
+    private boolean notificationEnabled;
 
     /**
      * {@inheritDoc}
@@ -99,7 +100,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     @Transactional
     public Order sendNotificationNewOrder(Order order) {
-        mailService.sendNewOrderNotification(order);
+        if(notificationEnabled){
+            mailService.sendNewOrderNotification(order);   
+        }
         return order;
     }
 
@@ -247,6 +250,14 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             order.setInCharge(true);
             save(order);
         }
+    }
+
+    public boolean isNotificationEnabled() {
+        return notificationEnabled;
+    }
+
+    public void setNotificationEnabled(boolean notificationEnabled) {
+        this.notificationEnabled = notificationEnabled;
     }
 
 }

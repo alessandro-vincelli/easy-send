@@ -19,7 +19,7 @@ public abstract class MessageDialog extends ModalWindow {
         super(id);
         setContent(new MessageDialogPanel(getContentId(), this, title, string));
         setTitle(title);
-        setCookieName("easytrack-modal");
+        setCookieName(null);
         setCssClassName(CSS_CLASS_GRAY);
         setHeightUnit("px");
         setResizable(false);

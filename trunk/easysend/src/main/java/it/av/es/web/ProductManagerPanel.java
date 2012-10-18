@@ -154,6 +154,9 @@ public class ProductManagerPanel extends Panel {
             formProd.setOutputMarkupId(true);
             add(formProd);
             formProd.add(new TextField<String>(Product.NAME_FIELD));
+            formProd.add(new TextField<BigDecimal>("kilos", BigDecimal.class));
+            formProd.add(new TextField<BigDecimal>("volume", BigDecimal.class));
+
             AjaxSubmitLink savePrice = new AjaxSubmitLink("save", formProd) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {

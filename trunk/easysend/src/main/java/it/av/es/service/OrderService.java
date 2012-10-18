@@ -114,7 +114,7 @@ public interface OrderService {
     List<Date> getDates(User user, Project project);
 
     /**
-     * Send mail notification
+     * Send mail notification, <b>Note</b>: <b>notificationEnabled</b> properties must be set to true
      * 
      * @param order
      * @return
