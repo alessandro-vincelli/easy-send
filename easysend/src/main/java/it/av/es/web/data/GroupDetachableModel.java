@@ -16,8 +16,8 @@
 package it.av.es.web.data;
 
 import it.av.es.EasySendException;
-import it.av.es.model.Order;
-import it.av.es.service.OrderService;
+import it.av.es.model.Group;
+import it.av.es.service.GroupService;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.injection.Injector;
@@ -29,18 +29,18 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  *
  */
-public class OrderDetachableModel extends LoadableDetachableModel<Order> {
+public class GroupDetachableModel extends LoadableDetachableModel<Group> {
 
     private static final long serialVersionUID = 1L;
     private final String id;
     @SpringBean
-    private OrderService orderService;
+    private GroupService groupService;
 
     /**
      * 
      * @param object
      */
-    public OrderDetachableModel(Order object) {
+    public GroupDetachableModel(Group object) {
         this(object.getId());
         Injector.get().inject(this);
     }
@@ -48,7 +48,7 @@ public class OrderDetachableModel extends LoadableDetachableModel<Order> {
     /**
      * @param id
      */
-    public OrderDetachableModel(String id) {
+    public GroupDetachableModel(String id) {
         if (StringUtils.isBlank(id)) {
             throw new IllegalArgumentException();
         }
@@ -75,8 +75,8 @@ public class OrderDetachableModel extends LoadableDetachableModel<Order> {
             return true;
         } else if (obj == null) {
             return false;
-        } else if (obj instanceof OrderDetachableModel) {
-            OrderDetachableModel other = (OrderDetachableModel) obj;
+        } else if (obj instanceof GroupDetachableModel) {
+            GroupDetachableModel other = (GroupDetachableModel) obj;
             return other.id == id;
         }
         return false;
@@ -86,9 +86,9 @@ public class OrderDetachableModel extends LoadableDetachableModel<Order> {
      * @see org.apache.wicket.model.LoadableDetachableModel#load()
      */
     @Override
-    protected final Order load() {
+    protected final Group load() {
         try {
-            return orderService.getByID(id);
+            return groupService.getByID(id);
         } catch (EasySendException e) {
             return null;
         }
