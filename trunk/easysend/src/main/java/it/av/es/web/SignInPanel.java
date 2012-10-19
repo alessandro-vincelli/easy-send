@@ -1,6 +1,7 @@
 package it.av.es.web;
 
 import it.av.es.service.ProjectService;
+import it.av.es.web.component.CustomFeedbackPanel;
 import it.av.es.web.security.SecuritySession;
 
 import org.apache.wicket.spring.injection.annot.SpringBean;

@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.av.es.web;
+package it.av.es.util;
 
 
 import org.apache.wicket.AttributeModifier;

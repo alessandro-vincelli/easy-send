@@ -1,4 +1,4 @@
-package it.av.es.web;
+package it.av.es.web.manager;
 
 import it.av.es.model.Price;
 import it.av.es.model.Product;

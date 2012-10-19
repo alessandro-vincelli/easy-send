@@ -17,6 +17,7 @@ package it.av.es.web;
 
 import it.av.es.model.User;
 import it.av.es.service.UserService;
+import it.av.es.web.component.CustomFeedbackPanel;
 
 import java.io.Serializable;
 import java.util.UUID;
