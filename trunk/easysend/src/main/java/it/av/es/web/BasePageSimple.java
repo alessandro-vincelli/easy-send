@@ -196,9 +196,11 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
             @Override
             protected void onBeforeRender() {
                 super.onBeforeRender();
-                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                setVisible(loggedInUser != null && (getApplication().getSecuritySettings().getAuthorizationStrategy()
                         .isInstantiationAuthorized(UserAccountPage.class)));
-                add(AttributeModifier.replace("value", loggedInUser.getFirstname() + " " +loggedInUser.getLastname()));                
+                if(loggedInUser != null){
+                    add(AttributeModifier.replace("value", loggedInUser.getFirstname() + " " +loggedInUser.getLastname()));    
+                }
             }
         });        
 
