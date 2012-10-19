@@ -1,9 +1,10 @@
-package it.av.es.web;
+package it.av.es.web.manager;
 
 import it.av.es.model.Product;
 import it.av.es.model.Project;
 import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
+import it.av.es.web.BasePageSimple;
 import it.av.es.web.data.ProductsOfProjectsSortableDataProvider;
 import it.av.es.web.data.ProjectSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;

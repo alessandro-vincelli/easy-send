@@ -96,7 +96,7 @@
         <property name="nestedTransactionAllowed" value="false"></property>
     </bean>
 
-    <bean id="userDetailsService" class="it.av.es.web.UserDetailsServiceImpl" scope="prototype">
+    <bean id="userDetailsService" class="it.av.es.web.security.UserDetailsServiceImpl" scope="prototype">
         <property name="service" ref="userService" />
     </bean>
 

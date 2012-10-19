@@ -15,6 +15,8 @@
  */
 package it.av.es.web;
 
+import it.av.es.web.component.CustomFeedbackPanel;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxFallbackLink;
 import org.apache.wicket.markup.html.WebPage;

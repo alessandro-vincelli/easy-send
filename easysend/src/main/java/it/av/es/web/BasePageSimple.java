@@ -17,6 +17,10 @@ package it.av.es.web;
 
 import it.av.es.model.User;
 import it.av.es.util.CookieUtil;
+import it.av.es.util.HtmlUtil;
+import it.av.es.web.component.CustomFeedbackPanel;
+import it.av.es.web.manager.ProjectManagerPage;
+import it.av.es.web.manager.UserManagerPage;
 import it.av.es.web.security.SecuritySession;
 
 import java.util.Locale;
@@ -26,12 +30,14 @@ import javax.servlet.http.Cookie;
 
 import org.apache.wicket.AttributeModifier;
 import org.apache.wicket.Component;
+import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.AjaxRequestTarget.IJavaScriptResponse;
 import org.apache.wicket.ajax.AjaxRequestTarget.IListener;
 import org.apache.wicket.ajax.IAjaxIndicatorAware;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
@@ -58,6 +64,10 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
         HtmlUtil.fixInitialHtml(this);
         titlePage = new Label("pageTitle", ":: EasyTrack - Eurocargo ::");
         add(titlePage);
+
+        WebMarkupContainer googleCode = new WebMarkupContainer("googleCode");
+        add(googleCode);
+        googleCode.setVisible(getApplication().getConfigurationType().compareTo(RuntimeConfigurationType.DEPLOYMENT) >= 0);
         
         feedbackPanel = new CustomFeedbackPanel("feedBackPanel");
         feedbackPanel.add(new AbstractDefaultAjaxBehavior() {

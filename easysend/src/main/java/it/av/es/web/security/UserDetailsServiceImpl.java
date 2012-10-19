@@ -13,7 +13,7 @@
  *    See the License for the specific language governing permissions and
  *    limitations under the License.
  */
-package it.av.es.web;
+package it.av.es.web.security;
 
 import it.av.es.model.User;
 import it.av.es.service.UserService;

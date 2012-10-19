@@ -1,7 +1,7 @@
 /**
  * 
  */
-package it.av.es.web;
+package it.av.es.web.component;
 
 import java.util.Map;
 

@@ -1,9 +1,10 @@
-package it.av.es.web;
+package it.av.es.web.manager;
 
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserService;
+import it.av.es.web.BasePageSimple;
 import it.av.es.web.data.UserSortableDataProvider;
 
 import java.util.ArrayList;
