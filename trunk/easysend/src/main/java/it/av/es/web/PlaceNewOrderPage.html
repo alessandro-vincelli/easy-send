@@ -61,7 +61,7 @@ $(document).ready(function() {
         <td>
         <input type="hidden" style="width: 300px;" wicket:id="customer" ></input>
         </td>
-        <td></td>
+        <td colspan="2"><span wicket:id="pno.help.customerSelect"/></td>
         </tr>        
         
         <colgroup wicket:id="step1">
@@ -284,9 +284,10 @@ $(document).ready(function() {
                     <h5><wicket:message key="pno.help.newOrderTitle"/></h5>
                     <wicket:message key="pno.help.newOrderDesc"/>
                     <ul class="greyarrow">
-                        <li>1. Selezionare il Cliente</li> 
-                        <li>2. Selezione prodotti </li>
-                        <li>3. Ordine Inserito </li>
+                        <li>1. Seleziona il Cliente</li>
+                        <li>2. Seleziona l'indirizzo di spedizione</li> 
+                        <li>3. Seleziona i prodotti </li>
+                        <li>4. Ordine Inserito.</li>
                     </ul>
                 </div>
                 

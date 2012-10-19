@@ -101,7 +101,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Transactional
     public Order sendNotificationNewOrder(Order order) {
         if(notificationEnabled){
-            mailService.sendNewOrderNotification(order);   
+            mailService.sendNewOrderNotification(order);
         }
         return order;
     }
