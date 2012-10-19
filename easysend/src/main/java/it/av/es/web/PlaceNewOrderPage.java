@@ -116,6 +116,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private int currentStep = 1;
     private AjaxSubmitLink submitBack;
     private Select2Choice<Customer> customerField;
+    private Label helpSelectCustomer;
 
     public PlaceNewOrderPage() {
         super();
@@ -143,6 +144,8 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         step1 = new WebMarkupContainer("step1");
         formNewOrder.add(step1);
+        helpSelectCustomer = new Label("pno.help.customerSelect", getString("pno.help.customerSelect"));
+        formNewOrder.add(helpSelectCustomer);
         
         step1.add(new Label("customer.corporateName"));
         step1.add(new Label("customer.email"));
@@ -415,6 +418,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             submitBack.setVisible(false);
             submitNext.setVisible(true);
             customerField.setEnabled(true);
+            helpSelectCustomer.setVisible(true);
             step1Number.add(AttributeModifier.replace("class", "step-no"));
             step1Left.add(AttributeModifier.replace("class", "step-dark-left"));
             step1Right.add(AttributeModifier.replace("class", "step-dark-right"));
@@ -429,6 +433,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
             step1.setVisible(false);
             step2.setVisible(true);
             step3.setVisible(false);
+            helpSelectCustomer.setVisible(false);
             customerField.setEnabled(false);
             submitBack.setVisible(true);
             submitNext.setVisible(true);
