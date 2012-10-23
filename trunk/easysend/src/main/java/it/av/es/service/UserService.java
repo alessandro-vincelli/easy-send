@@ -70,7 +70,7 @@ public interface UserService {
      * 
      * @return all the users
      */
-    Collection<User> getAll();
+    List<User> getAll();
 
     /**
      * Return all the admin user
@@ -198,4 +198,12 @@ public interface UserService {
      * @param customer
      */
     void removeCustomer(User user, Customer customer);
+
+    /**
+     * Add as a rgolar user if not exists, otherwise updates
+     * 
+     * @param user
+     * @return
+     */
+    User addOrUpdate(User user);
 }

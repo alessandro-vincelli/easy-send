@@ -122,6 +122,24 @@ public class UserServiceHibernate extends ApplicationServiceHibernate<User> impl
      */
     @Override
     @Transactional
+    public User addOrUpdate(User user) {
+        if (user == null || StringUtils.isBlank(user.getEmail())) {
+            throw new EasySendException("Vendor is null or email is empty");
+        }
+        if(StringUtils.isBlank(user.getId())){
+            return add(user);
+        }
+        else{
+            return update(user);
+        }
+    }
+
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional
     public User update(User object) {
         try {
             super.save(object);

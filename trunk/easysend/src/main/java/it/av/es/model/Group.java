@@ -19,9 +19,10 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -43,10 +44,10 @@ public class Group extends BasicEntity {
     @Field(store = Store.YES)
     private String name;
     private String description;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<User> members;
-    @OneToMany(fetch = FetchType.EAGER)
+    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private List<User> administrators;
 
@@ -55,6 +56,8 @@ public class Group extends BasicEntity {
      */
     public Group() {
         super();
+        this.members = new ArrayList<User>();
+        this.administrators = new ArrayList<User>();
     }
 
     /**
@@ -108,7 +111,32 @@ public class Group extends BasicEntity {
         if (members == null) {
             members = new ArrayList<User>();
         }
-        members.add(user);
+        if(!members.contains(user)){
+            members.add(user);    
+        }
+    }
+    
+    public void addAllMember(List<User> user) {
+        if (members == null) {
+            members = new ArrayList<User>();
+        }
+        for (User user2 : user) {
+            addMember(user2);
+        }
+    }
+    
+    public void removeAllMember(List<User> user) {
+        if (members == null) {
+            members = new ArrayList<User>();
+        }
+        for (User user2 : user) {
+            removeMember(user2);
+        }
+    }
+    
+    @Override
+    public String toString() {
+        return getName();
     }
 
     public void removeMember(User user) {

@@ -29,4 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class GroupServiceHibernate extends ApplicationServiceHibernate<Group> implements GroupService {
 
+    
+
 }

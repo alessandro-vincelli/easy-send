@@ -16,6 +16,7 @@
         <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
         <th class="topleft"></th>
         <td id="tbl-border-top">&nbsp;</td>
+        <td id="tbl-border-top">&nbsp;</td>
         <th class="topright"></th>
         <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
     </tr>
@@ -32,11 +33,60 @@
        </div>
 		<!--  end content-table-inner ............................................END  -->
 	   </td>
+       <td>
+       <!--  start content-table-inner ...................................................................... START -->
+        <div id="content-table-inner">
+                
+            <!--  start table-content  -->
+            <div id="table-content">
+            <form wicket:id="user">
+                 <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                    <tr>
+                    <th><wicket:message key="email"/></th>
+                    <td><input class="inp-form-small"  type="text" wicket:id="email"></input></td>
+                    </tr>
+                    <tr>
+                    <th><wicket:message key="firstname"/></th>
+                    <td><input class="inp-form-small"  type="text" wicket:id="firstname"></input></td>
+                    </tr>
+                    <tr>
+                    <th><wicket:message key="lastname"/></th>
+                    <td><input class="inp-form-small"  type="text" wicket:id="lastname"></input></td>
+                    </tr>
+                    <tr>
+                    <th><wicket:message key="phoneNumber"/></th>
+                    <td><input class="inp-form-small"  type="text" wicket:id="phoneNumber"></input></td>
+                    </tr>                    
+                    <tr>
+                    <th><wicket:message key="userLanguage"/></th>
+                    <td><select wicket:id="language"></select></td>
+                    </tr>
+                    <tr>
+                    <th><wicket:message key="password"/></th>
+                    <td><input class="inp-form-small"  type="password" wicket:id="newPassword"></input></td>
+                    </tr>
+                    <tr>
+                    <th><wicket:message key="confirmPassword"/></th>
+                    <td><input class="inp-form-small"  type="password" wicket:id="password-confirm"></input></td>
+                    </tr>
+                    <tr style="border-top: 1px solid #E8E8E8 ; padding-top: 10px;">
+                        <th>&nbsp;</th>
+                        <td valign="top">
+                            <input type="button" value="" class="button-green" wicket:message="value:button.save" wicket:id="saveAccount" ></input>
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+             </form>
+           </div>
+       </div>
+       </td>
 		<td id="tbl-border-right"></td>
 	</tr>
 	<tr>
 		<th class="sized bottomleft"></th>
 		<td id="tbl-border-bottom">&nbsp;</td>
+        <td id="tbl-border-bottom">&nbsp;</td>
 		<th class="sized bottomright"></th>
 	</tr>
 	</table>
