@@ -59,6 +59,7 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.json.JSONException;
 import org.json.JSONWriter;
@@ -117,28 +118,32 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private AjaxSubmitLink submitBack;
     private Select2Choice<Customer> customerField;
     private Label helpSelectCustomer;
+    private Customer customer = new Customer();
 
-    public PlaceNewOrderPage() {
+    public PlaceNewOrderPage(PageParameters pageParameters) {
         super();
-        
         currentProject = getSecuritySession().getCurrentProject();
+        Order order = new Order(currentProject);
+
+        if(StringUtils.isNotBlank(pageParameters.get(CustomHttpParams.CUSTOMER_ID).toString(""))){
+            String cId = pageParameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
+            customer = customerService.getByID(cId);
+            updateOrderModel(order);
+        }
                 
-        final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(new Order(currentProject));
+        final CompoundPropertyModel<Order> model = new CompoundPropertyModel<Order>(order);
         formNewOrder = new Form<Order>("newOrder", model);
         add(formNewOrder);
         addFakeTabs(this);
         
-        customerField = new Select2Choice<Customer>("customer", new Model<Customer>(new Customer()), new RecipientProvider());
+        customerField = new Select2Choice<Customer>("customer", new Model<Customer>(customer), new RecipientProvider());
         formNewOrder.add(customerField);
         customerField.add(new OnChangeAjaxBehavior() {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Customer rcp = customerField.getModelObject();
-                Customer customer2 = customerService.getByID(rcp.getId());
-                model.getObject().setCustomer(customer2);
-                model.getObject().setShippingAddress(customer2.getDefaultShippingAddresses());
-                model.getObject().setPaymentType(customer2.getPaymentType());
-                model.getObject().setNotes(customer2.getDeliveryNote());
+                customer = customerService.getByID(rcp.getId());
+                updateOrderModel(model.getObject());
                 target.add(formNewOrder);
             }
         });
@@ -215,13 +220,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step3 = new WebMarkupContainer("step3");
 
         formNewOrder.add(step3);
-
-        final ArrayList<Product> products = new ArrayList<Product>(getSecuritySession().getCurrentProject().getProducts());
         step3.setVisible(false).setOutputMarkupId(true);
-        final DropDownChoice<Product> productToAdd = new DropDownChoice<Product>("product", new Model<Product>() ,products, new ProductChoiceRenderer());
+        final DropDownChoice<Product> productToAdd = new DropDownChoice<Product>("product", new Model<Product>(), orderService.getProducts(formNewOrder.getModelObject()), new ProductChoiceRenderer());
         final DropDownChoice<Integer> productNumberToAdd = new DropDownChoice<Integer>("number", new Model<Integer>(), Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         productNumberToAdd.setNullValid(false);
-        step3.add(productToAdd);
+        step3.add(productToAdd.setOutputMarkupId(true));
         step3.add(productNumberToAdd);
         final WebMarkupContainer productsOrderedContanier = new WebMarkupContainer("productsOrderedContanier");
         productsOrderedContanier.setOutputMarkupId(true);
@@ -241,8 +244,15 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         super.onSubmit(target, form);
                         formNewOrder.getModelObject().getProductsOrdered().remove(item.getIndex());
-                        formNewOrder.getModelObject().applyDiscountIfApplicable();
-                        formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
+                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                        formNewOrder.setModelObject(order);
+                        productToAdd.setChoices(orderService.getProducts(formNewOrder.getModelObject()));
+                        if(!orderService.isOrderValid(order)){
+                            getFeedbackPanel().warn(getString("order.message.orderNotValid"));
+                        }
+                        target.add(productToAdd);
+                        getFeedbackPanel().info("Prodotto rimosso dall'ordine");
                         target.add(form);
                         getFeedbackPanel().publishWithEffects(target);
                     }
@@ -265,11 +275,22 @@ public class PlaceNewOrderPage extends BasePageSimple {
                 Product product = productToAdd.getModelObject();
                 Integer numberToAdd = productNumberToAdd.getModelObject();
                 if(product != null && numberToAdd != null ){
-                    ProductOrdered ordered = orderService.addProductOrdered(model.getObject(), product, currentProject, numberToAdd);
-                    formNewOrder.getModelObject().addProductOrdered(ordered);
-                    formNewOrder.getModelObject().applyDiscountIfApplicable();
-                    formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
-                    getFeedbackPanel().info("Prodotto aggiunto all'ordine");
+                    ProductOrdered ordered;
+                    try {
+                        ordered = orderService.addProductOrdered(model.getObject(), product, currentProject, numberToAdd);
+                        formNewOrder.getModelObject().addProductOrdered(ordered);
+                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
+                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                        formNewOrder.setModelObject(order);
+                        if(!orderService.isOrderValid(order)){
+                            getFeedbackPanel().warn(getString("order.message.orderNotValid"));
+                        }
+                        productToAdd.setChoices(orderService.getProducts(formNewOrder.getModelObject()));
+                        target.add(productToAdd);
+                        getFeedbackPanel().info("Prodotto aggiunto all'ordine");
+                    } catch (Exception e) {
+                        getFeedbackPanel().error(e.getMessage());
+                    }
                     target.add(formNewOrder);
                     getFeedbackPanel().publishWithEffects(target);
                 }
@@ -281,6 +302,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     getFeedbackPanel().warn("Selezionare il numero di prodotti");
                     getFeedbackPanel().publishWithEffects(target);
                 }
+            }
+
+            @Override
+            protected void onError(AjaxRequestTarget target, Form<?> form) {
+                super.onError(target, form);
+                getFeedbackPanel().publishWithEffects(target);
             }
         });
         productsOrderedContanier.add(new TextField<Integer>("numberOfItemsInProductOrdered").setEnabled(false));
@@ -294,8 +321,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                formNewOrder.getModelObject().applyDiscountIfApplicable();
-                formNewOrder.getModelObject().applyFreeShippingCostIfApplicable();
+                Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
+                order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                formNewOrder.setModelObject(order);
                 if(formNewOrder.getModel().getObject().getPaymentType().equals(PaymentType.PREPAYMENT)){
                     getFeedbackPanel().info("Applicato Sconto del 5% per pagamento anticipato.");                    
                 }
@@ -362,18 +390,23 @@ public class PlaceNewOrderPage extends BasePageSimple {
             protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
                 if (buttonName.equals(ButtonName.BUTTON_YES)) {
                     Order o = (Order) formNewOrder.getModelObject();
-                    Order newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
-                    currentStep = currentStep + 1;
-                    moveStep(currentStep);
+                    Order newOrder;
                     try {
-                        orderService.sendNotificationNewOrder(newOrder);
+                        newOrder = orderService.placeNewOrder(o, getSecuritySession().getCurrentProject(), getSecuritySession().getLoggedInUser());
+                        currentStep = currentStep + 1;
+                        moveStep(currentStep);
+                        try {
+                            orderService.sendNotificationNewOrder(newOrder);
+                        } catch (Exception e) {
+                            getFeedbackPanel().warn(getString("order.message.problemSendingMailNotification"));
+                            log.error("Error sending new order notification", e);
+                        }
+                        getFeedbackPanel().success(getString("order.message.insertedSuccess") + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
 
-                    } catch (Exception e) {
-                        getFeedbackPanel().warn(getString("order.message.problemSendingMailNotification"));
-                        log.error("Error sending new order notification", e);
+                    } catch (Exception e1) {
+                        getFeedbackPanel().warn(getString("order.message.error"));
+                        log.error("Error sending new order notification", e1);
                     }
-                    getFeedbackPanel().success(getString("order.message.insertedSuccess") + DateUtil.SDF2SHOW.print(newOrder.getCreationTime().getTime()));
-                    //                    formNewOrder.setEnabled(false);
                     target.add(formNewOrder);
                     target.add(fakeTabs);
                     getFeedbackPanel().publishWithEffects(target);
@@ -392,6 +425,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     getFeedbackPanel().warn(getString("order.message.insertAtLeastOneOrder"));
                     target.add(getFeedbackPanel());
                 }
+                else if(!orderService.isOrderValid(o)){
+                    getFeedbackPanel().warn(getString("order.message.orderNotValid"));
+                }
                 //save the order
                 else{
                     warningDialog.show(target);
@@ -407,6 +443,17 @@ public class PlaceNewOrderPage extends BasePageSimple {
         };
         submitConfirm.setVisible(false);
         formNewOrder.add(submitConfirm);
+    }
+
+
+    /**
+     * @param order
+     */
+    private void updateOrderModel(Order order) {
+        order.setCustomer(customer);
+        order.setShippingAddress(customer.getDefaultShippingAddresses());
+        order.setPaymentType(customer.getPaymentType());
+        order.setNotes(customer.getDeliveryNote());
     }
     
 

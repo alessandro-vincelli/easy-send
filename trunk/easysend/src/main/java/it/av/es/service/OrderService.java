@@ -148,5 +148,43 @@ public interface OrderService {
      * @return
      */
     void setAsInCharge(User user, Project project, Date date);
+
+    /**
+     * Get products base on the given order properties
+     * 
+     * @param order
+     * @return
+     */
+    List<Product> getProducts(Order order);
+
+    /**
+     * 
+     * @param o
+     * @return
+     */
+    Order applyDiscountIfApplicable(Order o);
+
+    
+    /**
+     * 
+     * @param o
+     * @return
+     */
+    Order applyFreeShippingCostIfApplicable(Order o);
+
+    /**
+     * 
+     * @param order
+     * @return
+     */
+    boolean isOrderValid(Order order);
+
+    /**
+     * Checks if the order contains already a free product
+     * 
+     * @param o
+     * @return
+     */
+    boolean containsFreeOrder(Order o);
     
 }
