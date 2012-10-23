@@ -111,7 +111,7 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
             critByUser = Restrictions.eq(Customer.USER_FIELD, user);    
         }
         Order orderByName = null;
-        if (StringUtils.isNotBlank(sortProperty) && StringUtils.containsNone(sortProperty, "defaultShippingAddresses")) {
+        if (StringUtils.isNotBlank(sortProperty) && !StringUtils.contains(sortProperty, "defaultShippingAddresses")) {
             if (isAscending) {
                 orderByName = Order.asc(sortProperty);
             } else {
@@ -119,7 +119,7 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
             }
         }
         else{
-            orderByName = Order.desc(Customer.CORPORATENAME_FIELD);
+            orderByName = Order.asc(Customer.CORPORATENAME_FIELD);
         }
         return findByCriteria(orderByName, firstResult, maxResult, critByUser);
 
