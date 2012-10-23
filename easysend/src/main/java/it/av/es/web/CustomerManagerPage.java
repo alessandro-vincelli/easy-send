@@ -18,6 +18,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColu
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.PropertyColumn;
 import org.apache.wicket.injection.Injector;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
@@ -101,6 +102,19 @@ public class CustomerManagerPage extends BasePageSimple {
                     warningDialog.show(target);
                 }
             });
+            
+            PageParameters pp = new PageParameters();
+            pp.add(CustomHttpParams.CUSTOMER_ID, model.getObject().getId());
+            add(new BookmarkablePageLink<String>("addOrder", PlaceNewOrderPage.class, pp) {
+                @Override
+                protected void onBeforeRender() {
+                    super.onBeforeRender();
+                    setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                            .isInstantiationAuthorized(PlaceNewOrderPage.class)));
+                }
+            });
+            
+
         }
 
     }

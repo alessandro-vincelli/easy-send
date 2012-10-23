@@ -81,6 +81,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     public Order placeNewOrder(Order order, Project project, User user) {
         Assert.notNull(project, "project cannot be null, it must be associated to the order");
         Assert.notNull(user, "user cannot be null, it must be associated to the order");
+        if (!isOrderValid(order)) {
+            throw new EasySendException("Ordine non valido");
+        }
         order.setCreationTime(new Date());
         order.setProject(project);
         project = projectService.getByID(project.getId());
@@ -93,14 +96,50 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         projectService.save(project);
         return order;
     }
-    
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean isOrderValid(Order order) {
+        List<ProductOrdered> productsOrdered = order.getProductsOrdered();
+        int numberOfFreeProds = 0;
+        for (ProductOrdered productOrdered : productsOrdered) {
+            if (productOrdered.getProduct().getFree()) {
+                numberOfFreeProds = numberOfFreeProds + 1;
+            }
+        }
+        //check if  free product > 1
+        if (numberOfFreeProds > 1) {
+            return false;
+        }
+        //check  free product not allowed
+        if (!order.isAllowedFreeItem() && containsFreeOrder(order)) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean containsFreeOrder(Order o) {
+        for (ProductOrdered p : o.getProductsOrdered()) {
+            if (p.getProduct().getFree()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * {@inheritDoc}
      */
     @Override
     @Transactional
     public Order sendNotificationNewOrder(Order order) {
-        if(notificationEnabled){
+        if (notificationEnabled) {
             mailService.sendNewOrderNotification(order);
         }
         return order;
@@ -111,11 +150,18 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      */
     @Override
     public ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds) {
+        BigDecimal amount = new BigDecimal(0);
         order.setProject(project);
         ProductOrdered ordered = new ProductOrdered();
         ordered.setProduct(product);
         ordered.setNumber(numberOfProds);
-        BigDecimal amount = new BigDecimal(0);
+        ordered.setAmount(amount);
+        if (product.getFree()) {
+            if (order.isAllowedFreeItem()) {
+                ordered.setNumber(1);
+                return ordered;
+            }
+        }
         Currency currency;
         int percentDiscount = 0;
         List<Price> prices = product.getPrices();
@@ -156,7 +202,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if (excludeCancelled) {
             criteria.add(Restrictions.eq(Order.ISCANCELLED_FIELD, Boolean.FALSE));
         }
-        
+
         if (filterDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
         }
@@ -222,7 +268,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      */
     @Override
     public Order setAsInCharge(Order order) {
-        if(order.getIsCancelled()){
+        if (order.getIsCancelled()) {
             throw new EasySendException("You cannot puth in charge a cancelled order.");
         }
         order = getByID(order.getId());
@@ -260,4 +306,48 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         this.notificationEnabled = notificationEnabled;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Product> getProducts(Order order) {
+        Project project = projectService.getByID(order.getProject().getId());
+        if (order.isAllowedFreeItem() && !containsFreeOrder(order)) {
+            return new ArrayList<Product>(project.getProducts());
+        }
+        Set<Product> products = project.getProducts();
+        Set<Product> ps = new HashSet<Product>();
+        for (Product product : products) {
+            if (!product.getFree()) {
+                ps.add(product);
+            }
+        }
+        return new ArrayList<Product>(ps);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order applyDiscountIfApplicable(Order o) {
+        ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(o.getProductsOrdered().size());
+        for (ProductOrdered p : o.getProductsOrdered()) {
+            newList.add(addProductOrdered(o, p.getProduct(), o.getProject(), p.getNumber()));
+        }
+        o.setProductsOrdered(newList);
+        return o;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order applyFreeShippingCostIfApplicable(Order o) {
+        if (o.getNumberOfItemsInProductOrdered() >= o.getProject().getFreeShippingNumber()) {
+            o.setShippingCost(BigDecimal.ZERO);
+        } else {
+            o.setShippingCost(o.getProject().getShippingCost());
+        }
+        return o;
+    }
 }

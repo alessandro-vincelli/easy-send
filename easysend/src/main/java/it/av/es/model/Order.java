@@ -1,10 +1,7 @@
 package it.av.es.model;
 
-import it.av.es.EasySendException;
-
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Currency;
 import java.util.Date;
 import java.util.List;
 
@@ -292,51 +289,6 @@ public class Order extends BasicEntity {
         return n;
     }
     
-    public void applyDiscountIfApplicable() {
-        ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(productsOrdered.size());
-        for (ProductOrdered p : productsOrdered) {
-            newList.add(addProductOrdered(p.getProduct(), p.getNumber()));
-        }
-        setProductsOrdered(newList);
-    }
-
-    public void applyFreeShippingCostIfApplicable() {
-        if (getNumberOfItemsInProductOrdered() >= getProject().getFreeShippingNumber()) {
-            setShippingCost(BigDecimal.ZERO);
-        } else {
-            setShippingCost(project.getShippingCost());
-        }
-    }
-        
-    public ProductOrdered addProductOrdered(Product product, int numberOfProds) {
-        ProductOrdered ordered = new ProductOrdered();
-        ordered.setProduct(product);
-        ordered.setNumber(numberOfProds);
-        BigDecimal amount = new BigDecimal(0);
-        Currency currency;
-        int percentDiscount = 0;
-        List<Price> prices = product.getPrices();
-        for (Price price : prices) {
-            if(numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()){
-                amount= price.getAmount();
-                currency = price.getCurrency();
-                percentDiscount = price.getPercentDiscount();
-            }
-        }
-        if(amount == BigDecimal.ZERO){
-            throw new EasySendException("Price not available");
-        }
-        ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
-        //apply discount if isPrepayment
-        if(getPaymentType().equals(PaymentType.PREPAYMENT) && getProject().getPrePaymentDiscount() > 0){
-            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(getProject().getPrePaymentDiscount())));
-            ordered.setAmount(ordered.getAmount().subtract(discount)); 
-            percentDiscount = percentDiscount + prePaymentDiscount; 
-        }
-        ordered.setDiscount(percentDiscount);
-        return ordered;
-    }
-        
     public BigDecimal getTotalAmount(){
         BigDecimal n = BigDecimal.ZERO;
         for (ProductOrdered p : productsOrdered) {
@@ -360,12 +312,6 @@ public class Order extends BasicEntity {
         for (ProductOrdered p : productsOrdered) {
             if(p.getProduct().getConcursOnFreePack()){
                 items = items + p.getNumber();
-            }
-        }
-        //check if already added a free product
-        for (ProductOrdered p : productsOrdered) {
-            if(p.getProduct().getFree()){
-                return false;
             }
         }
         if(items >= getProject().getNumberOfItemsPerFreeProduct()){
