@@ -20,6 +20,7 @@ import org.apache.wicket.authroles.authorization.strategies.role.annotations.Aut
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.html.form.CheckBox;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -154,6 +155,8 @@ public class ProductManagerPanel extends Panel {
             formProd.setOutputMarkupId(true);
             add(formProd);
             formProd.add(new TextField<String>(Product.NAME_FIELD));
+            formProd.add(new CheckBox(("concursOnFreePack")));
+            formProd.add(new CheckBox(("free")));
             formProd.add(new TextField<BigDecimal>("kilos", BigDecimal.class));
             formProd.add(new TextField<BigDecimal>("volume", BigDecimal.class));
 

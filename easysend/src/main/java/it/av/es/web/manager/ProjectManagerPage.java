@@ -45,6 +45,7 @@ public class ProjectManagerPage extends BasePageSimple {
     private ProjectService projectService;
     @SpringBean
     private ProductService productService;
+    private CustomAjaxFallbackDefaultDataTable<Project, String> dataTable;
 
     public ProjectManagerPage() {
         super();
@@ -52,16 +53,20 @@ public class ProjectManagerPage extends BasePageSimple {
         List<IColumn<Project, String>> columns = new ArrayList<IColumn<Project, String>>();
 
         columns.add(new PropertyColumn<Project, String>(new Model<String>("Progetto"), Project.NAME_FIELD, Project.NAME_FIELD));
-        
+
+        columns.add(new AbstractColumn<Project, String>(new Model<String>("Progetto"), "Progetto") {
+            public void populateItem(Item<ICellPopulator<Project>> cellItem, String componentId, IModel<Project> model) {
+                cellItem.add(new ProjectPanel(componentId, model));
+            }
+        });
+
         columns.add(new AbstractColumn<Project, String>(new Model<String>("Prodotti"), "Prodotti") {
             public void populateItem(Item<ICellPopulator<Project>> cellItem, String componentId, IModel<Project> model) {
                 cellItem.add(new ProductManagerPanel(componentId, model));
             }
         });
 
-
-        final CustomAjaxFallbackDefaultDataTable<Project, String> dataTable = new CustomAjaxFallbackDefaultDataTable<Project, String>("dataTable", columns,
-                new ProjectSortableDataProvider(), 50);
+        dataTable = new CustomAjaxFallbackDefaultDataTable<Project, String>("dataTable", columns, new ProjectSortableDataProvider(), 50);
         add(dataTable);
 
         final Form<Project> formPrj = new Form<Project>("prj", new CompoundPropertyModel<Project>(new Project()));
@@ -77,6 +82,27 @@ public class ProjectManagerPage extends BasePageSimple {
                 formPrj.setModelObject(new Project());
             }
         });
+    }
+
+    public class ProjectPanel extends Panel {
+        public ProjectPanel(String id, final IModel<Project> project) {
+            super(id, project);
+            Injector.get().inject(this);
+            final Form<Project> formPrj = new Form<Project>("prj", new CompoundPropertyModel<Project>(project));
+            add(formPrj);
+            TextField<Integer> numberOfItemsPerFreeProduct = new TextField<Integer>("numberOfItemsPerFreeProduct");
+            formPrj.add(numberOfItemsPerFreeProduct);
+            formPrj.add(new AjaxSubmitLink("submit") {
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    super.onSubmit(target, form);
+                    Project p = (Project) form.getModelObject();
+                    projectService.save(p);
+                    target.add(dataTable);
+                }
+            });
+
+        }
     }
 
     public class ProductPanel extends Panel {

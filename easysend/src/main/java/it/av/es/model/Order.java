@@ -355,6 +355,25 @@ public class Order extends BasicEntity {
         return true;
     }
     
+    public boolean isAllowedFreeItem(){
+        int items = 0;
+        for (ProductOrdered p : productsOrdered) {
+            if(p.getProduct().getConcursOnFreePack()){
+                items = items + p.getNumber();
+            }
+        }
+        //check if already added a free product
+        for (ProductOrdered p : productsOrdered) {
+            if(p.getProduct().getFree()){
+                return false;
+            }
+        }
+        if(items >= getProject().getNumberOfItemsPerFreeProduct()){
+            return true;    
+        }
+        return false;
+    }
+    
     public String getCustomerAddressForDisplay(){
         StringBuffer buffer = new StringBuffer();
         buffer.append(customer.getDefaultShippingAddresses().getName());

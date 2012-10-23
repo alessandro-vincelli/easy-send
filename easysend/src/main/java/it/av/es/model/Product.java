@@ -24,6 +24,8 @@ public class Product extends BasicEntity {
     private BigDecimal kilos;
     private BigDecimal volume;
     private Integer itemsInside;
+    private Boolean concursOnFreePack;
+    private Boolean free;
 
     public Product() {
         super();
@@ -83,6 +85,22 @@ public class Product extends BasicEntity {
 
     public void setShortName(String shortName) {
         this.shortName = shortName;
+    }
+
+    public Boolean getConcursOnFreePack() {
+        return concursOnFreePack;
+    }
+
+    public void setConcursOnFreePack(Boolean concursOnFreePack) {
+        this.concursOnFreePack = concursOnFreePack;
+    }
+
+    public Boolean getFree() {
+        return free;
+    }
+
+    public void setFree(Boolean free) {
+        this.free = free;
     }
 
 }
