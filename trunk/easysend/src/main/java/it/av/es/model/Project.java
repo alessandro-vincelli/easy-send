@@ -38,6 +38,7 @@ public class Project extends BasicEntity {
      * % of discount for prePayment
      */
     private Integer prePaymentDiscount;
+    private Integer numberOfItemsPerFreeProduct;
     private BigDecimal shippingCost;
     /**
      * the number of product for free shipping
@@ -119,6 +120,14 @@ public class Project extends BasicEntity {
 
     public void setFreeShippingNumber(Integer freeShippingNumber) {
         this.freeShippingNumber = freeShippingNumber;
+    }
+
+    public Integer getNumberOfItemsPerFreeProduct() {
+        return numberOfItemsPerFreeProduct;
+    }
+
+    public void setNumberOfItemsPerFreeProduct(Integer numberOfItemsPerFreeProduct) {
+        this.numberOfItemsPerFreeProduct = numberOfItemsPerFreeProduct;
     }
 
 }

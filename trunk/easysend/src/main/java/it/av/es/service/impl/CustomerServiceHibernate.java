@@ -18,7 +18,6 @@ package it.av.es.service.impl;
 import it.av.es.EasySendException;
 import it.av.es.model.Customer;
 import it.av.es.model.User;
-import it.av.es.model.UserProfile;
 import it.av.es.service.CustomerService;
 import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
