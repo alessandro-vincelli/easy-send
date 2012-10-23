@@ -17,7 +17,7 @@ package it.av.es.service;
 
 import it.av.es.model.Group;
 
-import java.util.Collection;
+import java.util.List;
 
 /**
  * Operations on groups
@@ -40,8 +40,7 @@ public interface GroupService {
      * 
      * @return all the groups
      */
-    Collection<Group> getAll();
-
+    List<Group> getAll();
 
     /**
      * Remove the given group

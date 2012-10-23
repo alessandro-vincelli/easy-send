@@ -335,4 +335,9 @@ public class User extends BasicEntity implements Comparable<User> {
             }
         }
     }
+
+    @Override
+    public String toString() {
+        return getFirstname() + " " + getLastname();
+    }
 }

@@ -31,6 +31,13 @@
             <!--  start table-content  -->
             <div id="table-content">
             <form wicket:id="form">
+            <select  wicket:id="group"/>
+            <select  wicket:id="usersMemberOf"/>
+            <input type="submit" wicket:id="removeUser" class="button-green-small" value="->"/>
+            <input type="submit" wicket:id="addUser" class="button-green-small" value="<-"/>
+            <select  wicket:id="users"/>
+            </form>
+            <!-- <form wicket:id="form">
             <table class="table-actions">
             <tr>
             <td><wicket:message key="group.name"/> <input type="text" wicket:id="name"/></td>
@@ -38,8 +45,8 @@
             <td><input type="submit" class="button-green-small" wicket:id="submit" value="" wicket:message="value:button.addGroup"/></td>
             </tr>
             </table>
-            </form>
-            <table wicket:id="dataTable" border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">[table]</table>
+            </form> -->
+            
         </div>
        </div>
 		<!--  end content-table-inner ............................................END  -->
