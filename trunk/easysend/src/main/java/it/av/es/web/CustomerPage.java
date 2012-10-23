@@ -64,7 +64,7 @@ import com.vaynberg.wicket.select2.TextChoiceProvider;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation({ "USER", "VENDOR" })
+@AuthorizeInstantiation({ "USER", "VENDOR", "OPERATOR" })
 public class CustomerPage extends BasePageSimple {
 
     @SpringBean

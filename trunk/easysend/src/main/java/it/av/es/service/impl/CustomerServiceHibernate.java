@@ -18,7 +18,9 @@ package it.av.es.service.impl;
 import it.av.es.EasySendException;
 import it.av.es.model.Customer;
 import it.av.es.model.User;
+import it.av.es.model.UserProfile;
 import it.av.es.service.CustomerService;
+import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
 
 import java.util.List;
@@ -43,6 +45,8 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private UserProfileService profileService;
 
     /**
      * {@inheritDoc}
@@ -59,8 +63,13 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
     //@Cacheable("getAllCustomers")
     @Override
     public List<Customer> getAll(User user) {
-        Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
-        return super.findByCriteria(critByUser);
+        if(user.getUserProfile().equals(profileService.getOperatorUserProfile()) || user.getUserProfile().equals(profileService.getAdminUserProfile())){
+            return super.getAll();    
+        }
+        else{
+            Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
+            return super.findByCriteria(critByUser);            
+        }
     }
 
     /**
@@ -97,7 +106,10 @@ public class CustomerServiceHibernate extends ApplicationServiceHibernate<Custom
     //@Cacheable("getCustomers")
     @Override
     public List<Customer> get(User user, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
-        Criterion critByUser = Restrictions.eq(Customer.USER_FIELD, user);
+        Criterion critByUser = null;
+        if(!(user.getUserProfile().equals(profileService.getOperatorUserProfile()) || user.getUserProfile().equals(profileService.getAdminUserProfile()))){
+            critByUser = Restrictions.eq(Customer.USER_FIELD, user);    
+        }
         Order orderByName = null;
         if (StringUtils.isNotBlank(sortProperty) && StringUtils.containsNone(sortProperty, "defaultShippingAddresses")) {
             if (isAscending) {
