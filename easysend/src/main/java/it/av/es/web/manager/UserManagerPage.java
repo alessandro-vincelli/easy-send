@@ -16,6 +16,7 @@ import java.util.Set;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.ajax.markup.html.form.AjaxCheckBox;
+import org.apache.wicket.ajax.markup.html.form.AjaxSubmitLink;
 import org.apache.wicket.authroles.authorization.strategies.role.annotations.AuthorizeInstantiation;
 import org.apache.wicket.extensions.ajax.markup.html.repeater.data.table.AjaxFallbackDefaultDataTable;
 import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulator;
@@ -49,7 +50,7 @@ public class UserManagerPage extends BasePageSimple {
     private ProjectService projectService;
     @SpringBean
     private LanguageService languageService;
-    private Form<User> accountForm;
+    private final Form<User> accountForm;
     private User user = new User();
     private String confirmPassword = "";
     private String newPasswordValue = "";
@@ -137,6 +138,19 @@ public class UserManagerPage extends BasePageSimple {
         public ActionPanel(String id, final IModel<User> userModel) {
             super(id, userModel);
             Injector.get().inject(this);
+            AjaxSubmitLink edit = new AjaxSubmitLink("edit", accountForm) {
+
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    super.onSubmit(target, form);
+                    user = userModel.getObject();
+                    accountForm.setDefaultModelObject(userModel);
+                    target.add(accountForm);
+                }
+                
+            };
+            edit.setDefaultFormProcessing(false);
+            add(edit);
             add(new ListView<Project>("projects", new ArrayList<Project>(projectService.getAll())) {
                 @Override
                 protected void populateItem(final ListItem<Project> item) {
