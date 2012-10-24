@@ -41,7 +41,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.apache.wicket.validation.validator.StringValidator;
 
-@AuthorizeInstantiation({ "ADMIN" })
+@AuthorizeInstantiation({ "ADMIN", "OPERATOR" })
 public class UserManagerPage extends BasePageSimple {
 
     @SpringBean
