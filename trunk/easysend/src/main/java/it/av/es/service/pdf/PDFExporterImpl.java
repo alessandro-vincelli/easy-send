@@ -132,7 +132,7 @@ public final class PDFExporterImpl implements PDFExporter {
             table.addCell(builderNormalHRight(Integer.toString(totalPacks(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalWeight(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalItemInside(orders))));
-            table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalVolumes(orders))));
+            table.addCell(builderNormalHRight(NumberUtil.getItalianTwoFractionDigits().format(totalVolumes(orders))));
             PdfPCell fCell = builderNormalHRight("");
             fCell.setColspan(4);
             table.addCell(fCell);
