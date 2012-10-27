@@ -156,7 +156,7 @@ public final class PDFExporterImpl implements PDFExporter {
                 for (ProductOrdered po : o.getProductsOrdered()) {
                     packs.append(po.getNumber() + "\n");
                     kilos.append(NumberUtil.getItalian().format(po.getTotalWeight()) + "\n");
-                    volume.append(NumberUtil.getItalian().format(po.getTotalVolume()) + "\n");
+                    volume.append(NumberUtil.getItalianTwoFractionDigits().format(po.getTotalVolume()) + "\n");
                     pairs.append(po.getTotalItemsInside() + "\n");
                     commodity.append(po.getProduct().getShortName()+ "\n");
                 }
