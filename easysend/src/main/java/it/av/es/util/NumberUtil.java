@@ -36,5 +36,12 @@ public final class NumberUtil {
         italianNumber.setMinimumFractionDigits(1);
         return italianNumber;
     }
+    
+    public final static NumberFormat getItalianTwoFractionDigits(){
+        NumberFormat italianNumber = NumberFormat.getInstance(Locale.ITALY);
+        italianNumber.setMaximumFractionDigits(2);
+        italianNumber.setMinimumFractionDigits(2);
+        return italianNumber;
+    }
 
 }
