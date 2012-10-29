@@ -9,11 +9,14 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 
 @Entity
+@XmlRootElement
 public class Project extends BasicEntity {
 
     public static final String NAME_FIELD = "name";
@@ -30,6 +33,7 @@ public class Project extends BasicEntity {
     @Fetch(FetchMode.SUBSELECT)
     private Set<User> coordinators;
     @OneToMany
+    @XmlTransient
     public Set<Order> orders;
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
@@ -53,6 +57,7 @@ public class Project extends BasicEntity {
         this.name = name;
     }
 
+    @XmlTransient
     public Set<User> getUsers() {
         return users;
     }
@@ -61,6 +66,7 @@ public class Project extends BasicEntity {
         this.users = users;
     }
 
+    @XmlTransient
     public Set<Order> getOrders() {
         return orders;
     }

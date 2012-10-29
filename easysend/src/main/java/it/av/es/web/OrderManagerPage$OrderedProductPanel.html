@@ -1,30 +1,51 @@
 <wicket:panel xmlns:wicket="http://wicket.apache.org">
 
 <table style="width: 100%;" id="product-ordered-table">
-<tr >
+<tr>
     <th style="width: 250px; text-align: left; height: 16px;">Prodotto</th>
     <th style="width: 50px; text-align: center; height: 16px;">N.</th>
+    <th style="width: 50px; text-align: center; height: 16px;">Kilos.</th>
+    <th style="width: 50px; text-align: center; height: 16px;">Pairs</th>
+    <th style="width: 50px; text-align: center; height: 16px;">Volume</th>
     <th style="width: 50px; text-align: center; height: 16px;">Importo</th>
     <th style="width: 50px; text-align: center; height: 16px;">% Sconto</th>
 </tr>
 <tr wicket:id="list" style="padding-left: 10px; padding-right:10px; text-align: right;">
     <td style="text-align: left;"><span wicket:id="productName"></span></td>
     <td><span wicket:id="productNumber"></span></td>
+    <td><span wicket:id="productWeigth"></span></td>
+    <td><span wicket:id="productPairs"></span></td>
+    <td><span wicket:id="productVolume"></span></td>
     <td><span wicket:id="productAmount"></span></td>
     <td><span wicket:id="productDiscount"></span>%</td>
 </tr>
 <tr style="padding-left: 10px; padding-right:10px; ; padding-top:3px; padding-bottom:3px; text-align: right;">
     <th style="text-align: right;"><wicket:message key="order.shippingCost"/>:</th>
-    <td></td>
+    <td colspan="4"></td>
     <td><span wicket:id="shippingCost"></span></td>
     <td></td>
 </tr>
 <tr style="padding-left: 10px; padding-right:10px; text-align: right;">
     <th style="text-align: right;"><wicket:message key="total"/>:</th>
     <td><span wicket:id="numberOfItemsInProductOrdered"></span></td>
+    <td><span wicket:id="totalPacksInProductOrdered"></span></td>
+    <td><span wicket:id="totalPairsInProductOrdered"></span></td>
+    <td><span wicket:id="totalVolumeInProductOrdered"></span></td>
     <td><span wicket:id="totalAmount"></span></td>
     <td></td>
 </tr>
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: left;" colspan="8"></th>
+</tr>
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: left;"><wicket:message key="shippingAddress"/>:</th>
+    <td colspan="7"><span wicket:id="shippingAddress"></span></td>
+</tr>
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: left;"><wicket:message key="customer.partitaIvaNumber"/>:</th>
+    <td colspan="7"><span wicket:id="partitaIvaNumber"></span></td>
+</tr>
+
 </table>
 
 </wicket:panel>

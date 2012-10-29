@@ -29,6 +29,8 @@ public class Product extends BasicEntity {
 
     public Product() {
         super();
+        kilos = BigDecimal.ZERO;
+        volume = BigDecimal.ZERO;
     }
 
     public String getName() {

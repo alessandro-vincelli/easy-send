@@ -17,6 +17,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
 import javax.persistence.Version;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -33,6 +35,7 @@ import org.hibernate.search.annotations.Store;
 @Table(name = "users", uniqueConstraints = { @UniqueConstraint(columnNames = { "email" }) })
 @Indexed
 @org.hibernate.annotations.Table(appliesTo = "users", indexes = { @org.hibernate.annotations.Index(name = "idx_user_id", columnNames = { "id" }) })
+@XmlRootElement
 public class User extends BasicEntity implements Comparable<User> {
 
     public static final String ID = "id";
@@ -199,7 +202,8 @@ public class User extends BasicEntity implements Comparable<User> {
     public void setVersion(int version) {
         this.version = version;
     }
-
+    
+    @XmlTransient
     public Set<Project> getProjects() {
         return projects;
     }
@@ -208,6 +212,7 @@ public class User extends BasicEntity implements Comparable<User> {
         this.projects = projects;
     }
 
+    @XmlTransient
     public Set<Order> getOrders() {
         return orders;
     }
