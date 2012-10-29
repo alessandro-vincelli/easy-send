@@ -80,7 +80,7 @@
 		<profile>
 			<id>deployment</id>
 			<activation>
-             <activeByDefault>true</activeByDefault>
+             <activeByDefault>true</activeByDefault> 
 				<property>
 					<name>env</name>
 					<value>deployment</value>
@@ -415,7 +415,7 @@
 			<scope>test</scope>
 		</dependency>
 		
-<!-- 		<dependency>
+ 		<dependency>
     		<groupId>org.codehaus.jackson</groupId>
     		<artifactId>jackson-core-asl</artifactId>
     		<version>${jackson.version}</version>
@@ -437,7 +437,7 @@
     		<groupId>org.codehaus.jackson</groupId>
     		<artifactId>jackson-jaxrs</artifactId>
     		<version>${jackson.version}</version>
-		</dependency> -->
+		</dependency>
 		<dependency><!-- needed by select2 -->
             <groupId>org.json</groupId>
             <artifactId>json</artifactId>
@@ -451,7 +451,7 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+<!--		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-core</artifactId>
 			<version>2.1.6.RELEASE</version>
@@ -465,20 +465,20 @@
 			<type>jar</type>
 			<scope>compile</scope>
 		</dependency>
-		<dependency>
+ 		<dependency>
 			<groupId>org.springframework.batch</groupId>
 			<artifactId>spring-batch-infrastructure</artifactId>
 			<version>2.1.6.RELEASE</version>
 			<type>pom</type>
 			<scope>compile</scope>
-		</dependency>
+		</dependency> -->
         
 	</dependencies>
 
 	<scm>
-		<connection>scm:svn:https://youeat.googlecode.com/svn/trunk</connection>
-		<developerConnection>scm:svn:https://youeat.googlecode.com/svn/trunk</developerConnection>
-		<url>https://youeat.googlecode.com/svn/trunk</url>
+		<connection>scm:svn:https://easysend.googlecode.com/svn/trunk</connection>
+		<developerConnection>scm:svn:https://easysend.googlecode.com/svn/trunk</developerConnection>
+		<url>https://easysend.googlecode.com/svn/trunk</url>
 	</scm>
 	<build>
 		<resources>
@@ -876,12 +876,12 @@
     	</site>
 	</distributionManagement>
 	<properties>
-		<wicket.version>6.1.1</wicket.version>
+		<wicket.version>6.2.0</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>3.1.0.RELEASE</spring.version>
-		<spring.security.version>3.1.0.RELEASE</spring.security.version>
-		<jackson.version>1.6.0</jackson.version>
+		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.security.version>3.1.3.RELEASE</spring.security.version>
+		<jackson.version>1.7.3</jackson.version>
         <hibernate.version>4.1.7.Final</hibernate.version>
 	</properties>
 </project>
