@@ -19,11 +19,12 @@
 
     <context:annotation-config />
     <context:spring-configured />
+    <context:component-scan base-package="it.av.es.web.rest" />
     <tx:jta-transaction-manager />
     <tx:annotation-driven transaction-manager="transactionManager" />
     <cache:annotation-driven  mode="proxy" proxy-target-class="true"/>
     
-    <import resource="classpath:cache-manager.xml" />
+    <import resource="cache-manager.xml" />
     
     <bean id="passwordEncoder"  class="org.springframework.security.authentication.encoding.Md5PasswordEncoder"></bean>
     
@@ -35,9 +36,9 @@
         </property>
     </bean>
     
-    <security:http auto-config="true">
+<!--     <security:http auto-config="true">
         <security:intercept-url pattern="/**"/>
-    </security:http>
+    </security:http> -->
     
     <bean id="authenticationManager" class="org.springframework.security.authentication.ProviderManager">
         <constructor-arg>    
