@@ -17,6 +17,7 @@ import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -284,13 +285,21 @@ public class OrderManagerPage extends BasePageSimple {
                     ProductOrdered p = item.getModelObject();
                     item.add(new Label("productName", new Model<String>(p.getProduct().getName())));
                     item.add(new Label("productNumber", new Model<Integer>(p.getNumber())));
+                    item.add(new Label("productWeigth", new Model<BigDecimal>(p.getTotalWeight())));
+                    item.add(new Label("productPairs", new Model<Integer>(p.getTotalItemsInside())));
+                    item.add(new Label("productVolume", new Model<BigDecimal>(p.getTotalVolume())));
                     item.add(new Label("productAmount", new Model<String>(NumberUtil.getItalian().format(p.getAmount()))));
                     item.add(new Label("productDiscount", new Model<Integer>(p.getDiscount())));
                 }
             };
             add(new Label("shippingCost", new Model<String>(NumberUtil.getItalian().format(model.getObject().getShippingCost()))));
             add(new Label("numberOfItemsInProductOrdered", new Model<Integer>(model.getObject().getNumberOfItemsInProductOrdered())));
+            add(new Label("totalPacksInProductOrdered", new Model<BigDecimal>(model.getObject().getTotalWeightInProductOrdered())));
+            add(new Label("totalPairsInProductOrdered", new Model<Integer>(model.getObject().getTotalItemsInsideInProductOrdered())));
+            add(new Label("totalVolumeInProductOrdered", new Model<BigDecimal>(model.getObject().getTotalVolumeInProductOrdered())));
             add(new Label("totalAmount", new Model<String>(NumberUtil.italianCurrency.format(model.getObject().getTotalAmount()))));
+            add(new Label("shippingAddress", new Model<String>(model.getObject().getCustomerAddressForDisplay())));
+            add(new Label("partitaIvaNumber", new Model<String>(model.getObject().getCustomer().getPartitaIvaNumber())));
             add(listView);
         }
 

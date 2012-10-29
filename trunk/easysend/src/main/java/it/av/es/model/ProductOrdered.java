@@ -64,14 +64,23 @@ public class ProductOrdered extends BasicEntity {
     }
 
     public BigDecimal getTotalWeight(){
-        return getProduct().getKilos().multiply(BigDecimal.valueOf(number));
+        if(getProduct().getKilos() != null){
+            return getProduct().getKilos().multiply(BigDecimal.valueOf(number));    
+        }
+        return BigDecimal.ZERO;
     }
     
     public BigDecimal getTotalVolume(){
-        return getProduct().getVolume().multiply(BigDecimal.valueOf(number));
+        if(getProduct().getVolume() != null){
+            return getProduct().getVolume().multiply(BigDecimal.valueOf(number));    
+        }
+        return BigDecimal.ZERO;
     }
     
     public int getTotalItemsInside(){
-        return getProduct().getItemsInside() * number;
+        if(getProduct().getItemsInside() != null){
+            return getProduct().getItemsInside() * number;    
+        }
+        return 0;
     }
 }

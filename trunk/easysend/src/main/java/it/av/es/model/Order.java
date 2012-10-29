@@ -17,6 +17,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
@@ -26,6 +28,7 @@ import org.hibernate.annotations.GenerationTime;
 @Entity
 
 @Table(name = "orders")
+@XmlRootElement
 public class Order extends BasicEntity {
 
     public static final String USER_FIELD = "user";
@@ -49,6 +52,7 @@ public class Order extends BasicEntity {
     private Address shippingAddress;
     @ManyToOne
     @JoinColumn(name = "user_fk")
+    @XmlTransient
     private User user;
     @ManyToOne
     @JoinColumn(name = "project_fk")
@@ -106,7 +110,7 @@ public class Order extends BasicEntity {
         setShippingCost(project.getShippingCost());
         setProject(project);
     }
-
+    @XmlTransient
     public User getUser() {
         return user;
     }
@@ -131,6 +135,7 @@ public class Order extends BasicEntity {
         this.creationTime = creationTime;
     }
 
+    @XmlTransient
     public Customer getCustomer() {
         return customer;
     }
@@ -322,15 +327,18 @@ public class Order extends BasicEntity {
     
     public String getCustomerAddressForDisplay(){
         StringBuffer buffer = new StringBuffer();
-        buffer.append(customer.getDefaultShippingAddresses().getName());
-        buffer.append("\n");
-        buffer.append(customer.getDefaultShippingAddresses().getAddress());
-        buffer.append("\n");
-        buffer.append(customer.getDefaultShippingAddresses().getZipcode());
-        buffer.append(customer.getDefaultShippingAddresses().getCity());
-        buffer.append("\n");
-        buffer.append(customer.getDefaultShippingAddresses().getPhoneNumber());
-        buffer.append("\n");
+        if(getShippingAddress() != null){
+            buffer.append(getShippingAddress().getName());
+            buffer.append("\n");
+            buffer.append(getShippingAddress().getAddress());
+            buffer.append("\n");
+            buffer.append(getShippingAddress().getZipcode());
+            buffer.append(" ");
+            buffer.append(getShippingAddress().getCity());
+            buffer.append("\n");
+            buffer.append(getShippingAddress().getPhoneNumber());
+            buffer.append("\n");
+        }
         return buffer.toString();
     }
     
@@ -343,6 +351,7 @@ public class Order extends BasicEntity {
         buffer.append(user.getAddress());
         buffer.append("\n");
         buffer.append(user.getZipcode());
+        buffer.append(" ");
         buffer.append(user.getCity());
         buffer.append("\n");
         buffer.append(user.getPhoneNumber());

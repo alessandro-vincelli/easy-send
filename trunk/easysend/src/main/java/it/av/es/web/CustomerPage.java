@@ -42,6 +42,7 @@ import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.list.PropertyListView;
@@ -84,6 +85,7 @@ public class CustomerPage extends BasePageSimple {
     //private Select2Choice<String> zipCode;
     private DropDownChoice<String> province;
     private Customer customer = new Customer();
+    private BookmarkablePageLink<String> addOrder;
 
     public CustomerPage(PageParameters parameters) {
         String customerId = parameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
@@ -146,7 +148,7 @@ public class CustomerPage extends BasePageSimple {
         formNewOrder.add(new DropDownChoice<CustomerType>("customerType", Arrays.asList(CustomerType.values())).setChoiceRenderer(new EnumChoiceRenderer<CustomerType>()));
         formNewOrder.add(new TextField<String>("phoneNumber").setRequired(true));
         formNewOrder.add(new TextField<String>("faxNumber"));
-        formNewOrder.add(new TextField<String>("partitaIvaNumber"));
+        formNewOrder.add(new TextField<String>("partitaIvaNumber").setRequired(true));
         formNewOrder.add(new TextField<String>("codiceFiscaleNumber"));
         formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
         formNewOrder.add(new TextField<String>("iban"));
@@ -265,14 +267,18 @@ public class CustomerPage extends BasePageSimple {
                 super.onSubmit(target, form);
                 Customer c = (Customer) form.getModelObject();
                 if(c.getAddresses() == null || c.getAddresses().isEmpty() || c.getDefaultShippingAddresses() == null){
-                    getFeedbackPanel().warn("È necessario inserire almeno un indirizzo di consegna predefinito");
+                    getFeedbackPanel().warn(getString("customer.message.deafulAddressRequired"));
                     getFeedbackPanel().publishWithEffects(target);
                 }
                 else{
                     formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
                     //formNewOrder.setEnabled(false);
-                    getFeedbackPanel().success("Cliente salvato con successo");
+                    getFeedbackPanel().success(getString("customer.message.saved"));
                     getFeedbackPanel().publishWithEffects(target);
+                    if(!addOrder.isVisible()){
+                        addOrder.setVisible(true);
+                        target.add(addOrder);                       
+                    }
                 }
                 target.add(formNewOrder);
             }
@@ -284,6 +290,19 @@ public class CustomerPage extends BasePageSimple {
             }
         });
 
+        PageParameters pp = new PageParameters();
+        pp.add(CustomHttpParams.CUSTOMER_ID, model.getObject().getId()!=null?model.getObject().getId():"");
+        addOrder = new BookmarkablePageLink<String>("addOrder", PlaceNewOrderPage.class, pp) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(PlaceNewOrderPage.class)));
+            }
+        };
+        add(addOrder);
+        addOrder.setOutputMarkupId(true);
+        addOrder.setVisible(StringUtils.isNotBlank(model.getObject().getId()));
     }
     
     private class CityProvider extends ChoiceProvider<City> {
