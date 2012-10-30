@@ -300,6 +300,7 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("totalAmount", new Model<String>(NumberUtil.italianCurrency.format(model.getObject().getTotalAmount()))));
             add(new Label("shippingAddress", new Model<String>(model.getObject().getCustomerAddressForDisplay())));
             add(new Label("partitaIvaNumber", new Model<String>(model.getObject().getCustomer().getPartitaIvaNumber())));
+            add(new Label("notesComplete", new Model<String>(orderService.getNotesForDisplay(model.getObject(), getLocalizer(), this))));
             add(listView);
         }
 

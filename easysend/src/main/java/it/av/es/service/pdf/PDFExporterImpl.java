@@ -10,6 +10,7 @@ import it.av.es.model.Order;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.service.OrderService;
 import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
 
@@ -25,6 +26,7 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -53,6 +55,8 @@ public final class PDFExporterImpl implements PDFExporter {
     private Font fontBold;
     private Component component;
     private Localizer localizer;
+    @Autowired
+    private OrderService orderService;
 
     /**
      * {@inheritDoc}
@@ -169,7 +173,7 @@ public final class PDFExporterImpl implements PDFExporter {
                 //table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
                 table.addCell(builderNormalLeft(o.getCustomerAddressForDisplay()));
                 table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
-                table.addCell(builderSmallFontLeft(getNotesForDisplay(o)));                
+                table.addCell(builderSmallFontLeft(orderService.getNotesForDisplay(o, localizer, component)));                
 
             }
             
@@ -293,68 +297,5 @@ public final class PDFExporterImpl implements PDFExporter {
             n = n + order.getTotalItemsInsideInProductOrdered();
         }
         return n;
-    }
-    
-    
-    private String getNotesForDisplay(Order order) {
-        StringBuilder buffer = new StringBuilder();
-        buffer.append("total: ");
-        buffer.append(NumberUtil.italianCurrency.format(order.getTotalAmount()));
-        if(StringUtils.isNotBlank(order.getNotes())){
-            buffer.append("\n");
-            buffer.append(order.getNotes());
-        }
-        ClosingDays closingDay = order.getCustomer().getClosingDay();
-        if(closingDay != null){
-            buffer.append("\n");
-            buffer.append("closed: ");
-            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
-            ClosingRange closingRange = order.getCustomer().getClosingRange();
-            if(closingRange != null){
-                buffer.append(" ");
-                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
-            }
-        }
-        if(order.getDeliveryTimeRequired() != null){
-            buffer.append("\n");
-            buffer.append("cons. tass.: ");
-            buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
-        }
-        if(order.getCustomer().getSignboard() != null){
-            buffer.append("\n");
-            buffer.append(localizer.getString("customer.signboard", component));
-            buffer.append(": ");
-            buffer.append(order.getCustomer().getSignboard());
-        }
-        if(!order.getCustomer().getDeliveryDays().isEmpty()){
-            buffer.append("\n");
-            buffer.append("consegna: ");
-            for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
-                buffer.append(localizer.getString(d.name(), component));
-                buffer.append(" ");
-            }
-        }
-        if(order.getCustomer().isPhoneForewarning()){
-            buffer.append("\n");
-            buffer.append("preavv. tel: ");
-            buffer.append(order.getShippingAddress().getPhoneNumber());
-        }
-        if(order.getCustomer().getDeployngType() != null){
-            buffer.append("\n");
-            DeploingType type = order.getCustomer().getDeployngType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
-        }
-        if(order.getCustomer().getDeliveryVehicle() != null){
-            buffer.append("\n");
-            DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
-            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
-        }
-        if(order.getCustomer().getDeliveryType() != null){
-            buffer.append("\n");
-            DeliveryType type = order.getCustomer().getDeliveryType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
-        }
-        buffer.append("\n");
-        return buffer.toString();
     }
 }
