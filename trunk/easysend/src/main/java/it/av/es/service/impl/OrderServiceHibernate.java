@@ -16,6 +16,12 @@
 package it.av.es.service.impl;
 
 import it.av.es.EasySendException;
+import it.av.es.model.ClosingDays;
+import it.av.es.model.ClosingRange;
+import it.av.es.model.DeliveryDays;
+import it.av.es.model.DeliveryType;
+import it.av.es.model.DeliveryVehicle;
+import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
 import it.av.es.model.PaymentType;
 import it.av.es.model.Price;
@@ -30,6 +36,7 @@ import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
 import it.av.es.service.system.MailService;
 import it.av.es.util.DateUtil;
+import it.av.es.util.NumberUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -45,6 +52,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
+import org.apache.wicket.Component;
+import org.apache.wicket.Localizer;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -349,5 +358,71 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             o.setShippingCost(o.getProject().getShippingCost());
         }
         return o;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getNotesForDisplay(Order order, Localizer localizer, Component component) {
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("total: ");
+        buffer.append(NumberUtil.italianCurrency.format(order.getTotalAmount()));
+        if(StringUtils.isNotBlank(order.getNotes())){
+            buffer.append("\n");
+            buffer.append(order.getNotes());
+        }
+        ClosingDays closingDay = order.getCustomer().getClosingDay();
+        if(closingDay != null){
+            buffer.append("\n");
+            buffer.append("closed: ");
+            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+            ClosingRange closingRange = order.getCustomer().getClosingRange();
+            if(closingRange != null){
+                buffer.append(" ");
+                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
+            }
+        }
+        if(order.getDeliveryTimeRequired() != null){
+            buffer.append("\n");
+            buffer.append("cons. tass.: ");
+            buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
+        }
+        if(order.getCustomer().getSignboard() != null){
+            buffer.append("\n");
+            buffer.append(localizer.getString("customer.signboard", component));
+            buffer.append(": ");
+            buffer.append(order.getCustomer().getSignboard());
+        }
+        if(!order.getCustomer().getDeliveryDays().isEmpty()){
+            buffer.append("\n");
+            buffer.append("consegna: ");
+            for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
+                buffer.append(localizer.getString(d.name(), component));
+                buffer.append(" ");
+            }
+        }
+        if(order.getCustomer().isPhoneForewarning()){
+            buffer.append("\n");
+            buffer.append("preavv. tel: ");
+            buffer.append(order.getShippingAddress().getPhoneNumber());
+        }
+        if(order.getCustomer().getDeployngType() != null){
+            buffer.append("\n");
+            DeploingType type = order.getCustomer().getDeployngType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        if(order.getCustomer().getDeliveryVehicle() != null){
+            buffer.append("\n");
+            DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
+            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
+        }
+        if(order.getCustomer().getDeliveryType() != null){
+            buffer.append("\n");
+            DeliveryType type = order.getCustomer().getDeliveryType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        buffer.append("\n");
+        return buffer.toString();
     }
 }
