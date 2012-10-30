@@ -217,7 +217,7 @@ public class OrderManagerPage extends BasePageSimple {
                         try {
                             Date date = orderDates.getModelObject();
                             List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
-                            is = pdfExporter.exportOrdersList(ord, date, user, project, getLocalizer(), getPage());
+                            is = pdfExporter.exportOrdersList(ord, date, user, project, getLocalizer(), getPage(), orderService);
                             return is;
                         } catch (Exception e) {
                             throw new RuntimeException(e);

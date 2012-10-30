@@ -3,6 +3,7 @@ package it.av.es.service.pdf;
 import it.av.es.model.Order;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.service.OrderService;
 
 import java.io.InputStream;
 import java.util.Date;
@@ -28,7 +29,8 @@ public interface PDFExporter {
 	 * @param project project
 	 * @param localizer
 	 * @param component
+	 * @param orderService
 	 * @return an InputStream that represent the PDF
 	 */
-	InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component);
+	InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component, OrderService orderService);
 }

@@ -55,15 +55,15 @@ public final class PDFExporterImpl implements PDFExporter {
     private Font fontBold;
     private Component component;
     private Localizer localizer;
-    @Autowired
     private OrderService orderService;
 
     /**
      * {@inheritDoc}
      */
-    public final InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component) {
+    public final InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component, OrderService orderService) {
         this.localizer = localizer;
         this.component = component;
+        this.orderService = orderService;
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try {
