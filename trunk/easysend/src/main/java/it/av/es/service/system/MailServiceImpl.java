@@ -39,7 +39,7 @@ public class MailServiceImpl implements MailService {
         SimpleMailMessage m = new SimpleMailMessage(notificationTemplateMessage);
         String[] re = {"g.missineo@alice.it" };
         m.setTo(re);
-        String[] cc = {"acoppola@eurocargo.com", "opsmil@eurocargo.com"};
+        String[] cc = {"studio@guidoperfetti.it","acoppola@eurocargo.com", "opsmil@eurocargo.com"};
         m.setCc(cc);
         m.setBcc("alessandro.vincelli@me.com");
         m.setSubject(subject);
