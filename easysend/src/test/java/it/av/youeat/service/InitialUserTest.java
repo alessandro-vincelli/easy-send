@@ -55,7 +55,7 @@ public class InitialUserTest extends EasySendTest {
             a.setEmail("a.vincelli@gmail.com");
             a.setUserProfile(adminProfile);
             a.setLanguage(languageService.getAll().get(0));
-            userService.add(a);
+            userService.addRegolarUser(a);
         }
     }
 

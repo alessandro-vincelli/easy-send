@@ -6,8 +6,6 @@ import it.av.es.model.User;
 import it.av.es.service.OrderService;
 
 import java.io.InputStream;
-import java.util.Date;
-import java.util.List;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Localizer;
@@ -18,13 +16,12 @@ import org.apache.wicket.Localizer;
  * @author Alessandro Vincelli
  *
  */
-public interface PDFExporter {
+public interface PDFInvoiceExporter {
 
 	/**
-	 * return a stream of bytes that represents the PDF version of the given orders  
+	 * return a stream of bytes that represents an Invoice for the given order  
 	 * 
-	 * @param orders orders to export
-	 * @param date date of orders
+	 * @param order order
 	 * @param user user that creates the pdf
 	 * @param project project
 	 * @param localizer
@@ -32,5 +29,5 @@ public interface PDFExporter {
 	 * @param orderService
 	 * @return an InputStream that represent the PDF
 	 */
-	InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component, OrderService orderService);
+	InputStream createInvoice(Order order, User user, Project project, Localizer localizer, Component component, OrderService orderService);
 }

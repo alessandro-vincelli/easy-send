@@ -237,7 +237,11 @@ $(document).ready(function() {
             <td><select wicket:id="paymentType" ></select></td>
             <th valign="top"><wicket:message key="order.deliveryTimeRequired"/></th>
             <td valign="top"><span  wicket:id="deliveryTimeRequired" ></span></td>            
-        </tr>        
+        </tr>
+        <tr>
+            <th valign="top"><h3><wicket:message key="order.infos"/>:</h3></th>
+            <td><h3><pre wicket:id="infos" ></pre></h3></td>
+        </tr>
         <tr>
             <th valign="top"><wicket:message key="order.note"/></th>
             <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>

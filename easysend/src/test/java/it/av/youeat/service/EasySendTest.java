@@ -24,8 +24,12 @@ public abstract class EasySendTest {
         profile = new UserProfile();
         profile.setName("testProfile");
         profile = userProfileService.save(profile);
-        if (userProfileService.getByName("USER") == null) {
-            UserProfile userProfile = new UserProfile("USER");
+        if (userProfileService.getByName("VENDOR") == null) {
+            UserProfile userProfile = new UserProfile("VENDOR");
+            userProfile = userProfileService.save(userProfile);
+        }
+        if (userProfileService.getByName("OPERATOR") == null) {
+            UserProfile userProfile = new UserProfile("OPERATOR");
             userProfile = userProfileService.save(userProfile);
         }
         if (userProfileService.getByName("ADMIN") == null) {

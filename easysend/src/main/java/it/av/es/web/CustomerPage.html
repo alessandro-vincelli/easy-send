@@ -130,14 +130,16 @@
             <td><input type="text" wicket:id="referenceName" class="inp-form-small" /></td>
         </tr>
         <tr style="border-top: 1px solid #E8E8E8;">
-            <th valign="top"><wicket:message key="customer.addressTitle"/></th>
-            <td><input type="button" value="" class="button-green" wicket:message="value:button.aggiungiIndirizzo" wicket:id="addNewAddress" ></input></td>
+            <th valign="top"><h3><wicket:message key="customer.addressTitle"/></h3></th>
+            <td colspan="3"><input type="button" value="" class="button-green" wicket:message="value:button.aggiungiIndirizzo" wicket:id="addNewAddress" ></input>
+            Usa il pulsante qui a fianco per inserire gli indirizzi di consegna e di fatturazione.
+            </td>
         </tr>        
         <tr wicket:id="addresses" id="addresses" style="border-top: 1px solid #E8E8E8 ; padding-bottom: 10px;">
         <td colspan="4" >
         <table id="id-form" >
         <tr>
-            <th valign="top" colspan="4"><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
+            <th valign="top" colspan="4"><h3><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></h3></th>
         </tr>        
         <tr>
             <th valign="top"><wicket:message key="customer.addressType"/></th>
@@ -172,6 +174,7 @@
         <td valign="top">
             <input type="button" value="" class="button-green" wicket:id="submit" wicket:message="value:button.save" ></input>
             <input type="reset" value="" class="button-green" wicket:message="value:button.reset" />
+            <input type="button" value="" class="button-green" wicket:id="addOrderButton" wicket:message="value:button.addOrder" />
         </td>
         <td></td>
     </tr>
@@ -215,8 +218,10 @@
                 <div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
                 <div class="right">
                     <h5>Indirizzi Clienti</h5>
-                    Gestione degli indirizzi di un cliente, gli indirizzi possono essere di consegna o di fatturazione.<br/>
-                    E' necessario inserire almenno un indirizzo di consegna e segnarlo come predefinito.
+                    Gestione degli indirizzi di un cliente, gli indirizzi possono essere di consegna, di fatturazione e di consegna e fatturazione.<br/>
+                    E' necessario inserire almenno un indirizzo di consegna predefinito.
+                    E' necessario inserire almenno un indirizzo di fatturazione.
+                    E' possibile inserire un indirizzo di fatturazione e consegna.
 <!--                     <ul class="greyarrow"> 
                         <li><a href="#" wicket:id="addNewAddress2">Nuovo indirizzo</a> </li>
                     </ul> -->

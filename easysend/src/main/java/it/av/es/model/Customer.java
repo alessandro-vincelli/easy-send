@@ -380,7 +380,7 @@ public class Customer extends BasicEntity {
     public List<Address> getShippingAddresses() {
         ArrayList<Address> ad = new ArrayList<Address>();
         for (Address address : addresses) {
-            if(address.getAddressType().equals(AddressType.SHIPPINGADDRESS)){
+            if(address.getAddressType().equals(AddressType.SHIPPINGADDRESS) || address.getAddressType().equals(AddressType.BILLINGANDSHIPPINGADDRESS)){
                 ad.add(address);
             }
         }
@@ -388,8 +388,8 @@ public class Customer extends BasicEntity {
     }
     
     public Address getDefaultShippingAddresses() {
-        for (Address address : addresses) {
-            if(address.getAddressType().equals(AddressType.SHIPPINGADDRESS) && address.getDefaultAddress()){
+        for (Address address : getShippingAddresses()) {
+            if(address.getDefaultAddress()){
                 return address;
             }
         }

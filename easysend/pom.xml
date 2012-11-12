@@ -4,9 +4,8 @@
 	<artifactId>easysend</artifactId>
 	<packaging>war</packaging>
 	<version>1.0-SNAPSHOT</version>
-	<name>EasySend</name>
-	<description>Wiki and social network to share food experiences</description>
-	<url>http://code.google.com/p/youeat</url>
+	<name>EasyTrack</name>
+	<url>http://code.google.com/p/easy-send/</url>
 	<issueManagement>
 		<system>code.google.com</system>
 		<url>http://code.google.com/p/youeat/issues/list</url>
@@ -58,6 +57,7 @@
 			<properties>
 				<wicketApplication.configurationType>development</wicketApplication.configurationType>
 				<springPropertiesLocation>file:/Users/alessandro/Documents/workspace-sts/properties/easytrack.properties</springPropertiesLocation>
+                <springPropertiesLocationTest>file:/Users/alessandro/Documents/workspace-sts/properties/easytrackTest.properties</springPropertiesLocationTest>
 			</properties>
 		</profile>
 		<profile>
@@ -80,7 +80,7 @@
 		<profile>
 			<id>deployment</id>
 			<activation>
-             <activeByDefault>true</activeByDefault> 
+             <activeByDefault>true</activeByDefault>
 				<property>
 					<name>env</name>
 					<value>deployment</value>
@@ -879,7 +879,7 @@
 		<wicket.version>6.2.0</wicket.version>
 		<jetty.version>6.1.4</jetty.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<spring.version>3.1.2.RELEASE</spring.version>
+		<spring.version>3.1.3.RELEASE</spring.version>
 		<spring.security.version>3.1.3.RELEASE</spring.security.version>
 		<jackson.version>1.7.3</jackson.version>
         <hibernate.version>4.1.7.Final</hibernate.version>
