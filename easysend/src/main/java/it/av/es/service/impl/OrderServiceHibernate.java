@@ -161,7 +161,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         int percentDiscount = 0;
         List<Price> prices = product.getPrices();
         for (Price price : prices) {
-            if (numberOfProds >= price.getFromNumber() && numberOfProds <= price.getToNumber()) {
+            if (order.getTotalProductforGivenProduct(product) >= price.getFromNumber() && order.getTotalProductforGivenProduct(product) <= price.getToNumber()) {
                 amount = price.getAmount();
                 currency = price.getCurrency();
                 percentDiscount = price.getPercentDiscount();
