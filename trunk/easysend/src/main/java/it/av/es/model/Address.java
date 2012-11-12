@@ -22,6 +22,10 @@ public class Address extends BasicEntity {
     private AddressType addressType;
     private Boolean defaultAddress;
 
+    public Address() {
+        super();
+    }
+
     public String getName() {
         return name;
     }

@@ -86,6 +86,7 @@ public class CustomerPage extends BasePageSimple {
     private DropDownChoice<String> province;
     private Customer customer = new Customer();
     private BookmarkablePageLink<String> addOrder;
+    private BookmarkablePageLink<String> addOrderButton;
 
     public CustomerPage(PageParameters parameters) {
         String customerId = parameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
@@ -150,7 +151,7 @@ public class CustomerPage extends BasePageSimple {
         formNewOrder.add(new TextField<String>("faxNumber"));
         formNewOrder.add(new TextField<String>("partitaIvaNumber").setRequired(true));
         formNewOrder.add(new TextField<String>("codiceFiscaleNumber"));
-        formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()));
+        formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setRequired(true));
         formNewOrder.add(new TextField<String>("iban"));
         formNewOrder.add(new TextField<String>("bankName"));
         formNewOrder.add(new DropDownChoice<ClosingDays>("closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setRequired(true));
@@ -225,7 +226,7 @@ public class CustomerPage extends BasePageSimple {
                 city.setRequired(true);
                 item.add(city);
 
-                item.add(new TextField<String>("phoneNumber").setRequired(true));
+                item.add(new TextField<String>("phoneNumber"));
             }
         };
         formNewOrder.add(addresses);
@@ -235,7 +236,18 @@ public class CustomerPage extends BasePageSimple {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                formNewOrder.getModelObject().addAddresses(new Address());
+                Address address = new Address();
+                if(formNewOrder.getModelObject().getAddresses().size() == 0){
+                    address.setAddressType(AddressType.BILLINGANDSHIPPINGADDRESS);
+                    address.setDefaultAddress(true);
+                    if(StringUtils.isNotBlank(formNewOrder.getModelObject().getSignboard())){
+                        address.setName(formNewOrder.getModelObject().getSignboard());
+                    }
+                    else if(StringUtils.isNotBlank(formNewOrder.getModelObject().getCorporateName())){
+                        address.setName(formNewOrder.getModelObject().getCorporateName());
+                    }
+                }
+                formNewOrder.getModelObject().addAddresses(address);
                 target.add(form);
                 getFeedbackPanel().publishWithEffects(target);
             }
@@ -270,14 +282,28 @@ public class CustomerPage extends BasePageSimple {
                     getFeedbackPanel().warn(getString("customer.message.deafulAddressRequired"));
                     getFeedbackPanel().publishWithEffects(target);
                 }
+                boolean invoiceAddress = false;
+                for (Address a : c.getAddresses()) {
+                    if(a.getAddressType().equals(AddressType.BILLINGADDRESS) || a.getAddressType().equals(AddressType.BILLINGANDSHIPPINGADDRESS)){
+                        invoiceAddress = true;
+                    }
+                }
+                if(!invoiceAddress){
+                    getFeedbackPanel().warn(getString("customer.message.invoiceMessageRequired"));
+                    getFeedbackPanel().publishWithEffects(target);
+                }
+                if(c.getAddresses() == null || c.getAddresses().isEmpty() || c.getDefaultShippingAddresses() == null){
+                    getFeedbackPanel().warn(getString("customer.message.deafulAddressRequired"));
+                    getFeedbackPanel().publishWithEffects(target);
+                }
                 else{
                     formNewOrder.setModelObject(customerService.save(c, getSecuritySession().getLoggedInUser()));
                     //formNewOrder.setEnabled(false);
                     getFeedbackPanel().success(getString("customer.message.saved"));
                     getFeedbackPanel().publishWithEffects(target);
-                    if(!addOrder.isVisible()){
-                        addOrder.setVisible(true);
-                        target.add(addOrder);                       
+                    if(!addOrderButton.isVisible()){
+                        addOrderButton.setVisible(true);
+                        target.add(addOrderButton);                       
                     }
                 }
                 target.add(formNewOrder);
@@ -292,6 +318,30 @@ public class CustomerPage extends BasePageSimple {
 
         PageParameters pp = new PageParameters();
         pp.add(CustomHttpParams.CUSTOMER_ID, model.getObject().getId()!=null?model.getObject().getId():"");
+        
+        addOrderButton = new BookmarkablePageLink<String>("addOrderButton", PlaceNewOrderPage.class, pp) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible((getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(PlaceNewOrderPage.class)));
+            }
+
+            @Override
+            public PageParameters getPageParameters() {
+                //FIX for first save on customer
+                if(super.getPageParameters().get(CustomHttpParams.CUSTOMER_ID).isEmpty()){
+                    PageParameters pp = new PageParameters();
+                    pp.add(CustomHttpParams.CUSTOMER_ID, model.getObject().getId()!=null?model.getObject().getId():"");
+                    return pp;
+                }
+                return super.getPageParameters();
+            }
+        };
+        formNewOrder.add(addOrderButton);
+        addOrderButton.setOutputMarkupPlaceholderTag(true);
+        addOrderButton.setVisible(StringUtils.isNotBlank(model.getObject().getId()));
+        
         addOrder = new BookmarkablePageLink<String>("addOrder", PlaceNewOrderPage.class, pp) {
             @Override
             protected void onBeforeRender() {
@@ -301,7 +351,7 @@ public class CustomerPage extends BasePageSimple {
             }
         };
         add(addOrder);
-        addOrder.setOutputMarkupId(true);
+        addOrder.setOutputMarkupPlaceholderTag(true);
         addOrder.setVisible(StringUtils.isNotBlank(model.getObject().getId()));
     }
     

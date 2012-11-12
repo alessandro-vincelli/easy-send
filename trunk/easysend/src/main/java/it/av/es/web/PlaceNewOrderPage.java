@@ -339,6 +339,37 @@ public class PlaceNewOrderPage extends BasePageSimple {
         
         step3.add(new DateField("deliveryTimeRequired"));
         
+        step3.add(new Label("infos", new String()){
+
+            @Override
+            protected void onBeforeRender() {
+                StringBuilder builder = new StringBuilder();
+                if(formNewOrder.getModelObject().isPrePaymentDiscountApplicable()){
+                    builder.append("- ");
+                    builder.append(getString("order.info.prepaymentDiscount", new Model<Order>(formNewOrder.getModelObject())));
+                    builder.append("\n");
+                }
+                if(formNewOrder.getModelObject().isAllowedFreeItem() && !formNewOrder.getModelObject().containsFreeOrder()){
+                    builder.append("- ");
+                    builder.append(getString("order.info.freeItemAvailable"));
+                    builder.append("\n");
+                }
+                if(formNewOrder.getModelObject().isAllowedFreeItem() && formNewOrder.getModelObject().containsFreeOrder()){
+                    builder.append("- ");
+                    builder.append(getString("order.info.freeItemUsed"));
+                    builder.append("\n");
+                }
+                if(formNewOrder.getModelObject().isFreeShippingCostApplicable()){
+                    builder.append("- ");
+                    builder.append(getString("order.info.freeShippingCost"));
+                    builder.append("\n");
+                }
+                this.setDefaultModelObject(builder.toString());
+                super.onBeforeRender();
+            }
+            
+        });
+        
         submitNext = new AjaxSubmitLink("submitNext") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {

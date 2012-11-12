@@ -23,7 +23,6 @@ import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
-import it.av.es.model.PaymentType;
 import it.av.es.model.Price;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
@@ -123,23 +122,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             return false;
         }
         //check  free product not allowed
-        if (!order.isAllowedFreeItem() && containsFreeOrder(order)) {
+        if (!order.isAllowedFreeItem() && order.containsFreeOrder()) {
             return false;
         }
         return true;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public boolean containsFreeOrder(Order o) {
-        for (ProductOrdered p : o.getProductsOrdered()) {
-            if (p.getProduct().getFree()) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**
@@ -186,9 +172,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
         //apply discount if isPrepayment
-        if (order.getPaymentType().equals(PaymentType.PREPAYMENT) && order.getProject().getPrePaymentDiscount() > 0) {
+        if (order.isPrePaymentDiscountApplicable()) {
             BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getProject().getPrePaymentDiscount())));
             ordered.setAmount(ordered.getAmount().subtract(discount));
+            percentDiscount = percentDiscount + order.getProject().getPrePaymentDiscount();
         }
         ordered.setDiscount(percentDiscount);
         return ordered;
@@ -321,7 +308,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public List<Product> getProducts(Order order) {
         Project project = projectService.getByID(order.getProject().getId());
-        if (order.isAllowedFreeItem() && !containsFreeOrder(order)) {
+        if (order.isAllowedFreeItem() && !order.containsFreeOrder()) {
             return new ArrayList<Product>(project.getProducts());
         }
         Set<Product> products = project.getProducts();
@@ -352,7 +339,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      */
     @Override
     public Order applyFreeShippingCostIfApplicable(Order o) {
-        if (o.getNumberOfItemsInProductOrdered() >= o.getProject().getFreeShippingNumber()) {
+        if (o.isFreeShippingCostApplicable()) {
             o.setShippingCost(BigDecimal.ZERO);
         } else {
             o.setShippingCost(o.getProject().getShippingCost());
@@ -405,7 +392,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if(order.getCustomer().isPhoneForewarning()){
             buffer.append("\n");
             buffer.append("preavv. tel: ");
-            buffer.append(order.getShippingAddress().getPhoneNumber());
+            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber())?order.getShippingAddress().getPhoneNumber():"");
         }
         if(order.getCustomer().getDeployngType() != null){
             buffer.append("\n");

@@ -182,13 +182,6 @@ public interface OrderService {
      */
     boolean isOrderValid(Order order);
 
-    /**
-     * Checks if the order contains already a free product
-     * 
-     * @param o
-     * @return
-     */
-    boolean containsFreeOrder(Order o);
     
     String getNotesForDisplay(Order o, Localizer localizer, Component component);
     

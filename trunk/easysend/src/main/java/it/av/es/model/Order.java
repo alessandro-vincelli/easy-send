@@ -20,6 +20,7 @@ import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 
+import org.apache.commons.lang.StringUtils;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Generated;
@@ -312,6 +313,11 @@ public class Order extends BasicEntity {
         return true;
     }
     
+    /**
+     * return true if the order permits an extra free item 
+     * 
+     * @return
+     */
     public boolean isAllowedFreeItem(){
         int items = 0;
         for (ProductOrdered p : productsOrdered) {
@@ -325,6 +331,46 @@ public class Order extends BasicEntity {
         return false;
     }
     
+    /**
+     * return true if the order permits a pre payment discount
+     * 
+     * @return
+     */
+    public boolean isPrePaymentDiscountApplicable(){
+        if (this.getPaymentType().equals(PaymentType.PREPAYMENT) && this.getProject().getPrePaymentDiscount() > 0) {
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * return true if the order permits a free shipping cost
+     * 
+     * @return
+     */
+    public boolean isFreeShippingCostApplicable(){
+        if (this.getNumberOfItemsInProductOrdered() >= this.getProject().getFreeShippingNumber()) {
+            return true;
+        }
+        return false;
+    }
+    
+
+    /**
+     * return true if the order already contains a free product
+     * 
+     * @return
+     */
+    public boolean containsFreeOrder() {
+        for (ProductOrdered p : getProductsOrdered()) {
+            if (p.getProduct().getFree()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    
     public String getCustomerAddressForDisplay(){
         StringBuffer buffer = new StringBuffer();
         if(getShippingAddress() != null){
@@ -336,7 +382,7 @@ public class Order extends BasicEntity {
             buffer.append(" ");
             buffer.append(getShippingAddress().getCity());
             buffer.append("\n");
-            buffer.append(getShippingAddress().getPhoneNumber());
+            buffer.append(StringUtils.isNotBlank(getShippingAddress().getPhoneNumber())?getShippingAddress().getPhoneNumber():"");
             buffer.append("\n");
         }
         return buffer.toString();
