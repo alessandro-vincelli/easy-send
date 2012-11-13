@@ -8,6 +8,7 @@ import it.av.es.model.ClosingRange;
 import it.av.es.model.Country;
 import it.av.es.model.Customer;
 import it.av.es.model.DeliveryDays;
+import it.av.es.model.DeliveryTimeRequiredType;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
@@ -50,6 +51,7 @@ import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.Radio;
+import org.apache.wicket.markup.html.form.RadioChoice;
 import org.apache.wicket.markup.html.form.RadioGroup;
 import org.apache.wicket.markup.html.form.SimpleFormComponentLabel;
 import org.apache.wicket.markup.html.form.TextArea;
@@ -338,6 +340,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
         });
         
         step3.add(new DateField("deliveryTimeRequired"));
+        RadioChoice<DeliveryTimeRequiredType> radioChoice = new RadioChoice<DeliveryTimeRequiredType>("deliveryTimeRequiredType", Arrays.asList(DeliveryTimeRequiredType.values()));
+        radioChoice.setChoiceRenderer(new EnumChoiceRenderer<DeliveryTimeRequiredType>());
+        radioChoice.setSuffix(" ");
+        step3.add(radioChoice);
+        
         
         step3.add(new Label("infos", new String()){
 

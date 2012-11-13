@@ -67,6 +67,8 @@ public class Order extends BasicEntity {
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     private Date deliveryTimeRequired;
+    @Enumerated(EnumType.STRING)
+    private DeliveryTimeRequiredType deliveryTimeRequiredType;
     private String notes;
     /**
      * usaere tipo pagamento
@@ -261,6 +263,14 @@ public class Order extends BasicEntity {
 
     public void setDeliveryTimeRequired(Date deliveryTimeRequired) {
         this.deliveryTimeRequired = deliveryTimeRequired;
+    }
+
+    public DeliveryTimeRequiredType getDeliveryTimeRequiredType() {
+        return deliveryTimeRequiredType;
+    }
+
+    public void setDeliveryTimeRequiredType(DeliveryTimeRequiredType deliveryTimeRequiredType) {
+        this.deliveryTimeRequiredType = deliveryTimeRequiredType;
     }
 
     public Integer getNumberOfItemsInProductOrdered() {

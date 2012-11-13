@@ -184,5 +184,7 @@ public interface OrderService {
 
     
     String getNotesForDisplay(Order o, Localizer localizer, Component component);
+
+    String getNotesForPDF(Order order, Localizer localizer, Component component);
     
 }

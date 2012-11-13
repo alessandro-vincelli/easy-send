@@ -235,8 +235,12 @@ $(document).ready(function() {
         <tr>
             <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
             <td><select wicket:id="paymentType" ></select></td>
-            <th valign="top"><wicket:message key="order.deliveryTimeRequired"/></th>
-            <td valign="top"><span  wicket:id="deliveryTimeRequired" ></span></td>            
+            <th valign="top" style="text-align: right;"><wicket:message key="order.deliveryTimeRequired"/></th>
+            <td valign="top">
+            <span valign="bottom" wicket:id="deliveryTimeRequiredType" class="radio-class">
+                <input type="radio">foo</input>
+            </span>
+            <span wicket:id="deliveryTimeRequired" ></span></td>            
         </tr>
         <tr>
             <th valign="top"><h3><wicket:message key="order.infos"/>:</h3></th>

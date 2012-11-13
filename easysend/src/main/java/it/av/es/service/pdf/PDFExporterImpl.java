@@ -93,9 +93,9 @@ public final class PDFExporterImpl implements PDFExporter {
             document.add(tableHeader);
             
             
-            PdfPTable table = new PdfPTable(9);
+            PdfPTable table = new PdfPTable(7);
             table.setWidthPercentage(100f);
-            float[] widthsTabel = { 0.2f, 0.2f, 0.2f, 0.2f, 0.25f, 0.3f, 0.6f, 0.2f, 0.6f };
+            float[] widthsTabel = { 0.15f, 0.15f, 0.15f, 0.15f, 0.3f, 0.6f, 0.6f };
             //table.setWidthPercentage(288 / 5.23f);
             table.setWidths(widthsTabel);
             table.setSpacingBefore(10);
@@ -108,29 +108,29 @@ public final class PDFExporterImpl implements PDFExporter {
             
           
             PdfPCell h1Cell2 = builderNormalHLeft(project.getName() + " - " + localizer.getString("pdfOrder.ordersDate", component) + ": "+ DateUtil.SDF2SHOWDATE.print(date.getTime()));
-            h1Cell2.setColspan(9);
+            h1Cell2.setColspan(7);
             h1Cell2.setPadding(3);
             table.addCell(h1Cell2);
             table.getDefaultCell().setBorder(1);
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.number", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.packs", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.kilos", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.pairs", component)));
+            //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.pairs", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.volume", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.commodity", component)));
             //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.shipr", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.cnee", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.terms", component)));
+            //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.terms", component)));
             table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.note", component)));
             
             
             table.addCell(builderNormalHRight(localizer.getString("pdfOrder.total", component)));
             table.addCell(builderNormalHRight(Integer.toString(totalPacks(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalWeight(orders))));
-            table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalItemInside(orders))));
+            //table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalItemInside(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalianTwoFractionDigits().format(totalVolumes(orders))));
             PdfPCell fCell = builderNormalHRight("");
-            fCell.setColspan(4);
+            fCell.setColspan(3);
             table.addCell(fCell);
             
             table.getDefaultCell().setColspan(1);
@@ -159,13 +159,13 @@ public final class PDFExporterImpl implements PDFExporter {
                 
                 table.addCell(builderNormalRight(packs.toString()));
                 table.addCell(builderNormalRight(kilos.toString()));
-                table.addCell(builderNormalRight(pairs.toString()));
+                //table.addCell(builderNormalRight(pairs.toString()));
                 table.addCell(builderNormalRight(volume.toString()));
                 table.addCell(builderNormalLeft(commodity.toString()));
                 //table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
                 table.addCell(builderNormalLeft(o.getCustomerAddressForDisplay()));
-                table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
-                table.addCell(builderSmallFontLeft(orderService.getNotesForDisplay(o, localizer, component)));                
+                //table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
+                table.addCell(builderSmallFontLeft(orderService.getNotesForPDF(o, localizer, component)));                
 
             }
             
