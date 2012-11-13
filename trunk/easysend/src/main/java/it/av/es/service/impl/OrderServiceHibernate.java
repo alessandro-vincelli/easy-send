@@ -412,4 +412,76 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         buffer.append("\n");
         return buffer.toString();
     }
+    
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public String getNotesForPDF(Order order, Localizer localizer, Component component) {
+        StringBuilder buffer = new StringBuilder();
+        if(StringUtils.isNotBlank(order.getNotes())){
+            buffer.append("\n");
+            buffer.append("Note: ");
+            buffer.append(order.getNotes());
+        }
+        ClosingDays closingDay = order.getCustomer().getClosingDay();
+        if(closingDay != null){
+            buffer.append("\n");
+            buffer.append("chiuso: ");
+            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+            ClosingRange closingRange = order.getCustomer().getClosingRange();
+            if(closingRange != null){
+                buffer.append(" ");
+                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
+            }
+        }
+        if(order.getDeliveryTimeRequired() != null){
+            buffer.append("\n");
+            buffer.append("data rich: ");
+            if(order.getDeliveryTimeRequiredType() != null){
+                buffer.append(localizer.getString(order.getDeliveryTimeRequiredType().name(), component));    
+            }
+            buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
+        }
+        if(order.getCustomer().getSignboard() != null){
+            buffer.append("\n");
+            buffer.append(localizer.getString("customer.signboard", component));
+            buffer.append(": ");
+            buffer.append(order.getCustomer().getSignboard());
+        }
+        if(!order.getCustomer().getDeliveryDays().isEmpty()){
+            buffer.append("\n");
+            buffer.append("consegna: ");
+            for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
+                buffer.append(localizer.getString(d.name(), component));
+                buffer.append(" ");
+            }
+        }
+        if(order.getCustomer().isPhoneForewarning()){
+            buffer.append("\n");
+            buffer.append("preavv. tel: ");
+            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber())?order.getShippingAddress().getPhoneNumber():"");
+        }
+        if(order.getCustomer().getDeployngType() != null){
+            buffer.append("\n");
+            buffer.append("scarico: ");
+            DeploingType type = order.getCustomer().getDeployngType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        if(order.getCustomer().getDeliveryVehicle() != null){
+            buffer.append("\n");
+            buffer.append("mezzo: ");
+            DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
+            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
+        }
+        if(order.getCustomer().getDeliveryType() != null){
+            buffer.append("\n");
+            buffer.append("cons: ");
+            DeliveryType type = order.getCustomer().getDeliveryType();
+            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+        }
+        buffer.append("\n");
+        return buffer.toString();
+    }
 }
