@@ -30,6 +30,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.PasswordTextField;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.validation.EqualPasswordInputValidator;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
@@ -82,6 +83,7 @@ public class UserManagerPage extends BasePageSimple {
         accountForm.add(new RequiredTextField<String>(User.PHONENUMBER));
         accountForm.add(new DropDownChoice<Language>("language", languageService.getAll(), new LanguageRenderer()).setNullValid(false).setRequired(true));
         accountForm.add(new RequiredTextField<String>("email"));
+        accountForm.add(new TextArea<String>("notes"));
         StringValidator pwdValidator = StringValidator.lengthBetween(6, 20);
         PasswordTextField pwd1 = new PasswordTextField("newPassword", new Model<String>(newPasswordValue));
         pwd1.setRequired(false);
