@@ -83,6 +83,7 @@ public class User extends BasicEntity implements Comparable<User> {
 
     private String codiceFiscaleNumber;
     private String partitaIvaNumber;
+    private String notes;
 
     /**
      * used in sign up confirmation
@@ -299,6 +300,14 @@ public class User extends BasicEntity implements Comparable<User> {
 
     public void setPartitaIvaNumber(String partitaIvaNumber) {
         this.partitaIvaNumber = partitaIvaNumber;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public void addCustomer(Customer customer) {

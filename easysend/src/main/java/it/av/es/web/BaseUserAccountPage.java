@@ -28,6 +28,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.IChoiceRenderer;
 import org.apache.wicket.markup.html.form.RequiredTextField;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.model.CompoundPropertyModel;
 import org.apache.wicket.protocol.https.RequireHttps;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -61,7 +62,7 @@ public class BaseUserAccountPage extends BasePageSimple {
         accountForm.add(new RequiredTextField<String>("lastname"));
         accountForm.add(new RequiredTextField<String>(User.PHONENUMBER));
         accountForm.add(new DropDownChoice<Language>("language", languageService.getAll(), new LanguageRenderer()));
-
+        accountForm.add(new TextArea<String>("notes"));
     }
 
     protected class LanguageRenderer implements IChoiceRenderer<Language> {
