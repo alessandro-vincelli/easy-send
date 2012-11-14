@@ -45,6 +45,7 @@ import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
+import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.handler.resource.ResourceStreamRequestHandler;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.apache.wicket.spring.injection.annot.SpringBean;
@@ -217,7 +218,7 @@ public class OrderManagerPage extends BasePageSimple {
                         try {
                             Date date = orderDates.getModelObject();
                             List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
-                            is = pdfExporter.exportOrdersList(ord, date, user, project, getLocalizer(), getPage(), orderService);
+                            is = pdfExporter.exportOrdersList(ord, date, user, project, orderService);
                             return is;
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -300,7 +301,7 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("totalAmount", new Model<String>(NumberUtil.italianCurrency.format(model.getObject().getTotalAmount()))));
             add(new Label("shippingAddress", new Model<String>(model.getObject().getCustomerAddressForDisplay())));
             add(new Label("partitaIvaNumber", new Model<String>(model.getObject().getCustomer().getPartitaIvaNumber())));
-            add(new Label("notesComplete", new Model<String>(orderService.getNotesForDisplay(model.getObject(), getLocalizer(), this))));
+            add(new Label("notesComplete").setDefaultModel(new Model<String>(orderService.getNotesForDisplay(model.getObject()))));
             add(listView);
         }
 
@@ -364,16 +365,16 @@ public class OrderManagerPage extends BasePageSimple {
         public ActionPanel(String id, final IModel<Order> model) {
             super(id, model);
             Injector.get().inject(this);
-            final MessageDialog warningDialog = new MessageDialog("warningDialog", getString("dialog.confirmCancelOrderTitle"), getString("dialog.confirmCancelOrder")) {
+            final MessageDialog warningDialog = new MessageDialog("warningDialog", new ResourceModel("dialog.confirmCancelOrderTitle").getObject(),  new ResourceModel("dialog.confirmCancelOrder").getObject()) {
 
                 @Override
                 protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
                     if (buttonName.equals(ButtonName.BUTTON_YES)) {
                         try {
                             orderService.cancel(model.getObject());
-                            getFeedbackPanel().info(getString("order.orderCancelled"));
+                            getFeedbackPanel().info(new ResourceModel("order.orderCancelled").getObject());
                         } catch (Exception e) {
-                            getFeedbackPanel().error(getString("order.orderCancellNotPossible"));
+                            getFeedbackPanel().error(new ResourceModel("order.orderCancellNotPossible").getObject());
                         }
                         target.add(dataTable);
                         target.add(getFeedbackPanel());
@@ -398,10 +399,10 @@ public class OrderManagerPage extends BasePageSimple {
                 protected void onComponentTag(ComponentTag tag) {
                     super.onComponentTag(tag);
                     if(getModelObject().getIsInCharge()){
-                        tag.addBehavior(AttributeModifier.replace("title", getString("button.removeInChargeOrder")));    
+                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.removeInChargeOrder").getObject()));    
                     }
                     else{
-                        tag.addBehavior(AttributeModifier.replace("title", getString("button.inChargeOrder")));
+                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.inChargeOrder").getObject()));
                     }   
                 }
 

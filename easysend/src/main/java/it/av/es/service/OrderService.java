@@ -25,9 +25,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
-
 /**
  * Services on the Order
  * 
@@ -183,8 +180,8 @@ public interface OrderService {
     boolean isOrderValid(Order order);
 
     
-    String getNotesForDisplay(Order o, Localizer localizer, Component component);
+    String getNotesForDisplay(Order o);
 
-    String getNotesForPDF(Order order, Localizer localizer, Component component);
+    String getNotesForPDF(Order order);
     
 }

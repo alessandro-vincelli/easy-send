@@ -9,9 +9,6 @@ import java.io.InputStream;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
-
 /**
  * Utility to generate a PDF
  * 
@@ -27,10 +24,8 @@ public interface PDFExporter {
 	 * @param date date of orders
 	 * @param user user that creates the pdf
 	 * @param project project
-	 * @param localizer
-	 * @param component
 	 * @param orderService
 	 * @return an InputStream that represent the PDF
 	 */
-	InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component, OrderService orderService);
+	InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, OrderService orderService);
 }
