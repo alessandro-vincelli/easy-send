@@ -17,8 +17,7 @@ import java.net.MalformedURLException;
 import java.util.Date;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
+import org.apache.wicket.model.ResourceModel;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -45,16 +44,12 @@ public final class PDFExporterImpl implements PDFExporter {
     private Font fontNormal;
     private Font fontSmall;
     private Font fontBold;
-    private Component component;
-    private Localizer localizer;
     private OrderService orderService;
 
     /**
      * {@inheritDoc}
      */
-    public final InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, Localizer localizer, Component component, OrderService orderService) {
-        this.localizer = localizer;
-        this.component = component;
+    public final InputStream exportOrdersList(List<Order> orders, Date date, User user, Project project, OrderService orderService) {
         this.orderService = orderService;
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -71,7 +66,7 @@ public final class PDFExporterImpl implements PDFExporter {
             document.open();
 
             //Image on top
-            String logoLocation = localizer.getString("images.printlogo", component);
+            String logoLocation = new ResourceModel("images.printlogo").getObject();
             Image gif = Image.getInstance(this.getClass().getResource(logoLocation));
             gif.setAlignment(Element.ALIGN_CENTER);
             gif.scalePercent(50);
@@ -86,9 +81,9 @@ public final class PDFExporterImpl implements PDFExporter {
             tableHeader.getDefaultCell().setBorder(1);
             tableHeader.getDefaultCell().setPaddingLeft(0);
             tableHeader.setHorizontalAlignment(Element.ALIGN_LEFT);
-            tableHeader.addCell(new Phrase(localizer.getString("pdfOrder.operator", component), fontSmall));
+            tableHeader.addCell(new Phrase(new ResourceModel("pdfOrder.operator").getObject(), fontSmall));
             tableHeader.addCell(new Phrase(user.getFirstname() + " " + user.getLastname(), fontSmall));
-            tableHeader.addCell(new Phrase(localizer.getString("pdfOrder.date", component), fontSmall));
+            tableHeader.addCell(new Phrase(new ResourceModel("pdfOrder.date").getObject(), fontSmall));
             tableHeader.addCell(new Phrase(DateUtil.SDF2SHOW.print(new Date().getTime()), fontSmall));
             document.add(tableHeader);
             
@@ -107,24 +102,24 @@ public final class PDFExporterImpl implements PDFExporter {
             table.setHorizontalAlignment(Element.ALIGN_CENTER);
             
           
-            PdfPCell h1Cell2 = builderNormalHLeft(project.getName() + " - " + localizer.getString("pdfOrder.ordersDate", component) + ": "+ DateUtil.SDF2SHOWDATE.print(date.getTime()));
+            PdfPCell h1Cell2 = builderNormalHLeft(project.getName() + " - " + new ResourceModel("pdfOrder.ordersDate").getObject() + ": "+ DateUtil.SDF2SHOWDATE.print(date.getTime()));
             h1Cell2.setColspan(7);
             h1Cell2.setPadding(3);
             table.addCell(h1Cell2);
             table.getDefaultCell().setBorder(1);
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.number", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.packs", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.kilos", component)));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.number").getObject()));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.packs").getObject()));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.kilos").getObject()));
             //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.pairs", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.volume", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.commodity", component)));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.volume").getObject()));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.commodity").getObject()));
             //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.shipr", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.cnee", component)));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.cnee").getObject()));
             //table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.terms", component)));
-            table.addCell(builderNormalHCenter(localizer.getString("pdfOrder.note", component)));
+            table.addCell(builderNormalHCenter(new ResourceModel("pdfOrder.note").getObject()));
             
             
-            table.addCell(builderNormalHRight(localizer.getString("pdfOrder.total", component)));
+            table.addCell(builderNormalHRight(new ResourceModel("pdfOrder.total").getObject()));
             table.addCell(builderNormalHRight(Integer.toString(totalPacks(orders))));
             table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalWeight(orders))));
             //table.addCell(builderNormalHRight(NumberUtil.getItalian().format(totalItemInside(orders))));
@@ -165,7 +160,7 @@ public final class PDFExporterImpl implements PDFExporter {
                 //table.addCell(builderNormalLeft(o.getUserAddressForDisplay()));
                 table.addCell(builderNormalLeft(o.getCustomerAddressForDisplay()));
                 //table.addCell(builderNormalCenter(localizer.getString(o.getPaymentType().name()+"-short", component)));
-                table.addCell(builderSmallFontLeft(orderService.getNotesForPDF(o, localizer, component)));                
+                table.addCell(builderSmallFontLeft(orderService.getNotesForPDF(o)));                
 
             }
             

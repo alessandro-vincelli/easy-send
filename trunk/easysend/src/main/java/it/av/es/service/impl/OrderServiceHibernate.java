@@ -51,8 +51,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
+import org.apache.wicket.model.ResourceModel;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
@@ -351,7 +350,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public String getNotesForDisplay(Order order, Localizer localizer, Component component) {
+    public String getNotesForDisplay(Order order) {
         StringBuilder buffer = new StringBuilder();
         buffer.append("total: ");
         buffer.append(NumberUtil.italianCurrency.format(order.getTotalAmount()));
@@ -363,11 +362,12 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if(closingDay != null){
             buffer.append("\n");
             buffer.append("closed: ");
-            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+            ResourceModel resourceModel = new ResourceModel(closingDay.getClass().getSimpleName() + "." + closingDay.name());
+            buffer.append(resourceModel.getObject());
             ClosingRange closingRange = order.getCustomer().getClosingRange();
             if(closingRange != null){
                 buffer.append(" ");
-                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
+                buffer.append(new ResourceModel(closingRange.getClass().getSimpleName() + "." + closingRange.name()).getObject());                
             }
         }
         if(order.getDeliveryTimeRequired() != null){
@@ -377,7 +377,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         }
         if(order.getCustomer().getSignboard() != null){
             buffer.append("\n");
-            buffer.append(localizer.getString("customer.signboard", component));
+            buffer.append(new ResourceModel("customer.signboard").getObject());
             buffer.append(": ");
             buffer.append(order.getCustomer().getSignboard());
         }
@@ -385,7 +385,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             buffer.append("\n");
             buffer.append("consegna: ");
             for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
-                buffer.append(localizer.getString(d.name(), component));
+                buffer.append(new ResourceModel(d.name()).getObject());
                 buffer.append(" ");
             }
         }
@@ -397,17 +397,17 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if(order.getCustomer().getDeployngType() != null){
             buffer.append("\n");
             DeploingType type = order.getCustomer().getDeployngType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+            buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
         if(order.getCustomer().getDeliveryVehicle() != null){
             buffer.append("\n");
             DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
-            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
+            buffer.append(new ResourceModel(dv.getClass().getSimpleName() + "." + dv.name()).getObject());
         }
         if(order.getCustomer().getDeliveryType() != null){
             buffer.append("\n");
             DeliveryType type = order.getCustomer().getDeliveryType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+            buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
         buffer.append("\n");
         return buffer.toString();
@@ -418,7 +418,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public String getNotesForPDF(Order order, Localizer localizer, Component component) {
+    public String getNotesForPDF(Order order) {
         StringBuilder buffer = new StringBuilder();
         if(StringUtils.isNotBlank(order.getNotes())){
             buffer.append("\n");
@@ -429,24 +429,24 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if(closingDay != null){
             buffer.append("\n");
             buffer.append("chiuso: ");
-            buffer.append(localizer.getString(closingDay.getClass().getSimpleName() + "." + closingDay.name(), component));
+            buffer.append(new ResourceModel(closingDay.getClass().getSimpleName() + "." + closingDay.name()).getObject());
             ClosingRange closingRange = order.getCustomer().getClosingRange();
             if(closingRange != null){
                 buffer.append(" ");
-                buffer.append(localizer.getString(closingRange.getClass().getSimpleName() + "." + closingRange.name(), component));                
+                buffer.append(new ResourceModel(closingRange.getClass().getSimpleName() + "." + closingRange.name()).getObject());
             }
         }
         if(order.getDeliveryTimeRequired() != null){
             buffer.append("\n");
             buffer.append("data rich: ");
             if(order.getDeliveryTimeRequiredType() != null){
-                buffer.append(localizer.getString(order.getDeliveryTimeRequiredType().name(), component));    
+                buffer.append(new ResourceModel(order.getDeliveryTimeRequiredType().name()).getObject());
             }
             buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
         }
         if(order.getCustomer().getSignboard() != null){
             buffer.append("\n");
-            buffer.append(localizer.getString("customer.signboard", component));
+            buffer.append(new ResourceModel("customer.signboard").getObject());
             buffer.append(": ");
             buffer.append(order.getCustomer().getSignboard());
         }
@@ -454,8 +454,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             buffer.append("\n");
             buffer.append("consegna: ");
             for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
-                buffer.append(localizer.getString(d.name(), component));
-                buffer.append(" ");
+                buffer.append(new ResourceModel(d.name()).getObject());
             }
         }
         if(order.getCustomer().isPhoneForewarning()){
@@ -467,19 +466,19 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             buffer.append("\n");
             buffer.append("scarico: ");
             DeploingType type = order.getCustomer().getDeployngType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+            buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
         if(order.getCustomer().getDeliveryVehicle() != null){
             buffer.append("\n");
             buffer.append("mezzo: ");
             DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
-            buffer.append(localizer.getString(dv.getClass().getSimpleName() + "." + dv.name(), component));
+            buffer.append(new ResourceModel(dv.getClass().getSimpleName() + "." + dv.name()).getObject());
         }
         if(order.getCustomer().getDeliveryType() != null){
             buffer.append("\n");
             buffer.append("cons: ");
             DeliveryType type = order.getCustomer().getDeliveryType();
-            buffer.append(localizer.getString(type.getClass().getSimpleName() + "." + type.name(), component));
+            buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
         buffer.append("\n");
         return buffer.toString();
