@@ -139,6 +139,8 @@
     
     <bean id="groupService" class="it.av.es.service.impl.GroupServiceHibernate"/>
     
+    <bean id="productFamilyService" class="it.av.es.service.impl.ProductFamilyServiceHibernate"/>
+    
     <bean id="wicketApplication" class="it.av.es.web.WicketApplication"/>
 
     <bean id="notificationTemplateMessage" class="org.springframework.mail.SimpleMailMessage">
