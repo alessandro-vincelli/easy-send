@@ -390,11 +390,11 @@
             <artifactId>itextpdf</artifactId>
             <version>5.3.4</version>
         </dependency>
-        <dependency>
+<!--         <dependency>
         	<groupId>org.eclipse.birt.runtime</groupId>
         	<artifactId>viewservlets</artifactId>
         	<version>4.2.0</version>
-        </dependency>
+        </dependency> -->
 		<!-- LOGGING DEPENDENCIES - LOG4J -->
 
 		<!--  JUNIT DEPENDENCY FOR TESTING -->
