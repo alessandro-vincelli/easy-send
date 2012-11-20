@@ -159,8 +159,17 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         Currency currency;
         int percentDiscount = 0;
         List<Price> prices = product.getPrices();
+        //calculates  the price and apply discount 
+        
+        // per il cacolo somma tutti i prodotti dello stesso tipo
+        int productAllOrder = order.getTotalProductforGivenProduct(product);
+        // se il prodoptto appartiene ad una famigliam considera anche i prodotti di quella famiglia
+        if(product.getProductFamily() != null){
+            productAllOrder = order.getTotalProductforGivenProductFamily(product.getProductFamily());    
+        }
+
         for (Price price : prices) {
-            if (order.getTotalProductforGivenProduct(product) >= price.getFromNumber() && order.getTotalProductforGivenProduct(product) <= price.getToNumber()) {
+            if (productAllOrder >= price.getFromNumber() && productAllOrder <= price.getToNumber()) {
                 amount = price.getAmount();
                 currency = price.getCurrency();
                 percentDiscount = price.getPercentDiscount();

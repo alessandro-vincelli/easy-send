@@ -6,6 +6,7 @@ import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 
 import org.hibernate.annotations.Fetch;
@@ -26,7 +27,9 @@ public class Product extends BasicEntity {
     private Integer itemsInside;
     private Boolean concursOnFreePack;
     private Boolean free;
-
+    @ManyToOne
+    private ProductFamily productFamily;
+    
     public Product() {
         super();
         kilos = BigDecimal.ZERO;
@@ -103,6 +106,14 @@ public class Product extends BasicEntity {
 
     public void setFree(Boolean free) {
         this.free = free;
+    }
+
+    public ProductFamily getProductFamily() {
+        return productFamily;
+    }
+
+    public void setProductFamily(ProductFamily productFamily) {
+        this.productFamily = productFamily;
     }
 
 }

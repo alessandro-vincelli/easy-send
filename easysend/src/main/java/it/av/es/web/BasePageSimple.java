@@ -21,6 +21,7 @@ import it.av.es.util.HtmlUtil;
 import it.av.es.web.component.CustomFeedbackPanel;
 import it.av.es.web.manager.GroupManagerPage;
 import it.av.es.web.manager.GroupMembersManagerPage;
+import it.av.es.web.manager.ProductFamilyManagerPage;
 import it.av.es.web.manager.ProjectManagerPage;
 import it.av.es.web.manager.UserManagerPage;
 import it.av.es.web.security.SecuritySession;
@@ -220,6 +221,15 @@ public class BasePageSimple extends WebPage implements IAjaxIndicatorAware{
                 super.onBeforeRender();
                 setVisible(loggedInUser != null && (getApplication().getSecuritySettings().getAuthorizationStrategy()
                         .isInstantiationAuthorized(GroupMembersManagerPage.class)));
+            }
+        });
+        
+        add(new BookmarkablePageLink<String>("goProductFamilyManagerPage", ProductFamilyManagerPage.class) {
+            @Override
+            protected void onBeforeRender() {
+                super.onBeforeRender();
+                setVisible(loggedInUser != null && (getApplication().getSecuritySettings().getAuthorizationStrategy()
+                        .isInstantiationAuthorized(ProductFamilyManagerPage.class)));
             }
         });
 

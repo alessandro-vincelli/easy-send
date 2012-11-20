@@ -2,8 +2,10 @@ package it.av.es.web.manager;
 
 import it.av.es.model.Price;
 import it.av.es.model.Product;
+import it.av.es.model.ProductFamily;
 import it.av.es.model.Project;
 import it.av.es.service.PriceService;
+import it.av.es.service.ProductFamilyService;
 import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
 import it.av.es.web.data.ProductSortableDataProvider;
@@ -21,6 +23,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.grid.ICellPopulato
 import org.apache.wicket.extensions.markup.html.repeater.data.table.AbstractColumn;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.form.CheckBox;
+import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -49,6 +52,9 @@ public class ProductManagerPanel extends Panel {
     private PriceService priceService;
     @SpringBean
     private ProjectService projectService;
+    @SpringBean
+    private ProductFamilyService productFamilyService;
+    
     
     private CustomAjaxFallbackDefaultDataTable<Product, String> dataTable;
 
@@ -159,6 +165,7 @@ public class ProductManagerPanel extends Panel {
             formProd.add(new CheckBox(("free")));
             formProd.add(new TextField<BigDecimal>("kilos", BigDecimal.class));
             formProd.add(new TextField<BigDecimal>("volume", BigDecimal.class));
+            formProd.add(new DropDownChoice<ProductFamily>("productFamily", productFamilyService.getAll()));
 
             AjaxSubmitLink savePrice = new AjaxSubmitLink("save", formProd) {
                 @Override

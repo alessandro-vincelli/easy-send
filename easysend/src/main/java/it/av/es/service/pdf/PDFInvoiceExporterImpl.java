@@ -13,8 +13,7 @@ import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.util.List;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
+import org.apache.wicket.model.ResourceModel;
 
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
@@ -37,17 +36,13 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
     private Order order;
     private User user;
     private Project project;
-    private Localizer localizer;
-    private Component component;
     private OrderService orderService;
 
     @Override
-    public InputStream createInvoice(Order order, User user, Project project, Localizer localizer, Component component, OrderService orderService) {
+    public InputStream createInvoice(Order order, User user, Project project, OrderService orderService) {
         this.order = order;
         this.user = user;
         this.project = project;
-        this.localizer = localizer;
-        this.component = component;
         this.orderService = orderService;
         Document document = new Document(PageSize.A4);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -60,11 +55,11 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             fontBold = new Font(basefontBold, 11);
 
             PdfWriter pdfWriter = PdfWriter.getInstance(document, baos);
-            pdfWriter.setPDFXConformance(PdfWriter.PDFX32002);
+            //pdfWriter.setPDFXConformance(PdfWriter.PDFX32002);
             document.open();
 
             //Image on top
-            String logoLocation = localizer.getString("images.printlogo", component);
+            String logoLocation = new ResourceModel("images.printlogo").getObject();
             Image gif = Image.getInstance(this.getClass().getResource(logoLocation));
             gif.setAlignment(Element.ALIGN_CENTER);
             gif.scalePercent(50);
@@ -72,29 +67,90 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             
             // Table with Message Sender, Subject, Date
             
-            PdfPTable tableHeader1 = new PdfPTable(1);
-            tableHeader1.setWidthPercentage(100f);
-            //table.setWidthPercentage(288 / 5.23f);
-            tableHeader1.getDefaultCell().setPaddingLeft(0);
-            tableHeader1.setHorizontalAlignment(Element.ALIGN_LEFT);
-            tableHeader1.addCell(new Phrase("Eurocargo", fontSmall));
-            document.add(tableHeader1);
+//            PdfPTable tableHeader1 = new PdfPTable(1);
+//            tableHeader1.setWidthPercentage(100f);
+//            tableHeader1.getDefaultCell().setBorder(0);
+//            //table.setWidthPercentage(288 / 5.23f);
+//            tableHeader1.setHorizontalAlignment(Element.ALIGN_LEFT);
+//            tableHeader1.addCell(new Phrase("Luxury Drink Italy s.r.l.", fontBold));
+//            document.add(tableHeader1);
             
-            PdfPTable tableHeader2 = new PdfPTable(1);
-            tableHeader2.setWidthPercentage(100f);
-            tableHeader2.getDefaultCell().setPaddingLeft(0);
-            tableHeader2.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            tableHeader2.addCell(new Phrase("Invoice", fontSmall));
-            document.add(tableHeader1);
+            PdfPTable table = new PdfPTable(new float[] {1.3f,5,1.3f,5,1,2,2});
+            table.setWidthPercentage(100f);
+            table.getDefaultCell().setBorder(0);
+            table.getDefaultCell().setPaddingBottom(0);
+            table.getDefaultCell().setPaddingTop(0);
             
-            float[] widths = { 6f, 1f};
-            PdfPTable tableHeader3 = new PdfPTable(widths);
-            tableHeader3.setWidthPercentage(100f);
-            tableHeader3.getDefaultCell().setPaddingLeft(0);
-            tableHeader3.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            tableHeader3.addCell(new Phrase("Invoice", fontSmall));
-            tableHeader3.addCell(new Phrase("Invoice", fontSmall));
-            document.add(tableHeader1);
+            //first row
+            PdfPCell cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("Luxury Drink Italy s.r.l.", fontBold));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(4));
+
+            //second row
+            table.addCell(builderEmptySpanCell(5));
+            cell = builderEmptySpanCell(1);
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setPhrase(new Phrase("Invoice", fontSmall));
+            table.addCell(cell);
+            table.addCell(new Phrase("123", fontSmall));
+            
+            //third row
+            cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("VIA PASSIONE 1, 20122 MILANO", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(4));
+            
+            // 4row
+            cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("ITALIA", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(3));
+            table.addCell(new Phrase("Date", fontSmall));
+            
+            // 5row
+            table.addCell(builderEmptySpanCell(6));
+            table.addCell(new Phrase("10.10.2012", fontSmall));
+            
+            // 7row
+            cell = builderEmptySpanCell(7);
+            cell.setPhrase(new Phrase(" ", fontSmall));
+            table.addCell(cell);
+            
+            // 8row
+            table.addCell(builderEmptySpanCell(6));
+            table.addCell(new Phrase("Due Date", fontSmall));
+            
+            // 9row
+            table.addCell(builderEmptySpanCell(6));
+            table.addCell(new Phrase("10.10.2012", fontSmall));
+            
+            // 10row
+            table.addCell(new Phrase("Spedito a", fontSmall));
+            table.addCell(new Phrase("Alessandro Vincelli", fontSmall));
+            
+            table.addCell(new Phrase("Fatturato a", fontSmall));
+            table.addCell(new Phrase("Alessandro Vincelli", fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+
+            document.add(table);
+//            
+//            PdfPTable tableHeader3 = new PdfPTable(1);
+//            tableHeader3.getDefaultCell().setBorder(0);
+//            tableHeader3.getDefaultCell().setPaddingLeft(0);
+//            tableHeader3.setWidthPercentage(100f);
+//            tableHeader3.getDefaultCell().setPaddingLeft(0);
+//            tableHeader3.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            tableHeader3.addCell(new Phrase("Luxury Drink Italy s.r.l", fontSmall));
+//            document.add(tableHeader3);
+//            
+//            
+//            PdfPTable tableHeader4 = new PdfPTable(1);
+//            tableHeader4.setWidthPercentage(100f);
+//            tableHeader4.getDefaultCell().setPaddingLeft(0);
+//            tableHeader4.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            tableHeader4.addCell(new Phrase("via passione 1", fontSmall));
+//            document.add(tableHeader4);
 
             document.addCreationDate();
             //document.addSubject(message.getSubject());
@@ -184,6 +240,15 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
         cell.setPaddingBottom(3);
         return cell;
     }
+    
+    private PdfPCell builderEmptySpanCell(int i){
+        PdfPCell cell = new PdfPCell();
+        cell.setBorder(0);
+        cell.setPaddingTop(0);
+        cell.setPaddingBottom(0);
+        cell.setColspan(i);
+        return cell;
+    }
 
     private int totalPacks(List<Order> orders){
         int n = 0;
@@ -216,4 +281,5 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
         }
         return n;
     }
+    
 }
