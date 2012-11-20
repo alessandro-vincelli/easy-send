@@ -7,11 +7,8 @@ import it.av.es.service.OrderService;
 
 import java.io.InputStream;
 
-import org.apache.wicket.Component;
-import org.apache.wicket.Localizer;
-
 /**
- * Utility to generate a PDF
+ * Utility to generate a PDF invoice
  * 
  * @author Alessandro Vincelli
  *
@@ -24,10 +21,8 @@ public interface PDFInvoiceExporter {
 	 * @param order order
 	 * @param user user that creates the pdf
 	 * @param project project
-	 * @param localizer
-	 * @param component
 	 * @param orderService
 	 * @return an InputStream that represent the PDF
 	 */
-	InputStream createInvoice(Order order, User user, Project project, Localizer localizer, Component component, OrderService orderService);
+	InputStream createInvoice(Order order, User user, Project project, OrderService orderService);
 }

@@ -331,6 +331,22 @@ public class Order extends BasicEntity {
     }
     
     /**
+     * return the total number of pack for the given product 
+     * 
+     * @param p product
+     * @return
+     */
+    public int getTotalProductforGivenProductFamily(ProductFamily pf){
+        int n = 0;
+        for (ProductOrdered po : getProductsOrdered()) {
+            if(po.getProduct().getProductFamily() != null && pf != null &&po.getProduct().getProductFamily().equals(pf)){
+                n = n + po.getNumber();    
+            }
+        }
+        return n;
+    }
+    
+    /**
      * check if this order can be cancelled
      * @return
      */

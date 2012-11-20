@@ -8,6 +8,8 @@ import it.av.es.model.UserProfile;
 import it.av.es.service.OrderService;
 import it.av.es.service.pdf.PDFExporter;
 import it.av.es.service.pdf.PDFExporterImpl;
+import it.av.es.service.pdf.PDFInvoiceExporter;
+import it.av.es.service.pdf.PDFInvoiceExporterImpl;
 import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
 import it.av.es.web.component.ButtonName;
@@ -72,6 +74,8 @@ public class OrderManagerPage extends BasePageSimple {
     private AjaxLink<String> exportAsPDFButton;
     private DropDownChoice<Date> orderDates;
     private boolean excludeCancelledOrders = true;
+    private AJAXDownload downloadInvoice;
+    private AjaxLink<String> exportInvoiceAsPDFButton;
 
     public OrderManagerPage() {
         super();
@@ -235,6 +239,68 @@ public class OrderManagerPage extends BasePageSimple {
 
         };
         add(download);
+        
+        
+        exportInvoiceAsPDFButton = new AjaxLink<String>("exportInvoiceAsPDFButton") {
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                try {
+                    downloadInvoice.initiate(target);
+                } catch (Exception e) {
+                    getFeedbackPanel().error("Error generating PDF");
+                }
+                getFeedbackPanel().publishWithEffects(target);
+            }
+        };
+        add(exportInvoiceAsPDFButton);
+        
+        
+        downloadInvoice = new AJAXDownload() {
+
+            @Override
+            protected String getFileName() {
+                StringBuffer fileName = new StringBuffer(80);
+                fileName.append(getSecuritySession().getCurrentProject().getName());
+                fileName.append("_print_");
+                fileName.append(DateUtil.SDF2DATE.print(new Date().getTime()));
+                fileName.append("_");
+                fileName.append(DateUtil.SDF2TIME.print(new Date().getTime()));
+                fileName.append("_");
+                //fileName.append(StringUtils.deleteWhitespace(message.getSubject()));
+                fileName.append(".pdf");
+                return fileName.toString();
+            }
+
+            @Override
+            protected IResourceStream getResourceStream() {
+                AbstractResourceStream stream = new AbstractResourceStream() {
+                    InputStream is;
+
+                    @Override
+                    public InputStream getInputStream() throws ResourceStreamNotFoundException {
+                        PDFInvoiceExporter pdfExporter = new PDFInvoiceExporterImpl();
+                        try {
+                            List<Order> ord = new ArrayList<Order>(orderService.getAll());
+                            is = pdfExporter.createInvoice(ord.get(0), user, project, orderService);
+                            return is;
+                        } catch (Exception e) {
+                            throw new RuntimeException(e);
+                        }
+                    }
+
+                    @Override
+                    public void close() throws IOException {
+                        is.close();
+                    }
+                };
+                return stream;
+            }
+
+        };
+        add(downloadInvoice);
+        
+        
         dataProvider = new OrderSortableDataProvider(user, project, excludeCancelledOrders);
         dataTable = new CustomAjaxFallbackDefaultDataTable<Order, String>("dataTable", columns, dataProvider, 25) {
 
@@ -323,20 +389,16 @@ public class OrderManagerPage extends BasePageSimple {
          * Call this method to initiate the download.
          */
         public void initiate(AjaxRequestTarget target) {
-            if (orderDates.getModelObject() != null) {
-                String url = getCallbackUrl().toString();
+            
+            String url = getCallbackUrl().toString();
 
-                if (addAntiCache) {
-                    url = url + (url.contains("?") ? "&" : "?");
-                    url = url + "antiCache=" + System.currentTimeMillis();
-                }
-
-                // the timeout is needed to let Wicket release the channel
-                target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");
-            } else {
-                getFeedbackPanel().warn("Selezionare una data");
-                target.add(getFeedbackPanel());
+            if (addAntiCache) {
+                url = url + (url.contains("?") ? "&" : "?");
+                url = url + "antiCache=" + System.currentTimeMillis();
             }
+
+            // the timeout is needed to let Wicket release the channel
+            target.appendJavaScript("setTimeout(\"window.location.href='" + url + "'\", 100);");
 
         }
 

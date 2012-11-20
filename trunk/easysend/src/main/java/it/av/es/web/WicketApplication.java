@@ -15,6 +15,7 @@ import it.av.es.web.converter.DeliveryVehicleConverter;
 import it.av.es.web.converter.PaymentTypeConverter;
 import it.av.es.web.manager.GroupManagerPage;
 import it.av.es.web.manager.GroupMembersManagerPage;
+import it.av.es.web.manager.ProductFamilyManagerPage;
 import it.av.es.web.manager.ProjectManagerPage;
 import it.av.es.web.manager.UserManagerPage;
 import it.av.es.web.security.SecuritySession;
@@ -61,6 +62,7 @@ public class WicketApplication extends AuthenticatedWebApplication {
         mountPage("/userAccount" , UserAccountPage.class);
         mountPage("/groups" , GroupManagerPage.class);
         mountPage("/groupMembers" , GroupMembersManagerPage.class);
+        mountPage("/productFamily" , ProductFamilyManagerPage.class);
     }
 
 
