@@ -491,6 +491,8 @@ public class OrderManagerPage extends BasePageSimple {
     public void onConfigure() {
         User loggedInUser2 = getSecuritySession().getLoggedInUser();
         boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
+        boolean admin = loggedInUser2.getUserProfile().getName().equals(UserProfile.ADMIN);
         exportAsPDFButton.setVisible(operator);
+        exportInvoiceAsPDFButton.setVisible(admin);
     }
 }
