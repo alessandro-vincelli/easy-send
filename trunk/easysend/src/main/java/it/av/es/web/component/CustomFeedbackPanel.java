@@ -43,8 +43,8 @@ public class CustomFeedbackPanel extends FeedbackPanel {
             public void onBeforeRespond(Map<String, Component> map, AjaxRequestTarget target) {}
             @Override
             public void onAfterRespond(Map<String, Component> map, IJavaScriptResponse response) {
-                response.addJavaScript("$('#" + getMarkupId() + "').delay(0).fadeTo(0, 0, function() {})");
-                response.addJavaScript("$('#" + getMarkupId() + "').delay(200).fadeTo(500, 1, function() {})");
+                //response.addJavaScript("$('#" + getMarkupId() + "').delay(0).fadeTo(0, 0, function() {})");
+                response.addJavaScript("$('#" + getMarkupId() + "').hide().delay(200).fadeTo(500, 1, function() {})");
                 //response.addJavaScript("alert('" + getMarkupId() + "')");
                 //response.addJavaScript("$('#" + getFeedbackPanel().getMarkupId() + "').fadeTo(300, 0.5, function() {})");
                 response.addJavaScript("$('#" + getMarkupId() + "').delay(10000).fadeTo(2000, 0.25, function() {})");
