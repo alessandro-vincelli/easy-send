@@ -16,6 +16,7 @@
 package it.av.es.service;
 
 import it.av.es.model.Order;
+import it.av.es.model.OrderStatus;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
@@ -72,8 +73,10 @@ public interface OrderService {
      * Cancel an order
      * 
      * @param order
+     * @param user user is performing the action
+     * 
      */
-    Order cancel(Order order);
+    Order cancel(Order order, User user);
     
     /**
      * Return the order by id
@@ -126,18 +129,91 @@ public interface OrderService {
      * Sets this order as in charge 
      * 
      * @param order
+     * @param user user is performing the action
      * @return
      */
-    Order setAsInCharge(Order order);
+    Order setAsInCharge(Order order, User user);
         
     
     /**
      * Remove this order as in charge 
      * 
      * @param order
+     * @param user user is performing the action
      * @return
      */
-    Order removeInCharge(Order order);
+    Order removeInCharge(Order order, User user);
+    
+    /**
+     * Sets this order as "sent" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order setSentStatus(Order order, User user);
+        
+    
+    /**
+     * Remove this order as "sent" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order removeSentStatus(Order order, User user);
+    
+    
+    /**
+     * Sets this order as "delivered" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @param deliveredTime 
+     * @return
+     */
+    Order setDeliveredStatus(Order order, User user, Date deliveredTime);
+        
+    
+    /**
+     * Remove this order as "delivered" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order removeDeliveredStatus(Order order, User user);
+    
+    /**
+     * Sets this order as "InvoiceApproved" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @param invoiceDate
+     * @param invoiceDueDate 
+     * @return
+     */
+    Order setInvoiceApprovedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate);
+    
+    /**
+     * Remove this order as "InvoiceApproved" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order removeInvoiceApprovedStatus(Order order, User user);
+    
+    
+    /**
+     * Set the OrderStatus 
+     * 
+     * @param orderStatus
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order setStatus(OrderStatus orderStatus, Order order, User user);
 
     /**
      * Set order on the given dates/project in charge

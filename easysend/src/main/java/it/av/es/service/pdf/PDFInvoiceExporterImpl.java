@@ -1,9 +1,12 @@
 package it.av.es.service.pdf;
 
 import it.av.es.model.Order;
+import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.OrderService;
+import it.av.es.util.DateUtil;
+import it.av.es.util.NumberUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -78,8 +81,8 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             PdfPTable table = new PdfPTable(new float[] {1.3f,5,1.3f,5,1,2,2});
             table.setWidthPercentage(100f);
             table.getDefaultCell().setBorder(0);
-            table.getDefaultCell().setPaddingBottom(0);
-            table.getDefaultCell().setPaddingTop(0);
+            table.getDefaultCell().setPaddingBottom(1);
+            table.getDefaultCell().setPaddingTop(1);
             
             //first row
             PdfPCell cell = builderEmptySpanCell(3);
@@ -91,9 +94,9 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table.addCell(builderEmptySpanCell(5));
             cell = builderEmptySpanCell(1);
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-            cell.setPhrase(new Phrase("Invoice", fontSmall));
+            cell.setPhrase(new Phrase(new ResourceModel("invoice").getObject(), fontSmall));
             table.addCell(cell);
-            table.addCell(new Phrase("123", fontSmall));
+            table.addCell(new Phrase(order.getInvoiceNumber().toString(), fontSmall));
             
             //third row
             cell = builderEmptySpanCell(3);
@@ -106,11 +109,11 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             cell.setPhrase(new Phrase("ITALIA", fontSmall));
             table.addCell(cell);
             table.addCell(builderEmptySpanCell(3));
-            table.addCell(new Phrase("Date", fontSmall));
+            table.addCell(new Phrase("Data", fontSmall));
             
             // 5row
             table.addCell(builderEmptySpanCell(6));
-            table.addCell(new Phrase("10.10.2012", fontSmall));
+            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDate().getTime()), fontSmall));
             
             // 7row
             cell = builderEmptySpanCell(7);
@@ -123,17 +126,264 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             
             // 9row
             table.addCell(builderEmptySpanCell(6));
-            table.addCell(new Phrase("10.10.2012", fontSmall));
+            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDueDate().getTime()), fontSmall));
+            
+            // 9+1row Numero Ordine
+            table.addCell(new Phrase("Ordine n.:", fontSmall));
+            table.addCell(new Phrase(order.getReferenceNumber().toString(), fontSmall));
+            table.addCell(builderEmptySpanCell(5));
             
             // 10row
             table.addCell(new Phrase("Spedito a", fontSmall));
-            table.addCell(new Phrase("Alessandro Vincelli", fontSmall));
-            
+            table.addCell(new Phrase(order.getCustomer().getCorporateName().toUpperCase(), fontSmall));
             table.addCell(new Phrase("Fatturato a", fontSmall));
-            table.addCell(new Phrase("Alessandro Vincelli", fontSmall));
+            table.addCell(new Phrase(order.getCustomer().getCorporateName().toUpperCase(), fontSmall));
             table.addCell(builderEmptySpanCell(3));
-
+            
+            // 11row
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getShippingAddress().getName().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getInvoiceAddress().getName().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 12row
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getShippingAddress().getAddress().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getInvoiceAddress().getAddress().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 13row
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getShippingAddress().getCity().getName().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getInvoiceAddress().getCity().getName().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 14row
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getShippingAddress().getZipcode().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase(order.getInvoiceAddress().getZipcode().toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 15row
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase("Italia".toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase("Italia".toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 16row
+            table.addCell(builderEmptySpanCell(6));
+            table.addCell(new Phrase("Data consegna", fontSmall));
+            
+            // 17row
+            table.addCell(builderEmptySpanCell(6));
+            if(order.getDeliveredTime() != null){
+                table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getDeliveredTime().getTime()), fontSmall));    
+            }
+            
+            cell = builderEmptySpanCell(7);
+            cell.setPhrase(new Phrase(" "));
+            cell.setPaddingTop(10);
+            table.addCell(cell);
+            
             document.add(table);
+            
+            // seconda tabella dati ordini
+            PdfPTable table2 = new PdfPTable(new float[] {3f,2f,5,1.3f});
+            table2.setWidthPercentage(100f);
+            table2.getDefaultCell().setBorder(0);
+            table2.getDefaultCell().setPaddingBottom(1);
+            table2.getDefaultCell().setPaddingTop(1);
+            
+            //first row
+            cell = builderSmallHLeftBorderTop("NUM. ORDINE");
+            cell.setBorder(Rectangle.LEFT +  Rectangle.TOP + Rectangle.RIGHT);
+            table2.addCell(cell);
+            cell = builderSmallHLeftBorderTop("DATA ORDINE");
+            table2.addCell(cell);
+            cell = builderSmallHLeftBorderTop("TIPO PAGAMENTO");
+            table2.addCell(cell);
+            cell = builderSmallHLeftBorderTop("PAGINA");
+            cell.setBorder(Rectangle.RIGHT +  Rectangle.TOP);
+            table2.addCell(cell);
+            
+            cell = builderSmallHCenterBorderBottom(order.getReferenceNumber().toString());
+            cell.setBorder(Rectangle.LEFT +  Rectangle.BOTTOM + Rectangle.RIGHT);
+            table2.addCell(cell);
+            cell = builderSmallHCenterBorderBottom(DateUtil.SDF2SHOWDATEINVOICE.print(order.getCreationTime().getTime()));
+            table2.addCell(cell);
+            cell = builderSmallHCenterBorderBottom(new ResourceModel(order.getPaymentType().name()).getObject());
+            table2.addCell(cell);
+            cell = builderSmallHCenterBorderBottom("1/1");
+            cell.setBorder(Rectangle.RIGHT +  Rectangle.BOTTOM);
+            table2.addCell(cell);
+            
+            document.add(table2);
+            
+            
+         // seconda tabella dati ordini
+            PdfPTable table3 = new PdfPTable(new float[] {1f, 6, 2f, 2f, 2f,2f, 2f});
+            table3.setWidthPercentage(100f);
+            table3.getDefaultCell().setBorder(1);
+            table3.getDefaultCell().setPaddingBottom(5);
+            table3.getDefaultCell().setPaddingTop(1);
+            
+            //Item C Material Description Quantity Price Price Unit Value Tax       Rate %
+            
+            //first row
+            cell = builderSmallHLeftBorderBottomBold("Art.");
+            cell.setBorder(Rectangle.LEFT +  Rectangle.BOTTOM);
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Descrizione");
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Quantità");
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Prezzo");
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Sconto %");
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Valore");
+            table3.addCell(cell);
+            cell = builderSmallHLeftBorderBottomBold("Tasse %");
+            cell.setBorder(Rectangle.RIGHT +  Rectangle.BOTTOM);
+            table3.addCell(cell);
+            
+            // 2row articoli
+            Integer index = 1; 
+            for (ProductOrdered p : order.getProductsOrdered()) {
+                cell = builderSmallItemLeft(index.toString());
+                cell.setBorder(Rectangle.LEFT);
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(p.getProduct().getName());
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(Integer.toString(p.getNumber()));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(" ");
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(p.getDiscount()));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(p.getAmount()));
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                table3.addCell(cell);
+                cell = builderSmallItemLeft(" ");
+                cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+                cell.setBorder(Rectangle.RIGHT);
+                table3.addCell(cell);
+                index = index + 1;
+            }
+            
+            
+            // 2row sconti
+//            cell = builderSmallItemLeft(" ");
+//            cell.setBorder(Rectangle.LEFT);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeft(" ");
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeft("Sconto");
+//            cell.setColspan(2);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeft(" ");
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeft(" ");
+//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeft("5 %");
+//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            cell.setBorder(Rectangle.RIGHT);
+//            table3.addCell(cell);
+            
+            cell = builderEmptySpanCell(7);
+            cell.setPhrase(new Phrase(" "));
+            cell.setBorder(Rectangle.BOTTOM + Rectangle.LEFT + Rectangle.RIGHT);
+            cell.setPaddingTop(10);
+            table3.addCell(cell);
+            
+            // 3row primo totale
+            cell = builderSmallItemLeft(" ");
+            cell.setBorder(Rectangle.LEFT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("Totale articoli");
+            cell.setIndent(35);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(" ");
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("Valuta");
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("EUR");
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(" ");
+            cell.setBorder(Rectangle.RIGHT + Rectangle.BOTTOM);
+            table3.addCell(cell);
+            
+            // 2row
+//            cell = builderSmallItemLeft(" ");
+//            cell.setBorder(Rectangle.LEFT);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom("Tasse");
+//            cell.setIndent(35);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom("20%");
+//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom("Base Tasse\\n1222");
+//            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom(" ");
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
+//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+//            table3.addCell(cell);
+//            cell = builderSmallItemLeftBorderBottom(" ");
+//            cell.setBorder(Rectangle.RIGHT + Rectangle.BOTTOM);
+//            table3.addCell(cell);
+            
+            
+            // 3row totale generale
+            cell = builderSmallItemLeft(" ");
+            cell.setBorder(Rectangle.LEFT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("Totale finale (tasse incluse)");
+            cell.setIndent(35);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(" ");
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("Valuta");
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("EUR");
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(" ");
+            cell.setBorder(Rectangle.RIGHT);
+            table3.addCell(cell);
+            
+            cell = builderEmptySpanCell(7);
+            cell.setPhrase(new Phrase(" "));
+            cell.setBorder(Rectangle.LEFT + Rectangle.RIGHT);
+            cell.setPaddingTop(30);
+            table3.addCell(cell);
+            
+            cell = builderEmptySpanCell(7);
+            cell.setBorder(Rectangle.BOTTOM);
+            cell.setPaddingTop(30);
+            table3.addCell(cell);
+            
+            document.add(table3);
 //            
 //            PdfPTable tableHeader3 = new PdfPTable(1);
 //            tableHeader3.getDefaultCell().setBorder(0);
@@ -174,35 +424,58 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
         }
     }
     
-    private PdfPCell builderNormalHCenter(String text){
-        PdfPCell cell = new PdfPCell(new Phrase(text, fontNormal));
-        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setBorder(Rectangle.RIGHT + Rectangle.LEFT + Rectangle.BOTTOM + Rectangle.TOP);
-        cell.setPaddingTop(3);
-        cell.setPaddingBottom(3);
-        return cell;
-    }
     
-    private PdfPCell builderNormalHRight(String text){
-        PdfPCell cell = new PdfPCell(new Phrase(text, fontNormal));
-        cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setBorder(Rectangle.RIGHT + Rectangle.LEFT + Rectangle.BOTTOM + Rectangle.TOP);
-        cell.setPaddingTop(3);
-        cell.setPaddingBottom(3);
-        return cell;
-    }
-    
-    private PdfPCell builderNormalHLeft(String text){
-        PdfPCell cell = new PdfPCell(new Phrase(text, fontNormal));
+    private PdfPCell builderSmallHLeftBorderTop(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
         cell.setHorizontalAlignment(Element.ALIGN_LEFT);
         cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
-        cell.setBorder(Rectangle.RIGHT + Rectangle.LEFT + Rectangle.BOTTOM + Rectangle.TOP);
-        cell.setPaddingTop(3);
-        cell.setPaddingBottom(3);
+        cell.setBorder(Rectangle.TOP + Rectangle.RIGHT);
+        cell.setPaddingTop(1);
+        cell.setPaddingBottom(1);
         return cell;
     }
+        
+    private PdfPCell builderSmallHCenterBorderBottom(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
+        cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(Rectangle.BOTTOM + Rectangle.RIGHT);
+        cell.setPaddingTop(1);
+        cell.setPaddingBottom(5);
+        return cell;
+    }
+    
+    
+    private PdfPCell builderSmallHLeftBorderBottomBold(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setPaddingTop(1);
+        cell.setPaddingBottom(12);
+        cell.setBorderWidthBottom(2);
+        return cell;
+    }
+    
+    private PdfPCell builderSmallItemLeft(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(0);
+        cell.setPaddingTop(5);
+        cell.setPaddingBottom(5);
+        return cell;
+    }
+    
+    private PdfPCell builderSmallItemLeftBorderBottom(String text){
+        PdfPCell cell = new PdfPCell(new Phrase(text, fontSmall));
+        cell.setHorizontalAlignment(Element.ALIGN_LEFT);
+        cell.setVerticalAlignment(Element.ALIGN_MIDDLE);
+        cell.setBorder(Rectangle.BOTTOM );
+        cell.setPaddingTop(5);
+        cell.setPaddingBottom(5);
+        return cell;
+    }
+
     
     private PdfPCell builderNormalCenter(String text){
         PdfPCell cell = new PdfPCell(new Phrase(text, fontNormal));
