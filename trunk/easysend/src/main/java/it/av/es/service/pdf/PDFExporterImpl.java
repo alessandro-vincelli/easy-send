@@ -66,7 +66,7 @@ public final class PDFExporterImpl implements PDFExporter {
             document.open();
 
             //Image on top
-            String logoLocation = new ResourceModel("images.printlogo").getObject();
+            String logoLocation = new ResourceModel("images.printlogoEasytrack").getObject();
             Image gif = Image.getInstance(this.getClass().getResource(logoLocation));
             gif.setAlignment(Element.ALIGN_CENTER);
             gif.scalePercent(50);

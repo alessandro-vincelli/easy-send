@@ -64,7 +64,7 @@ import org.apache.wicket.util.resource.ResourceStreamNotFoundException;
  * @author <a href='mailto:a.vincelli@gmail.com'>Alessandro Vincelli</a>
  * 
  */
-@AuthorizeInstantiation({ "USER", "VENDOR", "OPERATOR" })
+@AuthorizeInstantiation({ "USER", "VENDOR", "OPERATOR", "PROJECT_MANAGER" })
 public class OrderManagerPage extends BasePageSimple {
 
     @SpringBean
@@ -683,8 +683,9 @@ public class OrderManagerPage extends BasePageSimple {
             
             User loggedInUser2 = getSecuritySession().getLoggedInUser();
             boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
+            boolean pm = loggedInUser2.getUserProfile().getName().equals(UserProfile.PROJECT_MANAGER);
             
-            if(!operator){
+            if(!operator && !pm){
                 //buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -701,7 +702,8 @@ public class OrderManagerPage extends BasePageSimple {
         User loggedInUser2 = getSecuritySession().getLoggedInUser();
         boolean operator = loggedInUser2.getUserProfile().getName().equals(UserProfile.OPERATOR);
         boolean admin = loggedInUser2.getUserProfile().getName().equals(UserProfile.ADMIN);
-        exportAsPDFButton.setVisible(operator);
+        boolean pm = loggedInUser2.getUserProfile().getName().equals(UserProfile.PROJECT_MANAGER);
+        exportAsPDFButton.setVisible(operator || pm);
         
     }
 }
