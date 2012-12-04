@@ -18,16 +18,21 @@ package it.av.es.service.impl;
 import it.av.es.EasySendException;
 import it.av.es.model.ClosingDays;
 import it.av.es.model.ClosingRange;
+import it.av.es.model.Customer;
 import it.av.es.model.DeliveryDays;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
+import it.av.es.model.OrderLog;
+import it.av.es.model.OrderStatus;
 import it.av.es.model.Price;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
+import it.av.es.service.CustomerService;
+import it.av.es.service.OrderLogService;
 import it.av.es.service.OrderService;
 import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
@@ -78,6 +83,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private UserProfileService userProfileService;
     @Autowired
     private MailService mailService;
+    @Autowired
+    private OrderLogService orderLogService;
+    @Autowired
+    private CustomerService customerService;
     private boolean notificationEnabled;
 
     /**
@@ -91,6 +100,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if (!isOrderValid(order)) {
             throw new EasySendException("Ordine non valido");
         }
+        Customer customer = customerService.getByID(order.getCustomer().getId());
+        order.setInvoiceAddress(customer.searchInvoiceAddresses());
         order.setCreationTime(new Date());
         order.setProject(project);
         project = projectService.getByID(project.getId());
@@ -261,9 +272,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public Order cancel(Order order) {
+    public Order cancel(Order order, User user) {
         order = getByID(order.getId());
         order.setIsCancelled(true);
+        order = setStatus(OrderStatus.CANCELLED, order, user);
         return save(order);
     }
 
@@ -271,12 +283,13 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public Order setAsInCharge(Order order) {
+    public Order setAsInCharge(Order order, User user) {
         if (order.getIsCancelled()) {
             throw new EasySendException("You cannot puth in charge a cancelled order.");
         }
         order = getByID(order.getId());
         order.setInCharge(true);
+        order = setStatus(OrderStatus.INCHARGE, order, user);
         return save(order);
     }
 
@@ -284,9 +297,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public Order removeInCharge(Order order) {
+    public Order removeInCharge(Order order, User user) {
         order = getByID(order.getId());
         order.setInCharge(false);
+        order = setStatus(OrderStatus.CREATED, order, user);
         return save(order);
     }
 
@@ -297,8 +311,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     public void setAsInCharge(User user, Project project, Date date) {
         Collection<Order> collection = get(user, project, date, true, 0, 0, null, true);
         for (Order order : collection) {
-            order.setInCharge(true);
-            save(order);
+            setAsInCharge(order, user);
         }
     }
 
@@ -491,5 +504,82 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         }
         buffer.append("\n");
         return buffer.toString();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order setStatus(OrderStatus orderStatus, Order order, User user) {
+        order = getByID(order.getId());
+        user = userService.getByID(user.getId());
+        OrderLog log = new OrderLog();
+        log.setOrder(order);
+        log.setOrderSatus(orderStatus);
+        log.setOrderSatusBefore(order.getStatus());
+        log.setTime(new Date());
+        order.setStatus(orderStatus);
+        order = save(order);
+        orderLogService.save(log);
+        return order;
+    }
+
+    @Override
+    public Order setSentStatus(Order order, User user) {
+        return setStatus(OrderStatus.SENT, order, user);
+    }
+
+    @Override
+    public Order removeSentStatus(Order order, User user) {
+        return setStatus(OrderStatus.INCHARGE, order, user);
+    }
+
+    @Override
+    public Order setDeliveredStatus(Order order, User user, Date deliveredTime) {
+        order.setDeliveredTime(deliveredTime);
+        order = save(order);
+        return setStatus(OrderStatus.DELIVERED, order, user);
+    }
+
+    @Override
+    public Order removeDeliveredStatus(Order order, User user) {
+        order.setDeliveredTime(null);
+        return setStatus(OrderStatus.SENT, order, user);
+    }
+
+    private int getLastInvoiceNumber(Project project, Date invoiceDate){
+        Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
+        criteria.add(Restrictions.sqlRestriction("date_trunc('year', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(DateUtils.truncate(invoiceDate, Calendar.YEAR).getTime()) + "'"));
+        criteria.add(Restrictions.isNotNull("invoiceNumber"));
+        criteria.addOrder(org.hibernate.criterion.Order.desc("invoiceNumber"));
+        List<Order> list = criteria.list();
+        int lastInvoiceNumber = 0;
+        if(list.size() > 0){
+            lastInvoiceNumber = list.get(0).getInvoiceNumber();
+        }
+        return lastInvoiceNumber;
+    }
+    
+    @Override
+    public Order setInvoiceApprovedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate) {
+        order = getByID(order.getId());
+        if(order.getInvoiceNumber() != null || order.getInvoiceDate() != null || order.getStatus().equals(OrderStatus.INVOICE_APPROVED)){
+            throw new EasySendException("Invoice already approved");
+        }
+        order.setInvoiceNumber(getLastInvoiceNumber(order.getProject(), invoiceDate) + 1);
+        order.setInvoiceDate(invoiceDate);
+        order.setInvoiceDueDate(invoiceDueDate);
+        order = save(order);
+        setStatus(OrderStatus.INVOICE_APPROVED, order, user);
+        return setStatus(OrderStatus.INVOICE_APPROVED, order, user);
+    }
+
+    @Override
+    public Order removeInvoiceApprovedStatus(Order order, User user) {
+        order.setInvoiceNumber(null);
+        order.setInvoiceDate(null);
+        order.setInvoiceDueDate(null);
+        order = save(order);
+        return setStatus(OrderStatus.DELIVERED, order, user);
     }
 }

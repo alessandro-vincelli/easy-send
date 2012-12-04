@@ -36,6 +36,11 @@ public final class DateUtil {
      * Format used in the UI. dd/MM/yyyy
      */
     public static final DateTimeFormatter SDF2SHOWDATE = DateTimeFormat.forPattern("dd/MM/yyyy");
+    
+    /**
+     * Format used in the UI. dd.MM.yyyy
+     */
+    public static final DateTimeFormatter SDF2SHOWDATEINVOICE = DateTimeFormat.forPattern("dd.MM.yyyy");
 
     /**
      * Format yyyy-MM-dd

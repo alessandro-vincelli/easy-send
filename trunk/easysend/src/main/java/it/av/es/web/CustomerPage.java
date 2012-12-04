@@ -247,6 +247,7 @@ public class CustomerPage extends BasePageSimple {
                         address.setName(formNewOrder.getModelObject().getCorporateName());
                     }
                 }
+                address.setCountry(countryService.getByIso2("IT"));
                 formNewOrder.getModelObject().addAddresses(address);
                 target.add(form);
                 getFeedbackPanel().publishWithEffects(target);

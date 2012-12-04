@@ -396,6 +396,20 @@ public class Customer extends BasicEntity {
         return null;
     }
     
+    /**
+     * Searches an invoice Address, otherwise return default shipping address
+     * 
+     * @return
+     */
+    public Address searchInvoiceAddresses() {
+        for (Address address : getAddresses()) {
+            if(address.getAddressType().equals(AddressType.BILLINGADDRESS) || address.getAddressType().equals(AddressType.BILLINGANDSHIPPINGADDRESS)){
+                return address;
+            }
+        }
+        return getDefaultShippingAddresses();
+    }
+    
     public void addAddresses(Address address) {
         if (addresses == null) {
             addresses = new ArrayList<Address>();

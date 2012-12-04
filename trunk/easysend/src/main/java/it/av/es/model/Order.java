@@ -44,6 +44,7 @@ public class Order extends BasicEntity {
     public static final String SHIPPINGCOST_FIELD = "shippingCost";
     public static final String REFERENCENUMBER_FIELD = "referenceNumber";
     public static final String ISINCHARGE_FIELD = "isInCharge";
+    public static final String STATUS_FIELD = "status";
     public static final String ISCANCELLED_FIELD = "isCancelled";
 
     @ManyToOne(fetch=FetchType.EAGER)
@@ -51,6 +52,8 @@ public class Order extends BasicEntity {
     private Customer customer;
     @ManyToOne//(optional = false)
     private Address shippingAddress;
+    @ManyToOne//(optional = false)
+    private Address invoiceAddress;
     @ManyToOne
     @JoinColumn(name = "user_fk")
     @XmlTransient
@@ -65,6 +68,17 @@ public class Order extends BasicEntity {
     @Column(nullable = false)
     private Date creationTime;
     @Temporal(TemporalType.TIMESTAMP)
+    private Date invoiceDate;
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date invoiceDueDate;
+    private Integer invoiceNumber;
+    /**
+     * giorni ordine consegnato
+     */
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = true)
+    private Date deliveredTime;
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = true)
     private Date deliveryTimeRequired;
     @Enumerated(EnumType.STRING)
@@ -75,6 +89,8 @@ public class Order extends BasicEntity {
      */
     @Deprecated
     private boolean isPrePayment;
+    @Enumerated(EnumType.STRING)
+    private OrderStatus status;
     private boolean isInCharge;
     private boolean isCancelled;
     @Column(columnDefinition = "serial")
@@ -99,6 +115,7 @@ public class Order extends BasicEntity {
         super();
         customer = new Customer();
         productsOrdered = new ArrayList<ProductOrdered>();
+        status = OrderStatus.CREATED;
     }
 
     /**
@@ -271,6 +288,54 @@ public class Order extends BasicEntity {
 
     public void setDeliveryTimeRequiredType(DeliveryTimeRequiredType deliveryTimeRequiredType) {
         this.deliveryTimeRequiredType = deliveryTimeRequiredType;
+    }
+
+    public Address getInvoiceAddress() {
+        return invoiceAddress;
+    }
+
+    public void setInvoiceAddress(Address invoiceAddress) {
+        this.invoiceAddress = invoiceAddress;
+    }
+
+    public OrderStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrderStatus status) {
+        this.status = status;
+    }
+
+    public Date getInvoiceDate() {
+        return invoiceDate;
+    }
+
+    public void setInvoiceDate(Date invoiceDate) {
+        this.invoiceDate = invoiceDate;
+    }
+
+    public Integer getInvoiceNumber() {
+        return invoiceNumber;
+    }
+
+    public void setInvoiceNumber(Integer invoiceNumber) {
+        this.invoiceNumber = invoiceNumber;
+    }
+
+    public Date getInvoiceDueDate() {
+        return invoiceDueDate;
+    }
+
+    public void setInvoiceDueDate(Date invoiceDueDate) {
+        this.invoiceDueDate = invoiceDueDate;
+    }
+
+    public Date getDeliveredTime() {
+        return deliveredTime;
+    }
+
+    public void setDeliveredTime(Date deliveredTime) {
+        this.deliveredTime = deliveredTime;
     }
 
     public Integer getNumberOfItemsInProductOrdered() {

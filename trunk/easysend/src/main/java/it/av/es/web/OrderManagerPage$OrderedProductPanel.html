@@ -42,14 +42,23 @@
     <td colspan="7"><span wicket:id="shippingAddress"></span></td>
 </tr>
 <tr style="padding-left: 10px; padding-right:10px; text-align: left;">
-    <th style="text-align: right;"><wicket:message key="customer.partitaIvaNumber"/>:</th>
-    <td colspan="7"><span wicket:id="partitaIvaNumber"></span></td>
-</tr>
-<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
     <th style="text-align: right;"><wicket:message key="order.note"/>:</th>
     <td colspan="7"><span wicket:id="notesComplete"></span></td>
 </tr>
-
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: right;"><wicket:message key="order.paymentType"/>:</th>
+    <td colspan="7"><span wicket:id="paymentType"></span></td>
+</tr>
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: right;"><wicket:message key="customer.partitaIvaNumber"/>:</th>
+    <td colspan="7"><span wicket:id="partitaIvaNumber"></span></td>
+</tr>
+<wicket:enclosure child="invoice">
+<tr style="padding-left: 10px; padding-right:10px; text-align: left;">
+    <th style="text-align: right;"><wicket:message key="invoice"/>:</th>
+    <td colspan="7"><span wicket:id="invoice"></span></td>
+</tr>
+</wicket:enclosure>
 </table>
 
 </wicket:panel>
