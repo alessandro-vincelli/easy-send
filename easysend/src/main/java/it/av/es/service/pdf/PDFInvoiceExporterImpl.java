@@ -62,7 +62,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             document.open();
 
             //Image on top
-            String logoLocation = new ResourceModel("images.printlogo").getObject();
+            String logoLocation = new ResourceModel("images.printlogoLuxuryDrink").getObject();
             Image gif = Image.getInstance(this.getClass().getResource(logoLocation));
             gif.setAlignment(Element.ALIGN_CENTER);
             gif.scalePercent(50);

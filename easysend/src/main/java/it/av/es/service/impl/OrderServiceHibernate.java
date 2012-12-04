@@ -207,7 +207,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     public Collection<Order> get(User user, Project project, Date filterDate, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
 
-        if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile())) {
+        if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile()) || user.getUserProfile().equals(userProfileService.getProjectManagerUserProfile())) {
             //sees all the orders
         } else {
             // sees only his orders 
