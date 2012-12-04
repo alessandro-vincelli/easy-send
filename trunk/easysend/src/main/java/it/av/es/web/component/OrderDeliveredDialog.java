@@ -14,13 +14,14 @@ public abstract class OrderDeliveredDialog extends ModalWindow {
     /**
      * Constructor.
      * @param id the markupId, an html div suffice to host a dialog.
+     * @param customFeedbackPanel 
      * @param title the title of the dialog 
      * @param string the message to be displayed
      * @param icon the predefined icon to display
      */
-    public OrderDeliveredDialog(String id, Order order) {
+    public OrderDeliveredDialog(String id, Order order, CustomFeedbackPanel customFeedbackPanel) {
         super(id);
-        setContent(new OrderDeliveredDialogPanel(getContentId(), this, order));
+        setContent(new OrderDeliveredDialogPanel(getContentId(), this, order, customFeedbackPanel));
         setTitle(new ResourceModel("orderDeliveredDialog.title").getObject());
         setCookieName(null);
         setCssClassName(CSS_CLASS_GRAY);

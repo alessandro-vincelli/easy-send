@@ -34,8 +34,9 @@ public class OrderDeliveredDialogPanel extends Panel {
      * @param id the markupId, an html div suffice to host a dialog.
      * @param dialog parent
      * @param order 
+     * @param customFeedbackPanel 
      */
-    public OrderDeliveredDialogPanel(String id, final OrderDeliveredDialog dialog, final Order order) {
+    public OrderDeliveredDialogPanel(String id, final OrderDeliveredDialog dialog, final Order order, final CustomFeedbackPanel customFeedbackPanel) {
         super(id);
         Injector.get().inject(this);
         WebMarkupContainer container = new WebMarkupContainer("container");
@@ -58,6 +59,7 @@ public class OrderDeliveredDialogPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 orderService.setDeliveredStatus(order, ((SecuritySession)getSession()).getLoggedInUser(), deliveredTime.getModelObject());
+                customFeedbackPanel.info(new ResourceModel("info.order.approvedDeliveredStatus").getObject());
                 dialog.onCloseDialog(target, ButtonName.BUTTON_YES);
                 dialog.close(target);
             }
