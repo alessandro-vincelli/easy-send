@@ -474,11 +474,14 @@ public class OrderManagerPage extends BasePageSimple {
                 public void onClick(AjaxRequestTarget target) {
                     if(getModelObject().getStatus().equals(OrderStatus.INCHARGE)){
                         orderService.removeInCharge(getModelObject(), getSecuritySession().getLoggedInUser());
+                        getFeedbackPanel().info(new ResourceModel("info.order.removedInCharge").getObject());
                     }
                     else{
                         orderService.setAsInCharge(getModelObject(), getSecuritySession().getLoggedInUser());    
+                        getFeedbackPanel().info(new ResourceModel("info.order.approvedInCharge").getObject());
                     }
                     target.add(dataTable);
+                    getFeedbackPanel().publishWithEffects(target);
                 }
             };
             add(buttonInCharge);
@@ -505,11 +508,14 @@ public class OrderManagerPage extends BasePageSimple {
                 public void onClick(AjaxRequestTarget target) {
                     if(getModelObject().getStatus().equals(OrderStatus.SENT)){
                         orderService.removeSentStatus(getModelObject(), getSecuritySession().getLoggedInUser());
+                        getFeedbackPanel().info(new ResourceModel("info.order.removedSentStatus").getObject());
                     }
                     else{
                         orderService.setSentStatus(getModelObject(), getSecuritySession().getLoggedInUser()); 
+                        getFeedbackPanel().info(new ResourceModel("info.order.approvedSentStatus").getObject());
                     }
                     target.add(dataTable);
+                    getFeedbackPanel().publishWithEffects(target);
                 }
             };
             add(buttonOrderSent);
@@ -518,7 +524,7 @@ public class OrderManagerPage extends BasePageSimple {
             buttonOrderSent.add(buttonOrderSentOrderLabel);
             
             
-            final OrderDeliveredDialog orderDeliveredDialog = new OrderDeliveredDialog("orderDeliveredDialog", model.getObject()) {
+            final OrderDeliveredDialog orderDeliveredDialog = new OrderDeliveredDialog("orderDeliveredDialog", model.getObject(), getFeedbackPanel()) {
                 @Override
                 protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
                     target.add(dataTable);
@@ -546,11 +552,13 @@ public class OrderManagerPage extends BasePageSimple {
                 public void onClick(AjaxRequestTarget target) {
                     if(getModelObject().getStatus().equals(OrderStatus.DELIVERED)){
                         orderService.removeDeliveredStatus(getModelObject(), getSecuritySession().getLoggedInUser());
+                        getFeedbackPanel().info(new ResourceModel("info.order.removedDeliveredStatus").getObject());
                         target.add(dataTable);
                     }
                     else{
                         orderDeliveredDialog.show(target); 
                     }
+                    getFeedbackPanel().publishWithEffects(target);
                 }
             };
             add(buttonOrderDelivered);
@@ -558,7 +566,7 @@ public class OrderManagerPage extends BasePageSimple {
             Label buttonOrderDeliveredLabel = new Label("label", buttonOrderDeliveredLabelText);
             buttonOrderDelivered.add(buttonOrderDeliveredLabel);
             
-            final OrderInvoiceDialog invoiceDialog = new OrderInvoiceDialog("invoiceDialog", model.getObject()) {
+            final OrderInvoiceDialog invoiceDialog = new OrderInvoiceDialog("invoiceDialog", model.getObject(), getFeedbackPanel()) {
                 @Override
                 protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
                     target.add(dataTable);
@@ -608,6 +616,7 @@ public class OrderManagerPage extends BasePageSimple {
                     else{
                         invoiceDialog.show(target); 
                     }
+                    getFeedbackPanel().publishWithEffects(target);
                     //target.add(dataTable);
                 }
             };

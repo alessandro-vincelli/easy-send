@@ -35,8 +35,9 @@ public class OrderInvoiceDialogPanel extends Panel {
      * @param id the markupId, an html div suffice to host a dialog.
      * @param dialog parent
      * @param order 
+     * @param customFeedbackPanel 
      */
-    public OrderInvoiceDialogPanel(String id, final OrderInvoiceDialog dialog, final Order order) {
+    public OrderInvoiceDialogPanel(String id, final OrderInvoiceDialog dialog, final Order order, final CustomFeedbackPanel customFeedbackPanel) {
         super(id);
         Injector.get().inject(this);
         WebMarkupContainer container = new WebMarkupContainer("container");
@@ -62,6 +63,7 @@ public class OrderInvoiceDialogPanel extends Panel {
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
                 orderService.setInvoiceApprovedStatus(order, ((SecuritySession)getSession()).getLoggedInUser(), invoiceDate.getModelObject(), invoiceDueDate.getModelObject());
+                customFeedbackPanel.info(new ResourceModel("info.order.approvedInvoice").getObject());
                 dialog.onCloseDialog(target, ButtonName.BUTTON_YES);
                 dialog.close(target);
             }

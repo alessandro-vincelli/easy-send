@@ -14,13 +14,14 @@ public abstract class OrderInvoiceDialog extends ModalWindow {
     /**
      * Constructor.
      * @param id the markupId, an html div suffice to host a dialog.
+     * @param customFeedbackPanel 
      * @param title the title of the dialog 
      * @param string the message to be displayed
      * @param icon the predefined icon to display
      */
-    public OrderInvoiceDialog(String id, Order order) {
+    public OrderInvoiceDialog(String id, Order order, CustomFeedbackPanel customFeedbackPanel) {
         super(id);
-        setContent(new OrderInvoiceDialogPanel(getContentId(), this, order));
+        setContent(new OrderInvoiceDialogPanel(getContentId(), this, order, customFeedbackPanel));
         setTitle(new ResourceModel("invoiceDialog.title").getObject());
         setCookieName(null);
         setCssClassName(CSS_CLASS_GRAY);
