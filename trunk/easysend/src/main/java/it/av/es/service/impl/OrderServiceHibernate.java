@@ -222,7 +222,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             //sees all the orders
         }        
         // if the user is Admin of a group, filter on the group member
-        if (!groupService.isUserAdministratorOAGroups(user).isEmpty()) {
+        else if (!groupService.isUserAdministratorOAGroups(user).isEmpty()) {
             List<Group> g = groupService.isUserAdministratorOAGroups(user);
             List<User> users = new ArrayList<User>();
             for (Group group : g) {
