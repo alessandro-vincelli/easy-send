@@ -62,8 +62,8 @@ public class OrderInvoiceDialogPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                orderService.setInvoiceApprovedStatus(order, ((SecuritySession)getSession()).getLoggedInUser(), invoiceDate.getModelObject(), invoiceDueDate.getModelObject());
-                customFeedbackPanel.info(new ResourceModel("info.order.approvedInvoice").getObject());
+                orderService.setInvoiceCreatedStatus(order, ((SecuritySession)getSession()).getLoggedInUser(), invoiceDate.getModelObject(), invoiceDueDate.getModelObject());
+                customFeedbackPanel.info(new ResourceModel("info.order.createdInvoice").getObject());
                 dialog.onCloseDialog(target, ButtonName.BUTTON_YES);
                 dialog.close(target);
             }

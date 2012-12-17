@@ -72,6 +72,8 @@ public class Order extends BasicEntity {
     @Temporal(TemporalType.TIMESTAMP)
     private Date invoiceDueDate;
     private Integer invoiceNumber;
+    private byte[] invoice;
+    
     /**
      * giorni ordine consegnato
      */
@@ -332,6 +334,14 @@ public class Order extends BasicEntity {
 
     public Date getDeliveredTime() {
         return deliveredTime;
+    }
+
+    public byte[] getInvoice() {
+        return invoice;
+    }
+
+    public void setInvoice(byte[] invoice) {
+        this.invoice = invoice;
     }
 
     public void setDeliveredTime(Date deliveredTime) {

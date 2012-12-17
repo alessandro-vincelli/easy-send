@@ -111,6 +111,13 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table.addCell(builderEmptySpanCell(3));
             table.addCell(new Phrase("Data", fontSmall));
             
+            // 4 + 1row
+            cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("P. IVA 07993140966", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(4));
+
+            
             // 5row
             table.addCell(builderEmptySpanCell(6));
             table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDate().getTime()), fontSmall));
@@ -173,6 +180,12 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table.addCell(new Phrase("Italia".toUpperCase(), fontSmall));
             table.addCell(builderEmptySpanCell(1));
             table.addCell(new Phrase("Italia".toUpperCase(), fontSmall));
+            table.addCell(builderEmptySpanCell(3));
+            
+            // 15 + 1row
+            table.addCell(builderEmptySpanCell(2));
+            table.addCell(builderEmptySpanCell(1));
+            table.addCell(new Phrase("P. IVA " + order.getCustomer().getPartitaIvaNumber(), fontSmall));
             table.addCell(builderEmptySpanCell(3));
             
             // 16row

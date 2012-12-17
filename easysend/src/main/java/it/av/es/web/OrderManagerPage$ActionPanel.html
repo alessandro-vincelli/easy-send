@@ -17,12 +17,22 @@
 </tr>
 <tr>
 <td style="border: 0px; cellpadding: 1px;">
-<a wicket:id="buttonApproveInvoiceOrder" class="button-gray-small" ><span wicket:id="buttonApproveInvoiceOrderLabel"></span></a>
+<a wicket:id="buttonCreateInvoiceOrder" class="button-gray-small" ><span wicket:id="buttonCreateInvoiceOrderLabel"></span></a>
 </td>
 </tr>
 <tr>
 <td style="border: 0px; cellpadding: 1px;">
 <a wicket:id="invoice" class="button-green-small" title="" wicket:message="title:button.invoiceDownloadTitle"><wicket:message key="button.exportInvoiceAsPdf" title="" wicket:message="title:button.invoiceDownloadTitle" /></a>
+</td>
+</tr>
+<tr>
+<td style="border: 0px; cellpadding: 1px;">
+<a wicket:id="buttonApproveInvoiceOrder" class="button-green-small" title="" wicket:message="title:button.invoiceApproveTitle"><wicket:message key="button.invoiceApproveTitle" title="" wicket:message="title:button.invoiceApproveTitle" /></a>
+</td>
+</tr>
+<tr>
+<td style="border: 0px; cellpadding: 1px;">
+<a wicket:id="buttonPaidInvoiceDialogOrder" class="button-green-small" title="" wicket:message="title:button.paidInvoiceDialogOrderTitle"><wicket:message key="button.paidInvoiceDialogOrder" title="" wicket:message="title:button.paidInvoiceDialogOrderTitle" /></a>
 </td>
 </tr>
 <tr>
@@ -33,8 +43,11 @@
 </table>
 <div wicket:id="warningDialog">[warning]</div>
 <div wicket:id="orderDeliveredDialog">[warning]</div>
-<div wicket:id="removeApproveInvoiceDialog">[warning]</div>
+<div wicket:id="removeCreatedInvoiceDialog">[warning]</div>
 <div wicket:id="invoiceDialog">[warning]</div>
+<div wicket:id="approveInvoiceDialog">[warning]</div>
+<div wicket:id="paidInvoiceDialog">[warning]</div>
+
 <!-- <a class="icon-3 info-tooltip" href="#"></a> -->
 
 </wicket:panel>

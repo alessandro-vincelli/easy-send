@@ -38,10 +38,13 @@ import it.av.es.service.ProductService;
 import it.av.es.service.ProjectService;
 import it.av.es.service.UserProfileService;
 import it.av.es.service.UserService;
+import it.av.es.service.pdf.PDFInvoiceExporter;
 import it.av.es.service.system.MailService;
 import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -54,12 +57,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DateUtils;
 import org.apache.wicket.model.ResourceModel;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -87,6 +92,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private OrderLogService orderLogService;
     @Autowired
     private CustomerService customerService;
+    @Autowired
+    private PDFInvoiceExporter pdfInvoiceExporter;
     private boolean notificationEnabled;
 
     /**
@@ -524,16 +531,25 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return order;
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Order setSentStatus(Order order, User user) {
         return setStatus(OrderStatus.SENT, order, user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Order removeSentStatus(Order order, User user) {
         return setStatus(OrderStatus.INCHARGE, order, user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Order setDeliveredStatus(Order order, User user, Date deliveredTime) {
         order.setDeliveredTime(deliveredTime);
@@ -541,6 +557,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return setStatus(OrderStatus.DELIVERED, order, user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public Order removeDeliveredStatus(Order order, User user) {
         order.setDeliveredTime(null);
@@ -560,26 +579,71 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return lastInvoiceNumber;
     }
     
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Order setInvoiceApprovedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate) {
+    public Order removeInvoiceApprovedStatus(Order order, User user) {
+        order = save(order);
+        return setStatus(OrderStatus.CREATED, order, user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order setInvoiceApprovedStatus(Order order, User user) {
         order = getByID(order.getId());
-        if(order.getInvoiceNumber() != null || order.getInvoiceDate() != null || order.getStatus().equals(OrderStatus.INVOICE_APPROVED)){
+        if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED)){
             throw new EasySendException("Invoice already approved");
         }
-        order.setInvoiceNumber(getLastInvoiceNumber(order.getProject(), invoiceDate) + 1);
-        order.setInvoiceDate(invoiceDate);
-        order.setInvoiceDueDate(invoiceDueDate);
         order = save(order);
         setStatus(OrderStatus.INVOICE_APPROVED, order, user);
         return setStatus(OrderStatus.INVOICE_APPROVED, order, user);
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
-    public Order removeInvoiceApprovedStatus(Order order, User user) {
+    public Order setInvoiceCreatedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate) {
+        order = getByID(order.getId());
+        if(order.getInvoiceNumber() != null || order.getInvoiceDate() != null || order.getStatus().equals(OrderStatus.INVOICE_CREATED) || order.getInvoice() != null){
+            throw new EasySendException("Invoice already created");
+        }
+        try {
+            order.setInvoiceNumber(getLastInvoiceNumber(order.getProject(), invoiceDate) + 1);
+            order.setInvoiceDate(invoiceDate);
+            order.setInvoiceDueDate(invoiceDueDate);
+            InputStream createInvoice = pdfInvoiceExporter.createInvoice(order, user, order.getProject(), this);
+            order.setInvoice(IOUtils.toByteArray(createInvoice));
+            order = save(order);
+            setStatus(OrderStatus.INVOICE_CREATED, order, user);
+            return setStatus(OrderStatus.INVOICE_CREATED, order, user);
+        } catch (IOException e) {
+            Log.warn(e);
+            throw new EasySendException(e);
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order removeInvoiceCreatedStatus(Order order, User user) {
         order.setInvoiceNumber(null);
         order.setInvoiceDate(null);
         order.setInvoiceDueDate(null);
+        order.setInvoice(null);
         order = save(order);
         return setStatus(OrderStatus.DELIVERED, order, user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order setInvoicePaidStatus(Order order, User user) {
+        return setStatus(OrderStatus.INVOICE_PAID, order, user);
     }
 }
