@@ -9,8 +9,6 @@ import it.av.es.model.UserProfile;
 import it.av.es.service.OrderService;
 import it.av.es.service.pdf.PDFExporter;
 import it.av.es.service.pdf.PDFExporterImpl;
-import it.av.es.service.pdf.PDFInvoiceExporter;
-import it.av.es.service.pdf.PDFInvoiceExporterImpl;
 import it.av.es.util.DateUtil;
 import it.av.es.util.NumberUtil;
 import it.av.es.web.component.ButtonName;
@@ -20,10 +18,12 @@ import it.av.es.web.component.OrderInvoiceDialog;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -256,12 +256,8 @@ public class OrderManagerPage extends BasePageSimple {
             protected String getFileName() {
                 StringBuffer fileName = new StringBuffer(80);
                 fileName.append(getSecuritySession().getCurrentProject().getName());
-                fileName.append("_print_");
-                fileName.append(DateUtil.SDF2DATE.print(new Date().getTime()));
-                fileName.append("_");
-                fileName.append(DateUtil.SDF2TIME.print(new Date().getTime()));
-                fileName.append("_");
-                //fileName.append(StringUtils.deleteWhitespace(message.getSubject()));
+                fileName.append("_fattura_n_" + selectedOrder.getInvoiceNumber().toString());
+                fileName.append("_data_" + DateUtil.SDF2DATE.print(selectedOrder.getInvoiceDate().getTime()));
                 fileName.append(".pdf");
                 return fileName.toString();
             }
@@ -270,12 +266,10 @@ public class OrderManagerPage extends BasePageSimple {
             protected IResourceStream getResourceStream() {
                 AbstractResourceStream stream = new AbstractResourceStream() {
                     InputStream is;
-
                     @Override
                     public InputStream getInputStream() throws ResourceStreamNotFoundException {
-                        PDFInvoiceExporter pdfExporter = new PDFInvoiceExporterImpl();
                         try {
-                            is = pdfExporter.createInvoice(selectedOrder, user, project, orderService);
+                            is =  new ByteArrayInputStream(selectedOrder.getInvoice());
                             return is;
                         } catch (Exception e) {
                             throw new RuntimeException(e);
@@ -365,9 +359,25 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("paymentType").setDefaultModel(new Model<String>(new ResourceModel(order.getPaymentType().name()).getObject())));
             Label invoice = new Label("invoice", new Model<String>(""));
             add(invoice.setVisible(false));
-            if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED)){
+            if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED) || order.getStatus().equals(OrderStatus.INVOICE_PAID)){
                 invoice.setDefaultModelObject(order.getInvoiceNumber().toString());
                 invoice.setVisible(true);    
+            }
+            Label invoiceDueDate = new Label("invoiceDueDate", new Model<String>(""));
+            add(invoiceDueDate.setVisible(false));
+            if(order.getInvoiceDueDate() != null){
+                invoiceDueDate.setDefaultModelObject(DateUtil.SDF2SHOWDATE.print(order.getInvoiceDueDate().getTime()));
+                invoiceDueDate.setVisible(true);
+                Calendar calendar = Calendar.getInstance();
+                if(!order.getStatus().equals(OrderStatus.INVOICE_PAID) && order.getInvoiceDueDate().before(calendar.getTime())){
+                    invoiceDueDate.add(AttributeModifier.replace("style", "color: red; font-weight:bold;"));
+                }
+            }
+            Label invoiceDate = new Label("invoiceDate", new Model<String>(""));
+            add(invoiceDate.setVisible(false));
+            if(order.getInvoiceDate() != null){
+                invoiceDate.setDefaultModelObject(DateUtil.SDF2SHOWDATE.print(order.getInvoiceDate().getTime()));
+                invoiceDate.setVisible(true);
             }
             add(listView);
         }
@@ -575,43 +585,43 @@ public class OrderManagerPage extends BasePageSimple {
             };
             add(invoiceDialog);
             
-            final MessageDialog removeApproveInvoiceDialog = new MessageDialog("removeApproveInvoiceDialog", new ResourceModel("dialog.confirmRemoveApproveInvoiceDialogTitle").getObject(),  new ResourceModel("dialog.confirmRemoveApproveInvoiceDialog").getObject()) {
+            final MessageDialog removeCreatedInvoiceDialog = new MessageDialog("removeCreatedInvoiceDialog", new ResourceModel("dialog.confirmRemoveCreatedInvoiceDialogTitle").getObject(),  new ResourceModel("dialog.confirmRemoveCreatedInvoiceDialog").getObject()) {
 
                 @Override
                 protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
                     if (buttonName.equals(ButtonName.BUTTON_YES)) {
                         try {
-                            orderService.removeInvoiceApprovedStatus(model.getObject(), getSecuritySession().getLoggedInUser());
-                            getFeedbackPanel().info(new ResourceModel("order.removedApproveInvoice").getObject());
+                            orderService.removeInvoiceCreatedStatus(model.getObject(), getSecuritySession().getLoggedInUser());
+                            getFeedbackPanel().info(new ResourceModel("order.removedCreatedInvoice").getObject());
                         } catch (Exception e) {
-                            getFeedbackPanel().error(new ResourceModel("order.removeApproveInvoiceNotPossible").getObject());
+                            getFeedbackPanel().error(new ResourceModel("order.removeCreatedInvoiceNotPossible").getObject());
                         }
                         target.add(dataTable);
                         getFeedbackPanel().publishWithEffects(target);
                     }
                 }
             };
-            add(removeApproveInvoiceDialog);
+            add(removeCreatedInvoiceDialog);
             
-            AjaxFallbackLink<Order> buttonApproveInvoiceOrder = new AjaxFallbackLink<Order>("buttonApproveInvoiceOrder", model) {
+            AjaxFallbackLink<Order> buttonCreateInvoiceOrder = new AjaxFallbackLink<Order>("buttonCreateInvoiceOrder", model) {
 
                 @Override
                 protected void onComponentTag(ComponentTag tag) {
                     super.onComponentTag(tag);
-                    if(getModelObject().getStatus().equals(OrderStatus.INVOICE_APPROVED)){
-                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.removeInvoiceApprovedOrderDelivered").getObject())); 
+                    if(getModelObject().getStatus().equals(OrderStatus.INVOICE_CREATED)){
+                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.removeInvoiceCreatedOrderDelivered").getObject())); 
                         tag.addBehavior(AttributeModifier.replace("class", "button-gray-small"));
                     }
                     else{
-                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.approveInvoiceOrder").getObject()));
+                        tag.addBehavior(AttributeModifier.replace("title", new ResourceModel("button.createdInvoiceOrder").getObject()));
                         tag.addBehavior(AttributeModifier.replace("class", "button-green-small"));
                     }   
                 }
 
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    if(getModelObject().getStatus().equals(OrderStatus.INVOICE_APPROVED)){
-                        removeApproveInvoiceDialog.show(target);
+                    if(getModelObject().getStatus().equals(OrderStatus.INVOICE_CREATED)){
+                        removeCreatedInvoiceDialog.show(target);
                     }
                     else{
                         invoiceDialog.show(target); 
@@ -620,11 +630,11 @@ public class OrderManagerPage extends BasePageSimple {
                     //target.add(dataTable);
                 }
             };
-            add(buttonApproveInvoiceOrder);
+            add(buttonCreateInvoiceOrder);
             
-            String buttonApproveInvoiceOrderLabelText  = model.getObject().getStatus().equals(OrderStatus.INVOICE_APPROVED)? new ResourceModel("button.removeInvoiceApprovedOrderDelivered").getObject(): new ResourceModel("button.approveInvoiceOrder").getObject();
-            Label buttonApproveInvoiceOrderLabel = new Label("buttonApproveInvoiceOrderLabel", buttonApproveInvoiceOrderLabelText);
-            buttonApproveInvoiceOrder.add(buttonApproveInvoiceOrderLabel);
+            String buttonCreateInvoiceOrderLabelText  = model.getObject().getStatus().equals(OrderStatus.INVOICE_CREATED)? new ResourceModel("button.removeInvoiceCreatedOrderDelivered").getObject(): new ResourceModel("button.createdInvoiceOrder").getObject();
+            Label buttonCreateInvoiceOrderLabel = new Label("buttonCreateInvoiceOrderLabel", buttonCreateInvoiceOrderLabelText);
+            buttonCreateInvoiceOrder.add(buttonCreateInvoiceOrderLabel);
             
             AjaxFallbackLink<Order> buttonlOrderInvoice = new AjaxFallbackLink<Order>("invoice", model) {
                 
@@ -641,53 +651,139 @@ public class OrderManagerPage extends BasePageSimple {
             };
             add(buttonlOrderInvoice);
             
+            
+            final MessageDialog approveInvoiceDialog = new MessageDialog("approveInvoiceDialog", new ResourceModel("dialog.confirmApproveInvoiceDialogTitle").getObject(),  new ResourceModel("dialog.confirmApproveInvoiceDialog").getObject()) {
+
+                @Override
+                protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                    if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                        try {
+                            orderService.setInvoiceApprovedStatus(model.getObject(), getSecuritySession().getLoggedInUser());
+                            getFeedbackPanel().info(new ResourceModel("order.orderInvoiceApproved").getObject());
+                        } catch (Exception e) {
+                            getFeedbackPanel().error(new ResourceModel("order.orderInvoiceApprovedNotPossible").getObject());
+                        }
+                        target.add(dataTable);
+                        getFeedbackPanel().publishWithEffects(target);
+                    }
+                }
+            };
+            add(approveInvoiceDialog);
+            AjaxFallbackLink<Order> buttonApproveInvoiceOrder = new AjaxFallbackLink<Order>("buttonApproveInvoiceOrder", model) {
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    approveInvoiceDialog.show(target);
+                }
+            };
+            add(buttonApproveInvoiceOrder);
+            
+            final MessageDialog paidInvoiceDialog = new MessageDialog("paidInvoiceDialog", new ResourceModel("dialog.confirmPaidInvoiceDialogTitle").getObject(),  new ResourceModel("dialog.confirmPaidInvoiceDialog").getObject()) {
+
+                @Override
+                protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                    if (buttonName.equals(ButtonName.BUTTON_YES)) {
+                        try {
+                            orderService.setInvoicePaidStatus(model.getObject(), getSecuritySession().getLoggedInUser());
+                            getFeedbackPanel().info(new ResourceModel("order.orderInvoicePaid").getObject());
+                        } catch (Exception e) {
+                            getFeedbackPanel().error(new ResourceModel("order.orderInvoicePaidNotPossible").getObject());
+                        }
+                        target.add(dataTable);
+                        getFeedbackPanel().publishWithEffects(target);
+                    }
+                }
+            };
+            add(paidInvoiceDialog);
+            AjaxFallbackLink<Order> buttonPaidInvoiceDialogOrder = new AjaxFallbackLink<Order>("buttonPaidInvoiceDialogOrder", model) {
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    paidInvoiceDialog.show(target);
+                }
+            };
+            add(buttonPaidInvoiceDialogOrder);
+            
+            
             if(model.getObject().getStatus().equals(OrderStatus.CREATED)){
                 buttonCancelOrder.setVisible(true);
                 buttonInCharge.setVisible(true);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(false);
-                buttonApproveInvoiceOrder.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INCHARGE)){
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(true);
                 buttonOrderSent.setVisible(true);
                 buttonOrderDelivered.setVisible(false);
-                buttonApproveInvoiceOrder.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.SENT)){
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(true);
                 buttonOrderDelivered.setVisible(true);
-                buttonApproveInvoiceOrder.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.DELIVERED)){
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(true);
-                buttonApproveInvoiceOrder.setVisible(true);
+                buttonCreateInvoiceOrder.setVisible(true);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
+            }
+            else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_CREATED)){
+                buttonCancelOrder.setVisible(false);
+                buttonInCharge.setVisible(false);
+                buttonOrderSent.setVisible(false);
+                buttonOrderDelivered.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(true);
+                buttonlOrderInvoice.setVisible(true);
+                buttonApproveInvoiceOrder.setVisible(true);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_APPROVED)){
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(false);
-                buttonApproveInvoiceOrder.setVisible(true);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(true);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(true);
+            }
+            else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_PAID)){
+                buttonCancelOrder.setVisible(false);
+                buttonInCharge.setVisible(false);
+                buttonOrderSent.setVisible(false);
+                buttonOrderDelivered.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
+                buttonlOrderInvoice.setVisible(true);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.CANCELLED)){
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(false);
-                buttonApproveInvoiceOrder.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
+                buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             
             User loggedInUser2 = getSecuritySession().getLoggedInUser();
@@ -699,7 +795,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(false);
-                buttonApproveInvoiceOrder.setVisible(false);
+                buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
             }
         }

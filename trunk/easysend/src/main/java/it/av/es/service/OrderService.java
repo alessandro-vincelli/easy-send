@@ -193,16 +193,45 @@ public interface OrderService {
      * @param invoiceDueDate 
      * @return
      */
-    Order setInvoiceApprovedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate);
+    Order setInvoiceApprovedStatus(Order order, User user);
     
     /**
-     * Remove this order as "InvoiceApproved" 
+     * Removes this order as "InvoiceApproved" 
      * 
      * @param order
      * @param user user is performing the action
      * @return
      */
     Order removeInvoiceApprovedStatus(Order order, User user);
+    
+    /**
+     * Sets this order as "InvoiceCreated" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @param invoiceDate
+     * @param invoiceDueDate data di pagamento prevista 
+     * @return
+     */
+    Order setInvoiceCreatedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate);
+    
+    /**
+     * Sets this order as "PaidInvoice" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order setInvoicePaidStatus(Order order, User user);
+    
+    /**
+     * Remove this order as "InvoiceCreated" 
+     * 
+     * @param order
+     * @param user user is performing the action
+     * @return
+     */
+    Order removeInvoiceCreatedStatus(Order order, User user);
     
     
     /**

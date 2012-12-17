@@ -12,7 +12,9 @@ public enum OrderStatus {
     CANCELLED,
     SENT,
     DELIVERED,
-    INVOICE_APPROVED
+    INVOICE_CREATED,
+    INVOICE_APPROVED,
+    INVOICE_PAID
 
 //    private String value;
 //
