@@ -16,6 +16,7 @@
 package it.av.es.service;
 
 import it.av.es.model.Group;
+import it.av.es.model.User;
 
 import java.util.List;
 
@@ -58,6 +59,14 @@ public interface GroupService {
      */
     Group getByID(String id);
 
+    
+    /**
+     * return the groups here the given user is admin 
+     * 
+     * @param user
+     * @return
+     */
+    List<Group> isUserAdministratorOAGroups(User user);
 
 
 }

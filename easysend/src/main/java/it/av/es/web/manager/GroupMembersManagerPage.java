@@ -28,8 +28,10 @@ public class GroupMembersManagerPage extends BasePageSimple {
     @SpringBean
     private UserService userService;
     private ListMultipleChoice<User> users;
+    private ListMultipleChoice<User> usersForAdmin;
     private DropDownChoice<Group> groups;
     private ListMultipleChoice<User> membersOf;
+    private ListMultipleChoice<User> usersAdministratorsOf;
 
     public GroupMembersManagerPage() {
         super();
@@ -44,6 +46,7 @@ public class GroupMembersManagerPage extends BasePageSimple {
             protected void onUpdate(AjaxRequestTarget target) {
                 updateUsersList();
                 membersOf.setChoices(groups.getModelObject().getMembers());
+                usersAdministratorsOf.setChoices(groups.getModelObject().getAdministrators());
                 target.add(form);
             }
         });
@@ -78,6 +81,37 @@ public class GroupMembersManagerPage extends BasePageSimple {
         form.add(removeUser);
         membersOf = new ListMultipleChoice<User>("usersMemberOf");
         form.add(membersOf);
+        
+        
+        usersForAdmin = new ListMultipleChoice<User>("usersForAdmin", userService.getAll());
+        form.add(usersForAdmin);
+        AjaxSubmitLink addAdmin = new AjaxSubmitLink("addAdmin") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                groups.getModelObject().addAllAdministrator(new ArrayList<User>(usersForAdmin.getModelObject()));
+                groups.setModelObject(groupService.save(groups.getModelObject()));
+                usersAdministratorsOf.setChoices(groups.getModelObject().getAdministrators());
+                updateUsersList();
+                target.add(form);
+            }
+        };
+        form.add(addAdmin);
+        
+        AjaxSubmitLink removeAdmin = new AjaxSubmitLink("removeAdmin") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                groups.getModelObject().removeAllAdministrator(new ArrayList<User>(usersAdministratorsOf.getModelObject()));
+                groups.setModelObject(groupService.save(groups.getModelObject()));
+                usersAdministratorsOf.setChoices(groups.getModelObject().getAdministrators());
+                updateUsersList();
+                target.add(form);
+            }
+        };
+        form.add(removeAdmin);
+        usersAdministratorsOf = new ListMultipleChoice<User>("usersAdministratorsOf");
+        form.add(usersAdministratorsOf);
       
     }
 
@@ -92,8 +126,10 @@ public class GroupMembersManagerPage extends BasePageSimple {
     }
     
     class Bean implements Serializable{
-        private List<User> usersMemberOf;
+        private List<User> usersAdministratorsOf;
         private List<User> users;
+        private List<User> usersMemberOf;
+        private List<User> usersForAdmin;
         private Group group;
 
         public Bean() {
@@ -122,6 +158,22 @@ public class GroupMembersManagerPage extends BasePageSimple {
 
         public void setUsers(List<User> users) {
             this.users = users;
+        }
+
+        public List<User> getUsersAdministratorsOf() {
+            return usersAdministratorsOf;
+        }
+
+        public void setUsersAdministratorsOf(List<User> usersAdministratorsOf) {
+            this.usersAdministratorsOf = usersAdministratorsOf;
+        }
+
+        public List<User> getUsersForAdmin() {
+            return usersForAdmin;
+        }
+
+        public void setUsersForAdmin(List<User> usersForAdmin) {
+            this.usersForAdmin = usersForAdmin;
         }
 
 

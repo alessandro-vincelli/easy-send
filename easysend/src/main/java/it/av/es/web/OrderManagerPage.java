@@ -357,6 +357,7 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("partitaIvaNumber", new Model<String>(order.getCustomer().getPartitaIvaNumber())));
             add(new Label("notesComplete").setDefaultModel(new Model<String>(orderService.getNotesForDisplay(order))));
             add(new Label("paymentType").setDefaultModel(new Model<String>(new ResourceModel(order.getPaymentType().name()).getObject())));
+            add(new Label("user").setDefaultModel(new Model<String>(order.getUser().getFirstname() + " " + order.getUser().getLastname())));
             Label invoice = new Label("invoice", new Model<String>(""));
             add(invoice.setVisible(false));
             if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED) || order.getStatus().equals(OrderStatus.INVOICE_PAID)){
