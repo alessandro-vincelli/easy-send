@@ -134,6 +134,24 @@ public class Group extends BasicEntity {
         }
     }
     
+    public void addAllAdministrator(List<User> user) {
+        if (members == null) {
+            members = new ArrayList<User>();
+        }
+        for (User user2 : user) {
+            addAdministrator(user2);
+        }
+    }
+    
+    public void removeAllAdministrator(List<User> user) {
+        if (members == null) {
+            members = new ArrayList<User>();
+        }
+        for (User user2 : user) {
+            removeAdministrator(user2);
+        }
+    }
+    
     @Override
     public String toString() {
         return getName();

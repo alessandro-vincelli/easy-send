@@ -23,6 +23,7 @@ import it.av.es.model.DeliveryDays;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
+import it.av.es.model.Group;
 import it.av.es.model.Order;
 import it.av.es.model.OrderLog;
 import it.av.es.model.OrderStatus;
@@ -32,6 +33,7 @@ import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.CustomerService;
+import it.av.es.service.GroupService;
 import it.av.es.service.OrderLogService;
 import it.av.es.service.OrderService;
 import it.av.es.service.ProductService;
@@ -82,6 +84,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     private ProjectService projectService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private GroupService groupService;
     @Autowired
     private ProductService productService;
     @Autowired
@@ -216,7 +220,18 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
 
         if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile()) || user.getUserProfile().equals(userProfileService.getProjectManagerUserProfile())) {
             //sees all the orders
-        } else {
+        }        
+        // if the user is Admin of a group, filter on the group member
+        if (!groupService.isUserAdministratorOAGroups(user).isEmpty()) {
+            List<Group> g = groupService.isUserAdministratorOAGroups(user);
+            List<User> users = new ArrayList<User>();
+            for (Group group : g) {
+                users.addAll(group.getMembers());
+            }
+            users.add(user);
+            criteria.add(Restrictions.in(Order.USER_FIELD, users));
+        }
+        else {
             // sees only his orders 
             criteria.add(Restrictions.eq(Order.USER_FIELD, user));
         }
