@@ -380,6 +380,11 @@ public class Order extends BasicEntity {
         return n;
     }
     
+    /**
+     * L'importo totale senza tasse
+     * 
+     * @return
+     */
     public BigDecimal getTotalAmount(){
         BigDecimal n = BigDecimal.ZERO;
         for (ProductOrdered p : productsOrdered) {
@@ -387,6 +392,25 @@ public class Order extends BasicEntity {
         }
         n = n.add(getShippingCost());
         return n;
+    }
+    
+    /**
+     * l'importo totale comprensivo di IVA
+     * @return
+     */
+    public BigDecimal getTotalAmountTaxIncluded(){
+        return getTotalAmount().add(getTotalTax());
+    }
+    
+    /**
+     * Calcola l'iva al 21%
+     * 
+     * @return
+     */
+    public BigDecimal getTotalTax(){
+        BigDecimal n = getTotalAmount();
+        BigDecimal decimal = n.divide(BigDecimal.valueOf(100)).multiply(BigDecimal.valueOf(21));
+        return decimal;
     }
     
     /**

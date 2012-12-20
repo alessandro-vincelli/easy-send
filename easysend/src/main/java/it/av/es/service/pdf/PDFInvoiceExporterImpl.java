@@ -285,7 +285,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
                 cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(p.getAmount()));
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 table3.addCell(cell);
-                cell = builderSmallItemLeft(" ");
+                cell = builderSmallItemLeft("21,00");
                 cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
                 cell.setBorder(Rectangle.RIGHT);
                 table3.addCell(cell);
@@ -341,26 +341,26 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table3.addCell(cell);
             
             // 2row
-//            cell = builderSmallItemLeft(" ");
-//            cell.setBorder(Rectangle.LEFT);
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom("Tasse");
-//            cell.setIndent(35);
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom("20%");
-//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom("Base Tasse\\n1222");
-//            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom(" ");
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
-//            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
-//            table3.addCell(cell);
-//            cell = builderSmallItemLeftBorderBottom(" ");
-//            cell.setBorder(Rectangle.RIGHT + Rectangle.BOTTOM);
-//            table3.addCell(cell);
+            cell = builderSmallItemLeft(" ");
+            cell.setBorder(Rectangle.LEFT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("Tasse");
+            cell.setIndent(35);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("IVA\n\n21%");
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom("Base Imponibile\n\n" + NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
+            cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(" ");
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalTax()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeftBorderBottom(" ");
+            cell.setBorder(Rectangle.RIGHT + Rectangle.BOTTOM);
+            table3.addCell(cell);
             
             
             // 3row totale generale
@@ -378,7 +378,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             cell = builderSmallItemLeft("EUR");
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
             table3.addCell(cell);
-            cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmount()));
+            cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(order.getTotalAmountTaxIncluded()));
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             table3.addCell(cell);
             cell = builderSmallItemLeft(" ");
@@ -415,8 +415,9 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
 //            tableHeader4.addCell(new Phrase("via passione 1", fontSmall));
 //            document.add(tableHeader4);
 
+            
             document.addCreationDate();
-            //document.addSubject(message.getSubject());
+            document.addSubject("Luxury Drink, Fattura n. " + order.getInvoiceNumber() + " del " + DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDate().getTime()));
             document.addCreator("EasyTrack : EuroCargo");
             //Create a PDF/A by adding XMP metadata using the document metadata 
             pdfWriter.createXmpMetadata();
