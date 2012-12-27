@@ -137,7 +137,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             cell.setPhrase(new Phrase("BIC: RICAIT3C035", fontSmall));
             table.addCell(cell);
             table.addCell(builderEmptySpanCell(2));
-            table.addCell(new Phrase("Due Date", fontSmall));
+            table.addCell(new Phrase("Pagamento Previsto", fontSmall));
             
             //5 row
             table.addCell(builderEmptySpanCell(6));
