@@ -115,25 +115,41 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             cell = builderEmptySpanCell(3);
             cell.setPhrase(new Phrase("P. IVA 07993140966", fontSmall));
             table.addCell(cell);
-            table.addCell(builderEmptySpanCell(4));
+            table.addCell(builderEmptySpanCell(3));
+            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDate().getTime()), fontSmall));
 
             
-            // 5row
+            //5 row
+            cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("COORDINATE BANCARIE:", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(4));
+            //5 row
+            cell = builderEmptySpanCell(3);
+            cell.setPhrase(new Phrase("Intestatario: LUXURY DRINKS ITALIA SRL", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(4));
+            //5 row
+            cell = builderEmptySpanCell(2);
+            cell.setPhrase(new Phrase("IBAN: IT90N0611049800000081139980", fontSmall));
+            table.addCell(cell);
+            cell = builderEmptySpanCell(2);
+            cell.setPhrase(new Phrase("BIC: RICAIT3C035", fontSmall));
+            table.addCell(cell);
+            table.addCell(builderEmptySpanCell(2));
+            table.addCell(new Phrase("Due Date", fontSmall));
+            
+            //5 row
             table.addCell(builderEmptySpanCell(6));
-            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDate().getTime()), fontSmall));
+            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDueDate().getTime()), fontSmall));
             
             // 7row
             cell = builderEmptySpanCell(7);
             cell.setPhrase(new Phrase(" ", fontSmall));
             table.addCell(cell);
             
-            // 8row
-            table.addCell(builderEmptySpanCell(6));
-            table.addCell(new Phrase("Due Date", fontSmall));
             
-            // 9row
-            table.addCell(builderEmptySpanCell(6));
-            table.addCell(new Phrase(DateUtil.SDF2SHOWDATEINVOICE.print(order.getInvoiceDueDate().getTime()), fontSmall));
+
             
             // 9+1row Numero Ordine
             table.addCell(new Phrase("Ordine n.:", fontSmall));
