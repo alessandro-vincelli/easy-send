@@ -46,6 +46,11 @@ public final class DateUtil {
      * Format yyyy-MM-dd
      */
     public static final DateTimeFormatter SDF2SIMPLEUSA = DateTimeFormat.forPattern("yyyy-MM-dd");
+    
+    /**
+     * Format yyyy
+     */
+    public static final DateTimeFormatter SDF2YEAR = DateTimeFormat.forPattern("yyyy");
 
     /**
      * Format used in the UI. dd-MM-yyyy

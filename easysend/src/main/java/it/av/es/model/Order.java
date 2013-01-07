@@ -1,7 +1,10 @@
 package it.av.es.model;
 
+import it.av.es.util.DateUtil;
+
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -546,4 +549,8 @@ public class Order extends BasicEntity {
         return buffer.toString();
     }
     
+    
+    public String getInvoiceNumberAndYear(){
+        return getInvoiceNumber().toString() + "-" + DateUtil.SDF2YEAR.print(getInvoiceDate().getTime());
+    }
 }

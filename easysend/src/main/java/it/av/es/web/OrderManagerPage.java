@@ -256,7 +256,7 @@ public class OrderManagerPage extends BasePageSimple {
             protected String getFileName() {
                 StringBuffer fileName = new StringBuffer(80);
                 fileName.append(getSecuritySession().getCurrentProject().getName());
-                fileName.append("_fattura_n_" + selectedOrder.getInvoiceNumber().toString());
+                fileName.append("_fattura_n_" + selectedOrder.getInvoiceNumberAndYear());
                 fileName.append("_data_" + DateUtil.SDF2DATE.print(selectedOrder.getInvoiceDate().getTime()));
                 fileName.append(".pdf");
                 return fileName.toString();
@@ -358,6 +358,12 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("notesComplete").setDefaultModel(new Model<String>(orderService.getNotesForDisplay(order))));
             add(new Label("paymentType").setDefaultModel(new Model<String>(new ResourceModel(order.getPaymentType().name()).getObject())));
             add(new Label("user").setDefaultModel(new Model<String>(order.getUser().getFirstname() + " " + order.getUser().getLastname())));
+            Label orderSentDate = new Label("orderSentDate", new Model<String>(""));
+            add(orderSentDate.setVisible(false));
+            if(order.getDeliveredTime() != null){
+                orderSentDate.setDefaultModelObject(DateUtil.SDF2SHOWDATE.print(order.getDeliveredTime().getTime()));
+                orderSentDate.setVisible(true);
+            }
             Label invoice = new Label("invoice", new Model<String>(""));
             add(invoice.setVisible(false));
             if(order.getStatus().equals(OrderStatus.INVOICE_CREATED) || order.getStatus().equals(OrderStatus.INVOICE_APPROVED) || order.getStatus().equals(OrderStatus.INVOICE_PAID)){
