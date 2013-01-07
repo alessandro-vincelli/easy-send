@@ -360,8 +360,8 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("user").setDefaultModel(new Model<String>(order.getUser().getFirstname() + " " + order.getUser().getLastname())));
             Label invoice = new Label("invoice", new Model<String>(""));
             add(invoice.setVisible(false));
-            if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED) || order.getStatus().equals(OrderStatus.INVOICE_PAID)){
-                invoice.setDefaultModelObject(order.getInvoiceNumber().toString());
+            if(order.getStatus().equals(OrderStatus.INVOICE_CREATED) || order.getStatus().equals(OrderStatus.INVOICE_APPROVED) || order.getStatus().equals(OrderStatus.INVOICE_PAID)){
+                invoice.setDefaultModelObject(order.getInvoiceNumberAndYear());
                 invoice.setVisible(true);    
             }
             Label invoiceDueDate = new Label("invoiceDueDate", new Model<String>(""));
