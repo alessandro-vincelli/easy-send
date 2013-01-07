@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.CompoundPropertyModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 
@@ -50,7 +51,7 @@ public class OrderInvoiceDialogPanel extends Panel {
 
         Form<OrderInvoiceDialogPanel> form =  new Form<OrderInvoiceDialogPanel>("form", new CompoundPropertyModel<OrderInvoiceDialogPanel>(this));
         container.add(form);
-        final DateField invoiceDate = new DateField("invoiceDate");
+        final DateField invoiceDate = new DateField("invoiceDate", new Model<Date>(order.getDeliveredTime()));
         invoiceDate.setRequired(true);
         form.add(invoiceDate);
         final DateField invoiceDueDate = new DateField("invoiceDueDate");

@@ -96,7 +96,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
             cell.setPhrase(new Phrase(new ResourceModel("invoice").getObject(), fontSmall));
             table.addCell(cell);
-            table.addCell(new Phrase(order.getInvoiceNumber().toString(), fontSmall));
+            table.addCell(new Phrase(order.getInvoiceNumberAndYear(), fontSmall));
             
             //third row
             cell = builderEmptySpanCell(3);
