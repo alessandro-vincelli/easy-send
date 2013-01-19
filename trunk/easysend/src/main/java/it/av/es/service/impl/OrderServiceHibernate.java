@@ -297,6 +297,26 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         });
         return dates;
     }
+    
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public List<Date> getDeliveredDates(User user, Project project) {
+        Set<Date> d = new HashSet<Date>();
+        Collection<Order> list = get(user, project, null, null, null, false, 0, 0, Order.DELIVEREDTIME_FIELD, false);
+        for (Order o : list) {
+            d.add(DateUtils.truncate(o.getDeliveredTime(), Calendar.DAY_OF_MONTH));
+        }
+        ArrayList<Date> dates = new ArrayList<Date>(d);
+        Collections.sort(dates, new Comparator<Date>() {
+            @Override
+            public int compare(Date s1, Date s2) {
+                return s2.compareTo(s1);
+            }
+        });
+        return dates;
+    }
 
     /**
      * {@inheritDoc}

@@ -39,6 +39,7 @@ public class Order extends BasicEntity {
     public static final String PROJECT_FIELD = "project";
     public static final String PRODUCTSORDERED_FIELD = "productsOrdered";
     public static final String CREATIONTIME_FIELD = "creationTime";
+    public static final String DELIVEREDTIME_FIELD = "deliveredTime";
     public static final String NOTES_FIELD = "notes";
     public static final String CUSTOMER_FIELD = "customer";
     @Deprecated
