@@ -306,7 +306,9 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         Set<Date> d = new HashSet<Date>();
         Collection<Order> list = get(user, project, null, null, null, false, 0, 0, Order.DELIVEREDTIME_FIELD, false);
         for (Order o : list) {
-            d.add(DateUtils.truncate(o.getDeliveredTime(), Calendar.DAY_OF_MONTH));
+            if(o.getDeliveredTime() != null){
+                d.add(DateUtils.truncate(o.getDeliveredTime(), Calendar.DAY_OF_MONTH));    
+            }
         }
         ArrayList<Date> dates = new ArrayList<Date>(d);
         Collections.sort(dates, new Comparator<Date>() {
