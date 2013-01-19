@@ -47,6 +47,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private User user;
     private Project project;
     private Date filterDate;
+    private Date filterDeliveredDate;
     private OrderStatus filterStatus;
     private Boolean excludeCancelledOrder;
 
@@ -57,7 +58,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         this.excludeCancelledOrder = excludeCancelledOrder;
         Injector.get().inject(this);
         setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
-        results = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, filterDeliveredDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());
     }
 
     /**
@@ -65,7 +66,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        size = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
+        size = orderService.get(user, project, filterDate, filterDeliveredDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
         return size;
 
     }
@@ -88,8 +89,16 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, filterDeliveredDate, filterStatus, excludeCancelledOrder, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
+    }
+
+    public Date getFilterDeliveredDate() {
+        return filterDeliveredDate;
+    }
+
+    public void setFilterDeliveredDate(Date filterDeliveredDate) {
+        this.filterDeliveredDate = filterDeliveredDate;
     }
 
     public OrderStatus getFilterStatus() {

@@ -84,6 +84,7 @@ public class OrderManagerPage extends BasePageSimple {
     private AJAXDownload downloadInvoice;
     private Order selectedOrder = new Order();
     private DropDownChoice<OrderStatus> orderStatus;
+    private DropDownChoice<Date> orderDeliveredDates;
 
     public OrderManagerPage() {
         super();
@@ -159,6 +160,16 @@ public class OrderManagerPage extends BasePageSimple {
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 dataProvider.setFilterDate(orderDates.getModelObject());
+                target.add(dataTable);
+            }
+        });
+        
+        orderDeliveredDates = new DropDownChoice<Date>("orderDeliveredDates", new Model<Date>(), orderService.getDates(user, project));
+        add(orderDeliveredDates);
+        orderDeliveredDates.add(new OnChangeAjaxBehavior() {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                dataProvider.setFilterDeliveredDate(orderDeliveredDates.getModelObject());
                 target.add(dataTable);
             }
         });
@@ -246,7 +257,7 @@ public class OrderManagerPage extends BasePageSimple {
                         PDFExporter pdfExporter = new PDFExporterImpl();
                         try {
                             Date date = orderDates.getModelObject();
-                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, null, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, null, null, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
                             is = pdfExporter.exportOrdersList(ord, date, user, project, orderService);
                             return is;
                         } catch (Exception e) {
