@@ -215,7 +215,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public Collection<Order> get(User user, Project project, Date filterDate, OrderStatus filterStatus, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
+    public Collection<Order> get(User user, Project project, Date filterDate, Date filterDeliveredDate, OrderStatus filterStatus, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
 
         if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile()) || user.getUserProfile().equals(userProfileService.getProjectManagerUserProfile())) {
@@ -242,6 +242,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
 
         if (filterDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
+        }
+        
+        if (filterDeliveredDate != null) {
+            criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.delivered_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDeliveredDate.getTime()) + "'"));
         }
         
         if (filterStatus != null) {
@@ -280,7 +284,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public List<Date> getDates(User user, Project project) {
         Set<Date> d = new HashSet<Date>();
-        Collection<Order> list = get(user, project, null, null, false, 0, 0, Order.CREATIONTIME_FIELD, false);
+        Collection<Order> list = get(user, project, null, null, null, false, 0, 0, Order.CREATIONTIME_FIELD, false);
         for (Order o : list) {
             d.add(DateUtils.truncate(o.getCreationTime(), Calendar.DAY_OF_MONTH));
         }
@@ -335,7 +339,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      */
     @Override
     public void setAsInCharge(User user, Project project, Date date) {
-        Collection<Order> collection = get(user, project, date, null, true, 0, 0, null, true);
+        Collection<Order> collection = get(user, project, date, null, null, true, 0, 0, null, true);
         for (Order order : collection) {
             setAsInCharge(order, user);
         }
