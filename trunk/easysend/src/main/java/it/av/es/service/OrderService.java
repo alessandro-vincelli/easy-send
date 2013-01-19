@@ -53,6 +53,7 @@ public interface OrderService {
      * @param user
      * @param project
      * @param filterDate
+     * @param filterStatus
      * @param firstResult
      * @param excludeCancelled
      * @param maxResult
@@ -60,7 +61,7 @@ public interface OrderService {
      * @param isAscending
      * @return all the user profile
      */
-    Collection<Order> get(User user, Project project, Date filterDate, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending);
+    Collection<Order> get(User user, Project project, Date filterDate, OrderStatus filterStatus,  boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending);
 
     /**
      * Remove a profile

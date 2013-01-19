@@ -16,6 +16,7 @@
 package it.av.es.web.data;
 
 import it.av.es.model.Order;
+import it.av.es.model.OrderStatus;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 import it.av.es.service.OrderService;
@@ -46,6 +47,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
     private User user;
     private Project project;
     private Date filterDate;
+    private OrderStatus filterStatus;
     private Boolean excludeCancelledOrder;
 
     public OrderSortableDataProvider(User user, Project project, Boolean excludeCancelledOrder) {
@@ -55,7 +57,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
         this.excludeCancelledOrder = excludeCancelledOrder;
         Injector.get().inject(this);
         setSort(new SortParam<String>(Order.CREATIONTIME_FIELD, false));
-        results = orderService.get(user, project, filterDate, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending());
     }
 
     /**
@@ -63,7 +65,7 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
      */
     @Override
     public final long size() {
-        size = orderService.get(user, project, filterDate, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
+        size = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, 0, 0, getSort().getProperty(), getSort().isAscending()).size();
         return size;
 
     }
@@ -86,8 +88,24 @@ public class OrderSortableDataProvider extends SortableDataProvider<Order, Strin
 
     @Override
     public Iterator<? extends Order> iterator(long first, long count) {
-        results = orderService.get(user, project, filterDate, excludeCancelledOrder, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
+        results = orderService.get(user, project, filterDate, filterStatus, excludeCancelledOrder, (int) first, (int) count, getSort().getProperty(), getSort().isAscending());
         return Collections.synchronizedList(new ArrayList<Order>(results)).iterator();
+    }
+
+    public OrderStatus getFilterStatus() {
+        return filterStatus;
+    }
+
+    public void setFilterStatus(OrderStatus filterStatus) {
+        this.filterStatus = filterStatus;
+    }
+
+    public OrderService getOrderService() {
+        return orderService;
+    }
+
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
     }
 
     public Date getFilterDate() {
