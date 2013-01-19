@@ -164,7 +164,7 @@ public class OrderManagerPage extends BasePageSimple {
             }
         });
         
-        orderDeliveredDates = new DropDownChoice<Date>("orderDeliveredDates", new Model<Date>(), orderService.getDates(user, project));
+        orderDeliveredDates = new DropDownChoice<Date>("orderDeliveredDates", new Model<Date>(), orderService.getDeliveredDates(user, project));
         add(orderDeliveredDates);
         orderDeliveredDates.add(new OnChangeAjaxBehavior() {
             @Override
