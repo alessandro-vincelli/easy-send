@@ -1,5 +1,6 @@
 package it.av.es.web;
 
+import it.av.es.model.ClosingRange;
 import it.av.es.model.Order;
 import it.av.es.model.OrderStatus;
 import it.av.es.model.ProductOrdered;
@@ -23,7 +24,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +46,7 @@ import org.apache.wicket.injection.Injector;
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.DropDownChoice;
+import org.apache.wicket.markup.html.form.EnumChoiceRenderer;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.PropertyListView;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -79,6 +83,7 @@ public class OrderManagerPage extends BasePageSimple {
     private boolean excludeCancelledOrders = true;
     private AJAXDownload downloadInvoice;
     private Order selectedOrder = new Order();
+    private DropDownChoice<OrderStatus> orderStatus;
 
     public OrderManagerPage() {
         super();
@@ -156,7 +161,18 @@ public class OrderManagerPage extends BasePageSimple {
                 dataProvider.setFilterDate(orderDates.getModelObject());
                 target.add(dataTable);
             }
+        });
+        
 
+        orderStatus = new DropDownChoice<OrderStatus>("orderStatus", new Model<OrderStatus>(),Arrays.asList(OrderStatus.values()));
+        orderStatus.setChoiceRenderer(new EnumChoiceRenderer<OrderStatus>());
+        add(orderStatus);
+        orderStatus.add(new OnChangeAjaxBehavior() {
+            @Override
+            protected void onUpdate(AjaxRequestTarget target) {
+                dataProvider.setFilterStatus(orderStatus.getModelObject());
+                target.add(dataTable);
+            }
         });
         
         final MessageDialog exportAsPDFButtonDialog = new MessageDialog("exportAsPDFButtonDialog", getString("dialog.exportAsPDFButtonDialogTitle"), getString("dialog.exportAsPDFButtonDialog")) {
@@ -230,7 +246,7 @@ public class OrderManagerPage extends BasePageSimple {
                         PDFExporter pdfExporter = new PDFExporterImpl();
                         try {
                             Date date = orderDates.getModelObject();
-                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
+                            List<Order> ord = new ArrayList<Order>(orderService.get(user, project, date, null, excludeCancelledOrders, 0, 0, Order.REFERENCENUMBER_FIELD, true));
                             is = pdfExporter.exportOrdersList(ord, date, user, project, orderService);
                             return is;
                         } catch (Exception e) {
