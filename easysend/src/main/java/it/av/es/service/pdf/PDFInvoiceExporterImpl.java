@@ -269,7 +269,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table3.addCell(cell);
             cell = builderSmallHLeftBorderBottomBold("Descrizione");
             table3.addCell(cell);
-            cell = builderSmallHLeftBorderBottomBold("Quantità");
+            cell = builderSmallHLeftBorderBottomBold("Quantita'");
             table3.addCell(cell);
             cell = builderSmallHLeftBorderBottomBold("Prezzo");
             table3.addCell(cell);
@@ -307,7 +307,30 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
                 table3.addCell(cell);
                 index = index + 1;
             }
-            
+
+            // costi di spedizione
+            cell = builderSmallItemLeft(" ");
+            cell.setBorder(Rectangle.LEFT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("Costi di spedizione");
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("");
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(" ");
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(" ");
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft(NumberUtil.getItalianTwoFractionDigits().format(order.getShippingCost()));
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            table3.addCell(cell);
+            cell = builderSmallItemLeft("21,00");
+            cell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cell.setBorder(Rectangle.RIGHT);
+            table3.addCell(cell);
+            index = index + 1;
             
             // 2row sconti
 //            cell = builderSmallItemLeft(" ");
