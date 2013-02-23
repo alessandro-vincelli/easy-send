@@ -12,13 +12,15 @@ import it.av.es.model.DeliveryDays;
 import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
-import it.av.es.model.PaymentType;
+import it.av.es.model.PaymentTypePerProject;
+import it.av.es.model.Project;
 import it.av.es.service.CittaService;
 import it.av.es.service.CityService;
 import it.av.es.service.CountryService;
 import it.av.es.service.CustomerService;
 import it.av.es.service.OrderService;
 import it.av.es.service.ProvinciaService;
+import it.av.es.web.converter.PaymentTypePerProjectConverter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,6 +89,7 @@ public class CustomerPage extends BasePageSimple {
     private Customer customer = new Customer();
     private BookmarkablePageLink<String> addOrder;
     private BookmarkablePageLink<String> addOrderButton;
+    private Project currentProject;
 
     public CustomerPage(PageParameters parameters) {
         String customerId = parameters.get(CustomHttpParams.CUSTOMER_ID).toString("");
@@ -103,7 +106,7 @@ public class CustomerPage extends BasePageSimple {
     }
 
     private void init() {
-
+        currentProject = getSecuritySession().getCurrentProject();
         final CompoundPropertyModel<Customer> model = new CompoundPropertyModel<Customer>(customer);
         final Form<Customer> formNewOrder = new Form<Customer>("newCustomer", model);
         
@@ -151,7 +154,8 @@ public class CustomerPage extends BasePageSimple {
         formNewOrder.add(new TextField<String>("faxNumber"));
         formNewOrder.add(new TextField<String>("partitaIvaNumber").setRequired(true));
         formNewOrder.add(new TextField<String>("codiceFiscaleNumber"));
-        formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setRequired(true));
+//        formNewOrder.add(new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setRequired(true));
+        formNewOrder.add(new DropDownChoice<PaymentTypePerProject>("paymentTypeP", currentProject.getPaymentTypePerProjects()).setChoiceRenderer(new PaymentTypePerProjectConverter()));
         formNewOrder.add(new TextField<String>("iban"));
         formNewOrder.add(new TextField<String>("bankName"));
         formNewOrder.add(new DropDownChoice<ClosingDays>("closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setRequired(true));

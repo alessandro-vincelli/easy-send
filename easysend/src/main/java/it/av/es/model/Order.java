@@ -4,7 +4,6 @@ import it.av.es.util.DateUtil;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -102,8 +101,11 @@ public class Order extends BasicEntity {
     @Column(columnDefinition = "serial")
     @Generated(GenerationTime.INSERT)
     private Integer referenceNumber;
-    @Enumerated(EnumType.STRING)
-    private PaymentType paymentType;
+    //@Enumerated(EnumType.STRING)
+    //private PaymentType paymentType;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "payment_type_fk")
+    private PaymentTypePerProject paymentTypeP;
     /**
      * % of discount for prePayment, applied From parent Project
      */
@@ -168,7 +170,7 @@ public class Order extends BasicEntity {
 
     public void setCustomer(Customer customer) {
         this.customer = customer;
-        setPaymentType(customer.getPaymentType());
+        setPaymentTypeP(customer.getPaymentTypeP());
     }
 
     public void addProductOrdered(ProductOrdered productOrdered) {
@@ -264,20 +266,12 @@ public class Order extends BasicEntity {
         this.isInCharge = isInCharge;
     }
 
-    public PaymentType getPaymentType() {
-        return paymentType;
-    }
-
     public Address getShippingAddress() {
         return shippingAddress;
     }
 
     public void setShippingAddress(Address shippingAddress) {
         this.shippingAddress = shippingAddress;
-    }
-
-    public void setPaymentType(PaymentType paymentType) {
-        this.paymentType = paymentType;
     }
 
     public Date getDeliveryTimeRequired() {
@@ -346,6 +340,14 @@ public class Order extends BasicEntity {
 
     public void setInvoice(byte[] invoice) {
         this.invoice = invoice;
+    }
+
+    public PaymentTypePerProject getPaymentTypeP() {
+        return paymentTypeP;
+    }
+
+    public void setPaymentTypeP(PaymentTypePerProject paymentTypeP) {
+        this.paymentTypeP = paymentTypeP;
     }
 
     public void setDeliveredTime(Date deliveredTime) {
@@ -475,19 +477,7 @@ public class Order extends BasicEntity {
         }
         return false;
     }
-    
-    /**
-     * return true if the order permits a pre payment discount
-     * 
-     * @return
-     */
-    public boolean isPrePaymentDiscountApplicable(){
-        if (this.getPaymentType().equals(PaymentType.PREPAYMENT) && this.getProject().getPrePaymentDiscount() > 0) {
-            return true;
-        }
-        return false;
-    }
-    
+        
     /**
      * return true if the order permits a free shipping cost
      * 

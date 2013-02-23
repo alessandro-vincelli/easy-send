@@ -15,12 +15,12 @@
  */
 package it.av.es.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import it.av.es.model.Group;
 import it.av.es.model.User;
 import it.av.es.service.GroupService;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;

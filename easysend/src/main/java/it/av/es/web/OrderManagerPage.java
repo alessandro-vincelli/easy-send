@@ -1,6 +1,5 @@
 package it.av.es.web;
 
-import it.av.es.model.ClosingRange;
 import it.av.es.model.Order;
 import it.av.es.model.OrderStatus;
 import it.av.es.model.ProductOrdered;
@@ -26,7 +25,6 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -383,7 +381,7 @@ public class OrderManagerPage extends BasePageSimple {
             add(new Label("shippingAddress", new Model<String>(order.getCustomerAddressForDisplay())));
             add(new Label("partitaIvaNumber", new Model<String>(order.getCustomer().getPartitaIvaNumber())));
             add(new Label("notesComplete").setDefaultModel(new Model<String>(orderService.getNotesForDisplay(order))));
-            add(new Label("paymentType").setDefaultModel(new Model<String>(new ResourceModel(order.getPaymentType().name()).getObject())));
+            add(new Label("paymentType").setDefaultModel(new Model<String>(order.getPaymentTypeP().getName())));
             add(new Label("user").setDefaultModel(new Model<String>(order.getUser().getFirstname() + " " + order.getUser().getLastname())));
             Label orderSentDate = new Label("orderSentDate", new Model<String>(""));
             add(orderSentDate.setVisible(false));

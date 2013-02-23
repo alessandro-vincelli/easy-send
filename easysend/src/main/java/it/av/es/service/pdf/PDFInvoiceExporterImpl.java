@@ -245,7 +245,7 @@ public class PDFInvoiceExporterImpl implements PDFInvoiceExporter {
             table2.addCell(cell);
             cell = builderSmallHCenterBorderBottom(DateUtil.SDF2SHOWDATEINVOICE.print(order.getCreationTime().getTime()));
             table2.addCell(cell);
-            cell = builderSmallHCenterBorderBottom(new ResourceModel(order.getPaymentType().name()).getObject());
+            cell = builderSmallHCenterBorderBottom(order.getPaymentTypeP().getName());
             table2.addCell(cell);
             cell = builderSmallHCenterBorderBottom("1/1");
             cell.setBorder(Rectangle.RIGHT +  Rectangle.BOTTOM);
