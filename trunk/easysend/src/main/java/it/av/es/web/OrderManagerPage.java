@@ -829,6 +829,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonOrderDelivered.setVisible(false);
                 buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
+                buttonApproveInvoiceOrder.setVisible(false);
             }
         }
 
