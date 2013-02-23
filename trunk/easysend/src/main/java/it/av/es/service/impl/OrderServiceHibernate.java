@@ -202,10 +202,10 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         }
         ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
         //apply discount if isPrepayment
-        if (order.isPrePaymentDiscountApplicable()) {
-            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getProject().getPrePaymentDiscount())));
+        if (order.getPaymentTypeP().getDiscount() > 0) {
+            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getPaymentTypeP().getDiscount())));
             ordered.setAmount(ordered.getAmount().subtract(discount));
-            percentDiscount = percentDiscount + order.getProject().getPrePaymentDiscount();
+            percentDiscount = percentDiscount + order.getPaymentTypeP().getDiscount();
         }
         ordered.setDiscount(percentDiscount);
         return ordered;

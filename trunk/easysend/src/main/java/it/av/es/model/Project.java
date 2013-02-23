@@ -2,6 +2,7 @@ package it.av.es.model;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.CascadeType;
@@ -38,6 +39,9 @@ public class Project extends BasicEntity {
     @OneToMany(fetch = FetchType.EAGER)
     @Fetch(FetchMode.SUBSELECT)
     private Set<Product> products;
+    @OneToMany(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SUBSELECT)
+    private List<PaymentTypePerProject> paymentTypePerProjects;
     /**
      * % of discount for prePayment
      */
@@ -134,6 +138,14 @@ public class Project extends BasicEntity {
 
     public void setNumberOfItemsPerFreeProduct(Integer numberOfItemsPerFreeProduct) {
         this.numberOfItemsPerFreeProduct = numberOfItemsPerFreeProduct;
+    }
+
+    public List<PaymentTypePerProject> getPaymentTypePerProjects() {
+        return paymentTypePerProjects;
+    }
+
+    public void setPaymentTypePerProjects(List<PaymentTypePerProject> paymentTypePerProjects) {
+        this.paymentTypePerProjects = paymentTypePerProjects;
     }
 
 }

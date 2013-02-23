@@ -13,7 +13,7 @@ import it.av.es.model.DeliveryType;
 import it.av.es.model.DeliveryVehicle;
 import it.av.es.model.DeploingType;
 import it.av.es.model.Order;
-import it.av.es.model.PaymentType;
+import it.av.es.model.PaymentTypePerProject;
 import it.av.es.model.Product;
 import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
@@ -25,6 +25,7 @@ import it.av.es.service.OrderService;
 import it.av.es.util.DateUtil;
 import it.av.es.web.component.ButtonName;
 import it.av.es.web.component.MessageDialog;
+import it.av.es.web.converter.PaymentTypePerProjectConverter;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -160,7 +161,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
         step1.add(new Label("customer.faxNumber"));
         step1.add(new Label("customer.partitaIvaNumber"));
         step1.add(new Label("customer.codiceFiscaleNumber"));
-        step1.add(new DropDownChoice<PaymentType>("customer.paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>()).setEnabled(false));
+        step1.add(new DropDownChoice<PaymentTypePerProject>("customer.paymentTypeP", currentProject.getPaymentTypePerProjects()).setChoiceRenderer(new PaymentTypePerProjectConverter()).setEnabled(false));
         step1.add(new Label("customer.iban"));
         step1.add(new Label("customer.bankName"));
         step1.add(new DropDownChoice<ClosingDays>("customer.closingDay", Arrays.asList(ClosingDays.values())).setChoiceRenderer(new EnumChoiceRenderer<ClosingDays>()).setEnabled(false));
@@ -316,27 +317,23 @@ public class PlaceNewOrderPage extends BasePageSimple {
         productsOrderedContanier.add(new TextField<BigDecimal>("totalAmount", BigDecimal.class).setEnabled(false));
         productsOrderedContanier.add(new TextField<BigDecimal>("shippingCost", BigDecimal.class).setEnabled(false));
         step3.add(new TextArea<String>("notes"));
-        AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
-        step3.add(paymentType.setRequired(true));
+        //AbstractChoice<PaymentType,PaymentType> paymentType = new DropDownChoice<PaymentType>("paymentType", Arrays.asList(PaymentType.values())).setChoiceRenderer(new EnumChoiceRenderer<PaymentType>());
+        AbstractChoice<PaymentTypePerProject,PaymentTypePerProject> paymentTypeP = new DropDownChoice<PaymentTypePerProject>("paymentTypeP", currentProject.getPaymentTypePerProjects()).setChoiceRenderer(new PaymentTypePerProjectConverter());
+        step3.add(paymentTypeP.setRequired(true));
 
-        paymentType.add(new OnChangeAjaxBehavior() {
+        paymentTypeP.add(new OnChangeAjaxBehavior() {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
                 Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
                 order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
                 formNewOrder.setModelObject(order);
-                if(formNewOrder.getModel().getObject().getPaymentType().equals(PaymentType.PREPAYMENT)){
-                    getFeedbackPanel().info("Applicato Sconto del 5% per pagamento anticipato.");                    
+                if(formNewOrder.getModel().getObject().getPaymentTypeP().getDiscount() > 0){
+                    getFeedbackPanel().info(getString("order.info.paymentTypeDiscountApplied", new Model<Order>(formNewOrder.getModelObject())));
                 }
-                else{
-                    getFeedbackPanel().info("Rimosso Sconto del 5% per pagamento anticipato.");
-                }
-
                 target.add(formNewOrder);
                 getFeedbackPanel().publishWithEffects(target);
             }
-
         });
         
         step3.add(new DateField("deliveryTimeRequired"));
@@ -351,9 +348,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
             @Override
             protected void onBeforeRender() {
                 StringBuilder builder = new StringBuilder();
-                if(formNewOrder.getModelObject().isPrePaymentDiscountApplicable()){
+                if(formNewOrder.getModelObject().getPaymentTypeP().getDiscount() > 0){
                     builder.append("- ");
-                    builder.append(getString("order.info.prepaymentDiscount", new Model<Order>(formNewOrder.getModelObject())));
+                    builder.append(getString("order.info.paymentTypeDiscount", new Model<Order>(formNewOrder.getModelObject())));
                     builder.append("\n");
                 }
                 if(formNewOrder.getModelObject().isAllowedFreeItem() && !formNewOrder.getModelObject().containsFreeOrder()){
@@ -490,7 +487,7 @@ public class PlaceNewOrderPage extends BasePageSimple {
     private void updateOrderModel(Order order) {
         order.setCustomer(customer);
         order.setShippingAddress(customer.getDefaultShippingAddresses());
-        order.setPaymentType(customer.getPaymentType());
+        order.setPaymentTypeP(customer.getPaymentTypeP());
         order.setNotes(customer.getDeliveryNote());
     }
     

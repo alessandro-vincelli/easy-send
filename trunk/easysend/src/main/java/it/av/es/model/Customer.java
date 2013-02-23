@@ -63,6 +63,9 @@ public class Customer extends BasicEntity {
     private String partitaIvaNumber;
     @Enumerated(EnumType.STRING)
     private PaymentType paymentType;
+    @ManyToOne(fetch=FetchType.EAGER)
+    @JoinColumn(name = "payment_type_fk")
+    private PaymentTypePerProject paymentTypeP;
     private String iban;
     private String bankName;
 
@@ -375,6 +378,14 @@ public class Customer extends BasicEntity {
 
     public void setAddresses(List<Address> addresses) {
         this.addresses = addresses;
+    }
+
+    public PaymentTypePerProject getPaymentTypeP() {
+        return paymentTypeP;
+    }
+
+    public void setPaymentTypeP(PaymentTypePerProject paymentTypeP) {
+        this.paymentTypeP = paymentTypeP;
     }
 
     public List<Address> getShippingAddresses() {
