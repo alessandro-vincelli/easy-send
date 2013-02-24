@@ -832,7 +832,6 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonApproveInvoiceOrder.setVisible(false);
             }
         }
-
     }
 
     @Override
