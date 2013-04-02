@@ -250,7 +250,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
                 throw new EasySendException("Price not available");
             }
             p.setAmount(amount.multiply(BigDecimal.valueOf(p.getNumber())));
-            //apply discount if isPrepayment
+            //apply discount if applicable
             if (o.getPaymentTypeP().getDiscount() > 0) {
                 BigDecimal discount = ((p.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(o.getPaymentTypeP().getDiscount())));
                 p.setAmount(p.getAmount().subtract(discount));
@@ -270,6 +270,18 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return o;
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order forcePriceAndDiscountAndRecalculate(Order o, BigDecimal cost, BigDecimal discountForced) {
+        for (ProductOrdered p : o.getProductsOrdered()) {
+            p.setAmount(cost.multiply(BigDecimal.valueOf(p.getNumber())));
+            p.setDiscount(discountForced.intValue());
+        }
+        return o;
+    }
+    
     /**
      * {@inheritDoc}
      */

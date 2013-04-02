@@ -14,6 +14,7 @@ import it.av.es.util.NumberUtil;
 import it.av.es.web.component.ButtonName;
 import it.av.es.web.component.MessageDialog;
 import it.av.es.web.component.OrderDeliveredDialog;
+import it.av.es.web.component.OrderForceCostDialog;
 import it.av.es.web.component.OrderInvoiceDialog;
 import it.av.es.web.data.OrderSortableDataProvider;
 import it.av.es.web.data.table.CustomAjaxFallbackDefaultDataTable;
@@ -737,7 +738,34 @@ public class OrderManagerPage extends BasePageSimple {
             add(buttonPaidInvoiceDialogOrder);
             
             
+            final OrderForceCostDialog orderForceCostDialog = new OrderForceCostDialog("orderForceCostDialog", model.getObject(), getFeedbackPanel()) {
+                @Override
+                protected void onCloseDialog(AjaxRequestTarget target, ButtonName buttonName) {
+                    target.add(dataTable);
+                    getFeedbackPanel().publishWithEffects(target);
+                }
+            };
+            add(orderForceCostDialog);
+            
+            AjaxFallbackLink<Order> buttonForceCost = new AjaxFallbackLink<Order>("buttonForceCost", model) {
+
+                @Override
+                protected void onComponentTag(ComponentTag tag) {
+                    super.onComponentTag(tag);
+                }
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    orderForceCostDialog.show(target); 
+                    getFeedbackPanel().publishWithEffects(target);
+                    //target.add(dataTable);
+                }
+            };
+            add(buttonForceCost);
+            
+            
             if(model.getObject().getStatus().equals(OrderStatus.CREATED)){
+                buttonForceCost.setVisible(true);
                 buttonCancelOrder.setVisible(true);
                 buttonInCharge.setVisible(true);
                 buttonOrderSent.setVisible(false);
@@ -748,6 +776,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INCHARGE)){
+                buttonForceCost.setVisible(true);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(true);
                 buttonOrderSent.setVisible(true);
@@ -768,6 +797,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.DELIVERED)){
+                buttonForceCost.setVisible(false);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -778,6 +808,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_CREATED)){
+                buttonForceCost.setVisible(false);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -788,6 +819,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_APPROVED)){
+                buttonForceCost.setVisible(false);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -798,6 +830,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(true);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.INVOICE_PAID)){
+                buttonForceCost.setVisible(false);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -808,6 +841,7 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonPaidInvoiceDialogOrder.setVisible(false);
             }
             else if(model.getObject().getStatus().equals(OrderStatus.CANCELLED)){
+                buttonForceCost.setVisible(false);
                 buttonCancelOrder.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
@@ -824,6 +858,7 @@ public class OrderManagerPage extends BasePageSimple {
             
             if(!operator && !pm){
                 //buttonCancelOrder.setVisible(false);
+                buttonForceCost.setVisible(false);
                 buttonInCharge.setVisible(false);
                 buttonOrderSent.setVisible(false);
                 buttonOrderDelivered.setVisible(false);

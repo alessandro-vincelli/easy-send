@@ -42,7 +42,7 @@
 		<profile>
 			<id>development</id>
 			<activation>
-				<!-- <activeByDefault>true</activeByDefault> -->
+				<activeByDefault>true</activeByDefault>
 				<property>
 					<name>env</name>
 					<value>development</value>
@@ -80,7 +80,7 @@
 		<profile>
 			<id>deployment</id>
 			<activation>
-            <activeByDefault>true</activeByDefault>
+            <!-- <activeByDefault>true</activeByDefault> -->
 				<property>
 					<name>env</name>
 					<value>deployment</value>

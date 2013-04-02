@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<wicket:panel xmlns:wicket="http://wicket.apache.org">
+	
+			<div wicket:id="container" style="font-size: 12px;">
+                <span wicket:id="feedBackPanel"  ></span>
+                <span wicket:id="message"  ></span>
+                <form wicket:id="form">
+				<!-- <span wicket:id="icon" style="float: left; margin-right: .3em;"></span> -->
+                <table style="padding: 15px; margin: 15px; height: 60px; text-align: center; width: 350px;">
+                
+                <tr>
+                <td style="text-align: left; padding-bottom: 25px;"><wicket:message key="costForced"/></td>
+                <td style="text-align: left; padding-bottom: 25px;"><input wicket:id="cost" ></input></td>
+                </tr>
+                <tr>
+                <td style="text-align: left; padding-bottom: 25px;"><wicket:message key="discountForced"/></td>
+                <td style="text-align: left; padding-bottom: 25px;"><input wicket:id="discount" ></input></td>
+                </tr>
+                <tr>
+                <td>
+                <input type="button" wicket:id="ok" class="button-green" title="" value="" wicket:message="title:button.si,value:button.si"></input>
+                </td>
+                <td>
+                <a wicket:id="cancel" class="button-green" ><wicket:message key="button.no"/></a>
+                </td>
+                </tr>
+                </table>
+                </form>
+			</div> 
+	
+</wicket:panel>
