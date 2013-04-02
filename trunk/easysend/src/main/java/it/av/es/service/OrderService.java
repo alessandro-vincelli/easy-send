@@ -46,7 +46,7 @@ public interface OrderService {
      * @return all the order
      */
     Collection<Order> getAll();
-    
+
     /**
      * Get all the user profile filtered on user and project
      * 
@@ -62,7 +62,8 @@ public interface OrderService {
      * @param isAscending
      * @return all the user profile
      */
-    Collection<Order> get(User user, Project project, Date filterDate, Date filterDeliveredDate, OrderStatus filterStatus,  boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending);
+    Collection<Order> get(User user, Project project, Date filterDate, Date filterDeliveredDate, OrderStatus filterStatus, boolean excludeCancelled, int firstResult,
+            int maxResult, String sortProperty, boolean isAscending);
 
     /**
      * Remove a profile
@@ -70,7 +71,7 @@ public interface OrderService {
      * @param order
      */
     void remove(Order order);
-    
+
     /**
      * Cancel an order
      * 
@@ -79,7 +80,7 @@ public interface OrderService {
      * 
      */
     Order cancel(Order order, User user);
-    
+
     /**
      * Return the order by id
      * 
@@ -87,7 +88,7 @@ public interface OrderService {
      * @return user with the passed email
      */
     Order getByID(String id);
-    
+
     /**
      * place a new order
      * 
@@ -97,9 +98,9 @@ public interface OrderService {
      * @return
      */
     Order placeNewOrder(Order order, Project project, User user);
-    
+
     /**
-     * Creates a {@link ProductOrdered} with correct ad data, <strong>NOT persists</strong>
+     * Creates a {@link ProductOrdered} with correct data, adds the new ProductOrdered to the Order, recalculates all the prices and discounts. <strong>NOT persists</strong>
      * 
      * @param order
      * @param product
@@ -111,13 +112,22 @@ public interface OrderService {
     ProductOrdered addProductOrdered(Order order, Product product, Project project, int numberOfProds);
 
     /**
+     * Remove a {@link ProductOrdered} from the given order, recalculates all the prices and discounts on the order.<strong>NOT persists</strong>
+     * 
+     * @param order
+     * @param productOrderedIndex position on the list of product to be removed
+     * 
+     */
+    void removeProductOrdered(Order order, int productOrderedIndex);
+
+    /**
      * 
      * @param user
      * @param project
      * @return
      */
     List<Date> getDates(User user, Project project);
-    
+
     /**
      * 
      * @param user
@@ -134,7 +144,6 @@ public interface OrderService {
      */
     Order sendNotificationNewOrder(Order order);
 
-    
     /**
      * Sets this order as in charge 
      * 
@@ -143,8 +152,7 @@ public interface OrderService {
      * @return
      */
     Order setAsInCharge(Order order, User user);
-        
-    
+
     /**
      * Remove this order as in charge 
      * 
@@ -153,7 +161,7 @@ public interface OrderService {
      * @return
      */
     Order removeInCharge(Order order, User user);
-    
+
     /**
      * Sets this order as "sent" 
      * 
@@ -162,8 +170,7 @@ public interface OrderService {
      * @return
      */
     Order setSentStatus(Order order, User user);
-        
-    
+
     /**
      * Remove this order as "sent" 
      * 
@@ -172,8 +179,7 @@ public interface OrderService {
      * @return
      */
     Order removeSentStatus(Order order, User user);
-    
-    
+
     /**
      * Sets this order as "delivered" 
      * 
@@ -183,8 +189,7 @@ public interface OrderService {
      * @return
      */
     Order setDeliveredStatus(Order order, User user, Date deliveredTime);
-        
-    
+
     /**
      * Remove this order as "delivered" 
      * 
@@ -193,7 +198,7 @@ public interface OrderService {
      * @return
      */
     Order removeDeliveredStatus(Order order, User user);
-    
+
     /**
      * Sets this order as "InvoiceApproved" 
      * 
@@ -204,7 +209,7 @@ public interface OrderService {
      * @return
      */
     Order setInvoiceApprovedStatus(Order order, User user);
-    
+
     /**
      * Removes this order as "InvoiceApproved" 
      * 
@@ -213,7 +218,7 @@ public interface OrderService {
      * @return
      */
     Order removeInvoiceApprovedStatus(Order order, User user);
-    
+
     /**
      * Sets this order as "InvoiceCreated" 
      * 
@@ -224,7 +229,7 @@ public interface OrderService {
      * @return
      */
     Order setInvoiceCreatedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate);
-    
+
     /**
      * Sets this order as "PaidInvoice" 
      * 
@@ -233,7 +238,7 @@ public interface OrderService {
      * @return
      */
     Order setInvoicePaidStatus(Order order, User user);
-    
+
     /**
      * Remove this order as "InvoiceCreated" 
      * 
@@ -242,8 +247,7 @@ public interface OrderService {
      * @return
      */
     Order removeInvoiceCreatedStatus(Order order, User user);
-    
-    
+
     /**
      * Set the OrderStatus 
      * 
@@ -272,20 +276,20 @@ public interface OrderService {
      */
     List<Product> getProducts(Order order);
 
-    /**
-     * 
-     * @param o
-     * @return
-     */
-    Order applyDiscountIfApplicable(Order o);
-
-    
-    /**
-     * 
-     * @param o
-     * @return
-     */
-    Order applyFreeShippingCostIfApplicable(Order o);
+    //    /**
+    //     * 
+    //     * @param o
+    //     * @return
+    //     */
+    //    Order applyDiscountIfApplicable(Order o);
+    //
+    //    
+    //    /**
+    //     * 
+    //     * @param o
+    //     * @return
+    //     */
+    //    Order applyFreeShippingCostIfApplicable(Order o);
 
     /**
      * 
@@ -294,9 +298,24 @@ public interface OrderService {
      */
     boolean isOrderValid(Order order);
 
-    
     String getNotesForDisplay(Order o);
 
     String getNotesForPDF(Order order);
-    
+
+    /**
+     * Force discount on existing order <b>Use with caution</b>
+     * 
+     * @param order
+     * @param discountToAppply to the order
+     * @return
+     */
+    Order modifyDiscountToOrder(Order order, int discountToAppply);
+
+    /**
+    * 
+    * @param o
+    * @return the order, product ordered with the correct costs and discount applied
+    */
+    public abstract Order calculatesCostsAndDiscount(Order o);
+
 }
