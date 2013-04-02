@@ -172,42 +172,50 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         ordered.setProduct(product);
         ordered.setNumber(numberOfProds);
         ordered.setAmount(amount);
-        if (product.getFree()) {
-            if (order.isAllowedFreeItem()) {
-                ordered.setNumber(1);
-                return ordered;
-            }
-        }
-        Currency currency;
-        int percentDiscount = 0;
-        List<Price> prices = product.getPrices();
-        //calculates  the price and apply discount 
-        
-        // per il cacolo somma tutti i prodotti dello stesso tipo
-        int productAllOrder = order.getTotalProductforGivenProduct(product);
-        // se il prodoptto appartiene ad una famigliam considera anche i prodotti di quella famiglia
-        if(product.getProductFamily() != null){
-            productAllOrder = order.getTotalProductforGivenProductFamily(product.getProductFamily());    
-        }
+//        if (product.getFree()) {
+//            if (order.isAllowedFreeItem()) {
+//                ordered.setNumber(1);
+//                return ordered;
+//            }
+//        }
+//        Currency currency;
+//        int percentDiscount = 0;
+//        List<Price> prices = product.getPrices();
+//        //calculates  the price and apply discount 
+//
+//        // per il cacolo somma tutti i prodotti dello stesso tipo, aggiungendo nel conto il prodotto che stiamo aggiungendo
+//        int productAllOrder = order.getTotalProductforGivenProduct(product) + 1;
+//        // se il prodoptto appartiene ad una famigliam considera anche i prodotti di quella famiglia, aggiungendo nel conto il prodotto che stiamo aggiungendo
+//        if (product.getProductFamily() != null) {
+//            productAllOrder = order.getTotalProductforGivenProductFamily(product.getProductFamily()) + 1;
+//        }
+//
+//        for (Price price : prices) {
+//            if (productAllOrder >= price.getFromNumber() && productAllOrder <= price.getToNumber()) {
+//                amount = price.getAmount();
+//                currency = price.getCurrency();
+//                percentDiscount = price.getPercentDiscount();
+//            }
+//        }
+//        if (amount == BigDecimal.ZERO) {
+//            throw new EasySendException("Price not available");
+//        }
+//        ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
+//        //apply discount if isPrepayment
+//        if (order.getPaymentTypeP().getDiscount() > 0) {
+//            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getPaymentTypeP().getDiscount())));
+//            ordered.setAmount(ordered.getAmount().subtract(discount));
+//            percentDiscount = percentDiscount + order.getPaymentTypeP().getDiscount();
+//        }
+//        ordered.setDiscount(percentDiscount);
 
-        for (Price price : prices) {
-            if (productAllOrder >= price.getFromNumber() && productAllOrder <= price.getToNumber()) {
-                amount = price.getAmount();
-                currency = price.getCurrency();
-                percentDiscount = price.getPercentDiscount();
-            }
-        }
-        if (amount == BigDecimal.ZERO) {
-            throw new EasySendException("Price not available");
-        }
-        ordered.setAmount(amount.multiply(BigDecimal.valueOf(numberOfProds)));
-        //apply discount if isPrepayment
-        if (order.getPaymentTypeP().getDiscount() > 0) {
-            BigDecimal discount = ((ordered.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(order.getPaymentTypeP().getDiscount())));
-            ordered.setAmount(ordered.getAmount().subtract(discount));
-            percentDiscount = percentDiscount + order.getPaymentTypeP().getDiscount();
-        }
-        ordered.setDiscount(percentDiscount);
+        //add the productOrdered to the order
+        order.getProductsOrdered().add(ordered);
+        calculatesCostsAndDiscount(order);
+        //apply Discounts If Applicable
+        //applyDiscountIfApplicable(order);
+        //apply FreeShippingCost If Applicable
+        applyFreeShippingCostIfApplicable(order);
         return ordered;
     }
 
@@ -215,12 +223,65 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
      * {@inheritDoc}
      */
     @Override
-    public Collection<Order> get(User user, Project project, Date filterDate, Date filterDeliveredDate, OrderStatus filterStatus, boolean excludeCancelled, int firstResult, int maxResult, String sortProperty, boolean isAscending) {
+    public Order calculatesCostsAndDiscount(Order o) {
+        //ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(o.getProductsOrdered().size());
+        for (ProductOrdered p : o.getProductsOrdered()) {
+            BigDecimal amount = new BigDecimal(0);
+            Currency currency;
+            int percentDiscount = 0;
+            List<Price> prices = p.getProduct().getPrices();
+            //calculates  the price and apply discount 
+
+            // per il cacolo somma tutti i prodotti dello stesso tipo
+            int productAllOrder = o.getTotalProductforGivenProduct(p.getProduct());
+            // se il prodoptto appartiene ad una famigliam considera anche i prodotti di quella famiglia
+            if (p.getProduct().getProductFamily() != null) {
+                productAllOrder = o.getTotalProductforGivenProductFamily(p.getProduct().getProductFamily());
+            }
+
+            for (Price price : prices) {
+                if (productAllOrder >= price.getFromNumber() && productAllOrder <= price.getToNumber()) {
+                    amount = price.getAmount();
+                    currency = price.getCurrency();
+                    percentDiscount = price.getPercentDiscount();
+                }
+            }
+            if (amount == BigDecimal.ZERO) {
+                throw new EasySendException("Price not available");
+            }
+            p.setAmount(amount.multiply(BigDecimal.valueOf(p.getNumber())));
+            //apply discount if isPrepayment
+            if (o.getPaymentTypeP().getDiscount() > 0) {
+                BigDecimal discount = ((p.getAmount().divide(BigDecimal.valueOf(100))).multiply(BigDecimal.valueOf(o.getPaymentTypeP().getDiscount())));
+                p.setAmount(p.getAmount().subtract(discount));
+                percentDiscount = percentDiscount + o.getPaymentTypeP().getDiscount();
+            }
+            p.setDiscount(percentDiscount);
+
+            //add the productOrdered to the order
+//            o.getProductsOrdered().add(p);
+            //apply Discounts If Applicable
+            //applyDiscountIfApplicable(order);
+            //apply FreeShippingCost If Applicable
+            
+        }
+        //o.setProductsOrdered(newList);
+        //applyFreeShippingCostIfApplicable(o);
+        return o;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Collection<Order> get(User user, Project project, Date filterDate, Date filterDeliveredDate, OrderStatus filterStatus, boolean excludeCancelled, int firstResult,
+            int maxResult, String sortProperty, boolean isAscending) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
 
-        if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile()) || user.getUserProfile().equals(userProfileService.getProjectManagerUserProfile())) {
+        if (user.getUserProfile().equals(userProfileService.getAdminUserProfile()) || user.getUserProfile().equals(userProfileService.getOperatorUserProfile())
+                || user.getUserProfile().equals(userProfileService.getProjectManagerUserProfile())) {
             //sees all the orders
-        }        
+        }
         // if the user is Admin of a group, filter on the group member
         else if (!groupService.isUserAdministratorOAGroups(user).isEmpty()) {
             List<Group> g = groupService.isUserAdministratorOAGroups(user);
@@ -230,8 +291,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
             }
             users.add(user);
             criteria.add(Restrictions.in(Order.USER_FIELD, users));
-        }
-        else {
+        } else {
             // sees only his orders 
             criteria.add(Restrictions.eq(Order.USER_FIELD, user));
         }
@@ -243,11 +303,11 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         if (filterDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDate.getTime()) + "'"));
         }
-        
+
         if (filterDeliveredDate != null) {
             criteria.add(Restrictions.sqlRestriction("date_trunc('day', this_.delivered_time) = '" + DateUtil.SDF2SIMPLEUSA.print(filterDeliveredDate.getTime()) + "'"));
         }
-        
+
         if (filterStatus != null) {
             criteria.add(Restrictions.eq(Order.STATUS_FIELD, filterStatus));
         }
@@ -297,7 +357,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         });
         return dates;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -306,8 +366,8 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         Set<Date> d = new HashSet<Date>();
         Collection<Order> list = get(user, project, null, null, null, false, 0, 0, Order.DELIVEREDTIME_FIELD, false);
         for (Order o : list) {
-            if(o.getDeliveredTime() != null){
-                d.add(DateUtils.truncate(o.getDeliveredTime(), Calendar.DAY_OF_MONTH));    
+            if (o.getDeliveredTime() != null) {
+                d.add(DateUtils.truncate(o.getDeliveredTime(), Calendar.DAY_OF_MONTH));
             }
         }
         ArrayList<Date> dates = new ArrayList<Date>(d);
@@ -394,24 +454,16 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return new ArrayList<Product>(ps);
     }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Order applyDiscountIfApplicable(Order o) {
-        ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(o.getProductsOrdered().size());
-        for (ProductOrdered p : o.getProductsOrdered()) {
-            newList.add(addProductOrdered(o, p.getProduct(), o.getProject(), p.getNumber()));
-        }
-        o.setProductsOrdered(newList);
-        return o;
-    }
+    //    private Order applyDiscountIfApplicable(Order o) {
+    //        ArrayList<ProductOrdered> newList = new ArrayList<ProductOrdered>(o.getProductsOrdered().size());
+    //        for (ProductOrdered p : o.getProductsOrdered()) {
+    //            newList.add(addProductOrdered(o, p.getProduct(), o.getProject(), p.getNumber()));
+    //        }
+    //        o.setProductsOrdered(newList);
+    //        return o;
+    //    }
 
-    /**
-     * {@inheritDoc}
-     */
-    @Override
-    public Order applyFreeShippingCostIfApplicable(Order o) {
+    private Order applyFreeShippingCostIfApplicable(Order o) {
         if (o.isFreeShippingCostApplicable()) {
             o.setShippingCost(BigDecimal.ZERO);
         } else {
@@ -428,34 +480,34 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         StringBuilder buffer = new StringBuilder();
         buffer.append("total: ");
         buffer.append(NumberUtil.italianCurrency.format(order.getTotalAmount()));
-        if(StringUtils.isNotBlank(order.getNotes())){
+        if (StringUtils.isNotBlank(order.getNotes())) {
             buffer.append("\n");
             buffer.append(order.getNotes());
         }
         ClosingDays closingDay = order.getCustomer().getClosingDay();
-        if(closingDay != null){
+        if (closingDay != null) {
             buffer.append("\n");
             buffer.append("closed: ");
             ResourceModel resourceModel = new ResourceModel(closingDay.getClass().getSimpleName() + "." + closingDay.name());
             buffer.append(resourceModel.getObject());
             ClosingRange closingRange = order.getCustomer().getClosingRange();
-            if(closingRange != null){
+            if (closingRange != null) {
                 buffer.append(" ");
-                buffer.append(new ResourceModel(closingRange.getClass().getSimpleName() + "." + closingRange.name()).getObject());                
+                buffer.append(new ResourceModel(closingRange.getClass().getSimpleName() + "." + closingRange.name()).getObject());
             }
         }
-        if(order.getDeliveryTimeRequired() != null){
+        if (order.getDeliveryTimeRequired() != null) {
             buffer.append("\n");
             buffer.append("cons. tass.: ");
             buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
         }
-        if(order.getCustomer().getSignboard() != null){
+        if (order.getCustomer().getSignboard() != null) {
             buffer.append("\n");
             buffer.append(new ResourceModel("customer.signboard").getObject());
             buffer.append(": ");
             buffer.append(order.getCustomer().getSignboard());
         }
-        if(!order.getCustomer().getDeliveryDays().isEmpty()){
+        if (!order.getCustomer().getDeliveryDays().isEmpty()) {
             buffer.append("\n");
             buffer.append("consegna: ");
             for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
@@ -463,22 +515,22 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
                 buffer.append(" ");
             }
         }
-        if(order.getCustomer().isPhoneForewarning()){
+        if (order.getCustomer().isPhoneForewarning()) {
             buffer.append("\n");
             buffer.append("preavv. tel: ");
-            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber())?order.getShippingAddress().getPhoneNumber():"");
+            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber()) ? order.getShippingAddress().getPhoneNumber() : "");
         }
-        if(order.getCustomer().getDeployngType() != null){
+        if (order.getCustomer().getDeployngType() != null) {
             buffer.append("\n");
             DeploingType type = order.getCustomer().getDeployngType();
             buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
-        if(order.getCustomer().getDeliveryVehicle() != null){
+        if (order.getCustomer().getDeliveryVehicle() != null) {
             buffer.append("\n");
             DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
             buffer.append(new ResourceModel(dv.getClass().getSimpleName() + "." + dv.name()).getObject());
         }
-        if(order.getCustomer().getDeliveryType() != null){
+        if (order.getCustomer().getDeliveryType() != null) {
             buffer.append("\n");
             DeliveryType type = order.getCustomer().getDeliveryType();
             buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
@@ -486,69 +538,68 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         buffer.append("\n");
         return buffer.toString();
     }
-    
-    
+
     /**
      * {@inheritDoc}
      */
     @Override
     public String getNotesForPDF(Order order) {
         StringBuilder buffer = new StringBuilder();
-        if(StringUtils.isNotBlank(order.getNotes())){
+        if (StringUtils.isNotBlank(order.getNotes())) {
             buffer.append("\n");
             buffer.append("Note: ");
             buffer.append(order.getNotes());
         }
         ClosingDays closingDay = order.getCustomer().getClosingDay();
-        if(closingDay != null){
+        if (closingDay != null) {
             buffer.append("\n");
             buffer.append("chiuso: ");
             buffer.append(new ResourceModel(closingDay.getClass().getSimpleName() + "." + closingDay.name()).getObject());
             ClosingRange closingRange = order.getCustomer().getClosingRange();
-            if(closingRange != null){
+            if (closingRange != null) {
                 buffer.append(" ");
                 buffer.append(new ResourceModel(closingRange.getClass().getSimpleName() + "." + closingRange.name()).getObject());
             }
         }
-        if(order.getDeliveryTimeRequired() != null){
+        if (order.getDeliveryTimeRequired() != null) {
             buffer.append("\n");
             buffer.append("data rich: ");
-            if(order.getDeliveryTimeRequiredType() != null){
+            if (order.getDeliveryTimeRequiredType() != null) {
                 buffer.append(new ResourceModel(order.getDeliveryTimeRequiredType().name()).getObject());
             }
             buffer.append(DateUtil.SDF2SHOWDATE.print(order.getDeliveryTimeRequired().getTime()));
         }
-        if(order.getCustomer().getSignboard() != null){
+        if (order.getCustomer().getSignboard() != null) {
             buffer.append("\n");
             buffer.append(new ResourceModel("customer.signboard").getObject());
             buffer.append(": ");
             buffer.append(order.getCustomer().getSignboard());
         }
-        if(!order.getCustomer().getDeliveryDays().isEmpty()){
+        if (!order.getCustomer().getDeliveryDays().isEmpty()) {
             buffer.append("\n");
             buffer.append("consegna: ");
             for (DeliveryDays d : order.getCustomer().getDeliveryDays()) {
                 buffer.append(new ResourceModel(d.name()).getObject());
             }
         }
-        if(order.getCustomer().isPhoneForewarning()){
+        if (order.getCustomer().isPhoneForewarning()) {
             buffer.append("\n");
             buffer.append("preavv. tel: ");
-            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber())?order.getShippingAddress().getPhoneNumber():"");
+            buffer.append(StringUtils.isNotBlank(order.getShippingAddress().getPhoneNumber()) ? order.getShippingAddress().getPhoneNumber() : "");
         }
-        if(order.getCustomer().getDeployngType() != null){
+        if (order.getCustomer().getDeployngType() != null) {
             buffer.append("\n");
             buffer.append("scarico: ");
             DeploingType type = order.getCustomer().getDeployngType();
             buffer.append(new ResourceModel(type.getClass().getSimpleName() + "." + type.name()).getObject());
         }
-        if(order.getCustomer().getDeliveryVehicle() != null){
+        if (order.getCustomer().getDeliveryVehicle() != null) {
             buffer.append("\n");
             buffer.append("mezzo: ");
             DeliveryVehicle dv = order.getCustomer().getDeliveryVehicle();
             buffer.append(new ResourceModel(dv.getClass().getSimpleName() + "." + dv.name()).getObject());
         }
-        if(order.getCustomer().getDeliveryType() != null){
+        if (order.getCustomer().getDeliveryType() != null) {
             buffer.append("\n");
             buffer.append("cons: ");
             DeliveryType type = order.getCustomer().getDeliveryType();
@@ -611,19 +662,20 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
         return setStatus(OrderStatus.SENT, order, user);
     }
 
-    private int getLastInvoiceNumber(Project project, Date invoiceDate){
+    private int getLastInvoiceNumber(Project project, Date invoiceDate) {
         Criteria criteria = getHibernateSession().createCriteria(getPersistentClass());
-        criteria.add(Restrictions.sqlRestriction("date_trunc('year', this_.creation_time) = '" + DateUtil.SDF2SIMPLEUSA.print(DateUtils.truncate(invoiceDate, Calendar.YEAR).getTime()) + "'"));
+        criteria.add(Restrictions.sqlRestriction("date_trunc('year', this_.creation_time) = '"
+                + DateUtil.SDF2SIMPLEUSA.print(DateUtils.truncate(invoiceDate, Calendar.YEAR).getTime()) + "'"));
         criteria.add(Restrictions.isNotNull("invoiceNumber"));
         criteria.addOrder(org.hibernate.criterion.Order.desc("invoiceNumber"));
         List<Order> list = criteria.list();
         int lastInvoiceNumber = 0;
-        if(list.size() > 0){
+        if (list.size() > 0) {
             lastInvoiceNumber = list.get(0).getInvoiceNumber();
         }
         return lastInvoiceNumber;
     }
-    
+
     /**
      * {@inheritDoc}
      */
@@ -639,7 +691,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public Order setInvoiceApprovedStatus(Order order, User user) {
         order = getByID(order.getId());
-        if(order.getStatus().equals(OrderStatus.INVOICE_APPROVED)){
+        if (order.getStatus().equals(OrderStatus.INVOICE_APPROVED)) {
             throw new EasySendException("Invoice already approved");
         }
         order = save(order);
@@ -653,7 +705,7 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public Order setInvoiceCreatedStatus(Order order, User user, Date invoiceDate, Date invoiceDueDate) {
         order = getByID(order.getId());
-        if(order.getInvoiceNumber() != null || order.getInvoiceDate() != null || order.getStatus().equals(OrderStatus.INVOICE_CREATED) || order.getInvoice() != null){
+        if (order.getInvoiceNumber() != null || order.getInvoiceDate() != null || order.getStatus().equals(OrderStatus.INVOICE_CREATED) || order.getInvoice() != null) {
             throw new EasySendException("Invoice already created");
         }
         try {
@@ -690,5 +742,30 @@ public class OrderServiceHibernate extends ApplicationServiceHibernate<Order> im
     @Override
     public Order setInvoicePaidStatus(Order order, User user) {
         return setStatus(OrderStatus.INVOICE_PAID, order, user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public Order modifyDiscountToOrder(Order order, int discountToAppply) {
+        //        for (ProductOrdered po : order.getProductsOrdered()) {
+        //          placeNewOrder(order, project, user)
+        //          if(po.getDiscount()){
+        //              
+        //          }
+        //        };
+        return null;
+    }
+
+    @Override
+    public void removeProductOrdered(Order order, int productOrderedIndex) {
+        //add the productOrdered to the order
+        order.getProductsOrdered().remove(productOrderedIndex);
+        calculatesCostsAndDiscount(order);
+        //apply Discounts If Applicable
+        //applyDiscountIfApplicable(order);
+        //apply FreeShippingCost If Applicable
+        applyFreeShippingCostIfApplicable(order);
     }
 }

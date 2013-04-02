@@ -246,12 +246,12 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     @Override
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         super.onSubmit(target, form);
-                        formNewOrder.getModelObject().getProductsOrdered().remove(item.getIndex());
-                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
-                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
-                        formNewOrder.setModelObject(order);
+                        orderService.removeProductOrdered(formNewOrder.getModelObject(), item.getIndex());
+//                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
+//                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                        //formNewOrder.setModelObject(order);
                         productToAdd.setChoices(orderService.getProducts(formNewOrder.getModelObject()));
-                        if(!orderService.isOrderValid(order)){
+                        if(!orderService.isOrderValid(formNewOrder.getModelObject())){
                             getFeedbackPanel().warn(getString("order.message.orderNotValid"));
                         }
                         target.add(productToAdd);
@@ -281,11 +281,11 @@ public class PlaceNewOrderPage extends BasePageSimple {
                     ProductOrdered ordered;
                     try {
                         ordered = orderService.addProductOrdered(model.getObject(), product, currentProject, numberToAdd);
-                        formNewOrder.getModelObject().addProductOrdered(ordered);
-                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
-                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
-                        formNewOrder.setModelObject(order);
-                        if(!orderService.isOrderValid(order)){
+                        //formNewOrder.getModelObject().addProductOrdered(ordered);
+//                        Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
+//                        order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                        formNewOrder.setModelObject(model.getObject());
+                        if(!orderService.isOrderValid(model.getObject())){
                             getFeedbackPanel().warn(getString("order.message.orderNotValid"));
                         }
                         productToAdd.setChoices(orderService.getProducts(formNewOrder.getModelObject()));
@@ -325,9 +325,9 @@ public class PlaceNewOrderPage extends BasePageSimple {
             
             @Override
             protected void onUpdate(AjaxRequestTarget target) {
-                Order order = orderService.applyDiscountIfApplicable(formNewOrder.getModelObject());
-                order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
-                formNewOrder.setModelObject(order);
+                orderService.calculatesCostsAndDiscount(formNewOrder.getModelObject());
+//                order = orderService.applyFreeShippingCostIfApplicable(formNewOrder.getModelObject());
+                //formNewOrder.setModelObject(order);
                 if(formNewOrder.getModel().getObject().getPaymentTypeP().getDiscount() > 0){
                     getFeedbackPanel().info(getString("order.info.paymentTypeDiscountApplied", new Model<Order>(formNewOrder.getModelObject())));
                 }
