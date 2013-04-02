@@ -22,6 +22,7 @@ import it.av.es.model.ProductOrdered;
 import it.av.es.model.Project;
 import it.av.es.model.User;
 
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
@@ -317,5 +318,14 @@ public interface OrderService {
     * @return the order, product ordered with the correct costs and discount applied
     */
     public abstract Order calculatesCostsAndDiscount(Order o);
+
+    /**
+     * 
+     * @param o
+     * @param cost cost to apply
+     * @param discountForced discount to be forced
+     * @return
+     */
+    Order forcePriceAndDiscountAndRecalculate(Order o, BigDecimal cost, BigDecimal discountForced);
 
 }
