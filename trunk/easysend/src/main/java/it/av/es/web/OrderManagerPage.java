@@ -763,6 +763,15 @@ public class OrderManagerPage extends BasePageSimple {
             };
             add(buttonForceCost);
             
+            AjaxLink<Order> buttonEditOrder = new AjaxLink<Order>("buttonEditOrder", model) {
+
+                @Override
+                public void onClick(AjaxRequestTarget target) {
+                    setResponsePage(EditOrderPage.class, CustomHttpParams.createParamsForOrder(getModelObject()));
+                }
+            };
+            add(buttonEditOrder);
+            
             
             if(model.getObject().getStatus().equals(OrderStatus.CREATED)){
                 buttonForceCost.setVisible(true);
@@ -865,7 +874,9 @@ public class OrderManagerPage extends BasePageSimple {
                 buttonCreateInvoiceOrder.setVisible(false);
                 buttonlOrderInvoice.setVisible(false);
                 buttonApproveInvoiceOrder.setVisible(false);
+                buttonEditOrder.setVisible(false);
             }
+            
         }
     }
 

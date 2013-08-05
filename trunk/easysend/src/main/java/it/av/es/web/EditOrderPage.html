@@ -1,0 +1,368 @@
+<wicket:extend xmlns:wicket="http://wicket.apache.org">
+
+<!--  styled select box script version 3 --> 
+<script src="js/jquery/jquery.selectbox-0.5_style_2.js" type="text/javascript"></script>
+<script type="text/javascript">
+$(document).ready(function() {
+    $('.styledselect_pages').selectbox({ inputClass: "styledselect_pages" });
+});
+</script>
+<!-- start content-outer -->
+<div id="content-outer">
+<!-- start content -->
+<div id="content">
+
+
+<div id="page-heading"><h1><wicket:message key="pno.title"/></h1></div>
+
+
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+<tr>
+    <th rowspan="3" class="sized"><img src="images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+    <th class="topleft"></th>
+    <td id="tbl-border-top">&nbsp;</td>
+    <th class="topright"></th>
+    <th rowspan="3" class="sized"><img src="images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+</tr>
+<tr>
+    <td id="tbl-border-left"></td>
+    <td>
+    <!--  start content-table-inner -->
+    <div id="content-table-inner">
+    
+    
+    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+    <tr valign="top">
+    <td>
+    
+        <!--  start step-holder -->
+        <div id="step-holder" wicket:id="tabs">
+            <div class="step-no" wicket:id="step1-number">1</div>
+            <div class="step-dark-left" wicket:id="step1-left"><wicket:message key="pno.step1title"/></div>
+            <div class="step-dark-right" wicket:id="step1-right">&nbsp;</div>
+            <div class="step-no-off" wicket:id="step2-number">2</div>
+            <div class="step-light-left" wicket:id="step2-left"><wicket:message key="pno.step2title"/></div>
+            <div class="step-light-right" wicket:id="step2-right">&nbsp;</div>            
+            <div class="step-no-off" wicket:id="step3-number">3</div>
+            <div class="step-light-left" wicket:id="step3-left"><wicket:message key="pno.step3title"/></div>
+            <div class="step-light-right" wicket:id="step3-right">&nbsp;</div>
+            <div class="step-no-off" wicket:id="step4-number">4</div>
+            <div class="step-light-left" wicket:id="step4-left"><wicket:message key="pno.step4title"/></div>
+            <div class="step-light-round" wicket:id="step4-right">&nbsp;</div>            
+            <div class="clear"></div>
+        </div>
+        <!--  end step-holder -->
+    
+        <!-- start id-form -->
+        <form wicket:id="newOrder">
+        <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+        <tr>
+        <th valign="top"><wicket:message key="customer"/></th>
+        <td>
+        <input type="hidden" style="width: 300px;" wicket:id="customer" ></input>
+        </td>
+        <td colspan="2"><span wicket:id="pno.help.customerSelect"/></td>
+        </tr>        
+        
+        <colgroup wicket:id="step1">
+		<tr>
+			<th valign="top"><wicket:message key="customer.corporateName"/></th>
+			<td><span wicket:id="customer.corporateName"></span></td>
+            <th valign="top"><wicket:message key="customer.email"/></th>
+            <td><span wicket:id="customer.email"></span></td>
+		</tr>
+<!-- 		<tr>
+			<th valign="top"><wicket:message key="customer.address"/></th>
+			<td colspan="2"><input type="text" wicket:id="customer.address" class="inp-form" /></td>
+		</tr>
+        <tr>
+        <th valign="top"><wicket:message key="customer.city"/></th>
+            <td><input type="hidden" style="width: 300px;" wicket:id="customer.city" ></input></td>
+            <th valign="top"><wicket:message key="customer.province"/></th>
+            <td><select wicket:id="customer.province"></select></td>
+        </tr>     
+        <tr>
+            <th valign="top"><wicket:message key="customer.zipcode"/></th>
+            <td><input type="hidden" style="width: 200px;" wicket:id="customer.zipcode" ></input></td>
+            <th valign="top"><wicket:message key="customer.email"/></th>
+            <td><input type="text" wicket:id="customer.email" class="inp-form-small" /></td>
+        </tr> -->
+        <tr>
+            <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
+            <td><span wicket:id="customer.phoneNumber"></span></td>
+            <th valign="top"><wicket:message key="customer.faxNumber"/></th>
+            <td><span wicket:id="customer.faxNumber"></span></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.partitaIvaNumber"/></th>
+            <td><span wicket:id="customer.partitaIvaNumber"></span></td>
+            <th valign="top"><wicket:message key="customer.codiceFiscaleNumber"/></th>
+            <td><span wicket:id="customer.codiceFiscaleNumber"></span></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
+            <td><select wicket:id="customer.paymentTypeP"></select></td>
+            <th valign="top"><wicket:message key="customer.iban"/></th>
+            <td><span wicket:id="customer.iban"></span></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.bankName"/></th>
+            <td><span wicket:id="customer.bankName"></span></td>
+            <td></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.closingDay"/></th>
+            <td><select wicket:id="customer.closingDay" ></select>
+            <select wicket:id="customer.closingRange"></select></td>
+            <th valign="top"><wicket:message key="customer.deployngType"/>:</th>
+            <td><select wicket:id="customer.deployngType" ></select></td>
+        </tr>                     
+        <tr>
+            <th valign="top"><wicket:message key="pno.deploymentTime"/>:</th>
+            <td colspan="3">
+            mattina da:
+            <span wicket:id="customer.loadTimeAMFrom"/>
+            a
+            <span wicket:id="customer.loadTimeAMTo"/>
+            pomeriggo
+            <span wicket:id="customer.loadTimePMFrom"/>
+            a
+            <span wicket:id="customer.loadTimePMTo"/>
+            </td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryDay"/></th>
+            <td colspan="2">
+                <span wicket:id="customer.deliveryDays">             
+                <span wicket:id="deliveryDaysList">
+                    <input type="checkbox" wicket:id="check"/><label wicket:id="number" style="display:inline; color: black;"></label>
+                </span>
+                </span>
+            </td>
+            <th valign="top"><wicket:message key="customer.phoneForewarning"/><input type="checkbox" wicket:id="customer.phoneForewarning" /></th>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryType"/></th>
+            <td><select wicket:id="customer.deliveryType" ></select></td>
+            <th valign="top"><wicket:message key="customer.deliveryVehicle"/></th>
+            <td><select wicket:id="customer.deliveryVehicle" ></select></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.deliveryNote"/></th>
+            <td><span wicket:id="customer.deliveryNote"></span></td>
+        </tr>
+        </colgroup>
+        <colgroup wicket:id="step2">
+        <span wicket:id="shippingAddress">
+        <tr wicket:id="customer.shippingAddresses" id="addresses">
+        <td colspan="4" style="border-top: 1px solid #E8E8E8; padding-bottom: 10px;">
+        <table id="id-form">
+        <tr>
+            <th valign="top" colspan="4"><wicket:message key="customer.addressNumber"/><span wicket:id="addressNumber"></span></th>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.addressType"/></th>
+            <td><select wicket:id="addressType"/></td>
+            <th valign="top"><wicket:message key="customer.defaultAddress"/></th>
+            <td><input type="checkbox" wicket:id="defaultAddress"></input></td>
+        </tr>             
+        <tr>
+            <th valign="top"><wicket:message key="customer.corporateName"/></th>
+            <td><input type="text" class="inp-form-small"  wicket:id="name" /></td>
+            <th valign="top"><wicket:message key="customer.address"/></th>
+            <td><input type="text" wicket:id="address" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+        <th valign="top"><wicket:message key="customer.city"/></th>
+            <td><input type="text" wicket:id="city" ></input></td>
+            <th valign="top"><wicket:message key="customer.province"/></th>
+            <td><input wicket:id="province"/></td>
+        </tr>     
+        <tr>
+            <th valign="top"><wicket:message key="customer.zipcode"/></th>
+            <td><input type="text" wicket:id="zipcode" ></input></td>
+            <th valign="top"><wicket:message key="customer.phoneNumber"/></th>
+            <td><input type="text" wicket:id="phoneNumber" class="inp-form-small" /></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="selectedAddress"/></th>
+            <td><input type="radio" wicket:id="selectedAddress" /></td>
+        </tr>        
+        </table>
+        </td>
+        </tr>
+        </span>
+        </colgroup>
+        <colgroup wicket:id="step3">
+        <tr  style="border-top: 1px solid #E8E8E8;">
+            <th ><wicket:message key="productToAdd"/></th>
+            <td><select wicket:id="product" ></select></td>
+            <td><select wicket:id="number" ></select></td>
+            <td style="padding-left: 5px;"><input type="button" value="" wicket:message="value:button.addProduct" class="button-green-small" wicket:id="addProductOrdered" ></input></td>
+        </tr>
+        <tr wicket:id="productsOrderedContanier">
+            <td colspan="4">
+            <table id="product-ordered" width="100%" cellspacing="0" cellpadding="0" border="0" >
+            <tr valign="top" style="border-top: 1px solid #E8E8E8;">
+            <th style="min-width: 250px; width: 250px; padding: 2px;">Prodotto</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">N. Cartoni</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">Importo</th>
+            <th style="min-width: 90px; width: 90px; padding: 2px;">Sconto %</th>
+            <th style="min-width: 30px; width: 30px; padding: 2px;"></th>
+            </tr>
+            <tr valign="top" wicket:id="productsOrdered">
+            <td style="min-width: 250px; width: 250px; padding: 2px;"><span wicket:id="index"></span> <input type="text" wicket:id="product.name" class="inp-form" /></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="number" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="amount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 90px; width: 90px; padding: 2px;"><input type="text" wicket:id="discount" class="inp-form-xsmall" style="text-align: right;"/>%</td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="button" wicket:id="removeProduct" class="button-green-small" value="&#8722;" style="text-align: center;"/></td>
+            </tr>
+            <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
+            <th style="min-width: 250px; width: 250px; padding: 2px;"><wicket:message key="order.shippingCost"/>:</th>
+            <td></td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" class="inp-form-xsmall" style="text-align: right;" wicket:id="shippingCost" ></input></td>
+            <td></td>
+            </tr>            
+            <tr valign="top" style="border-top: 1px solid #E8E8E8; border-bottom: 1px solid #E8E8E8;">
+            <th style="min-width: 250px; width: 250px; padding: 2px;">Totale:</th>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" wicket:id="numberOfItemsInProductOrdered" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td style="min-width: 30px; width: 30px; padding: 2px;"><input type="text" wicket:id="totalAmount" class="inp-form-xsmall" style="text-align: right;"/></td>
+            <td></td>
+            </tr>
+            </table>
+            </td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="customer.paymentType"/>:</th>
+            <td><select wicket:id="paymentTypeP" ></select></td>
+            <th valign="top" style="text-align: right;"><wicket:message key="order.deliveryTimeRequired"/></th>
+            <td valign="top">
+            <span valign="bottom" wicket:id="deliveryTimeRequiredType" class="radio-class">
+                <input type="radio">foo</input>
+            </span>
+            <span wicket:id="deliveryTimeRequired" ></span></td>            
+        </tr>
+        <tr>
+            <th valign="top"><h3><wicket:message key="order.infos"/>:</h3></th>
+            <td><h3><pre wicket:id="infos" ></pre></h3></td>
+        </tr>
+        <tr>
+            <th valign="top"><wicket:message key="order.note"/></th>
+            <td><textarea value="" class="form-textarea" wicket:id="notes" ></textarea></td>
+        </tr>
+        </colgroup>        
+        <tr>
+        <td valign="top" colspan="2">
+            <div wicket:id="warningDialog"></div>
+            <input type="button" value="Indietro" wicket:message="value:button.back"  class="button-green" wicket:id="submitBack" ></input>
+            <input type="button" value="Avanti" wicket:message="value:button.next"  class="button-green" wicket:id="submitNext" ></input>
+            <input type="button" value="Inserisci" wicket:message="value:button.saveNewOrder" class="button-green" wicket:id="submitConfirm" ></input>
+        </td>
+        <td></td>
+    </tr>
+    </table>
+    </form>
+    <!-- end id-form  -->
+    <div class="feedbackPanelContainer" wicket:id="feedBackPanel">message will be here</div>
+    </td>
+    <td>
+
+    <!--  start related-activities -->
+    <div id="related-activities">
+        
+        <!--  start related-act-top -->
+        <div id="related-act-top">
+        <img src="images/forms/header_related_act.gif" width="271" height="43" alt="" />
+        </div>
+        <!-- end related-act-top -->
+        
+        <!--  start related-act-bottom -->
+        <div id="related-act-bottom">
+        
+            <!--  start related-act-inner -->
+            <div id="related-act-inner">
+            
+                
+                
+                <div class="clear"></div>
+                <div class="lines-dotted-short"></div>
+                                
+                <div class="left"><a href=""><img src="images/forms/icon_edit.gif" width="21" height="21" alt="" /></a></div>
+                <div class="right">
+                    <h5><wicket:message key="pno.help.newOrderTitle"/></h5>
+                    <wicket:message key="pno.help.newOrderDesc"/>
+                    <ul class="greyarrow">
+                        <li>1. Seleziona il Cliente</li>
+                        <li>2. Seleziona l'indirizzo di spedizione</li> 
+                        <li>3. Seleziona i prodotti </li>
+                        <li>4. Ordine Inserito.</li>
+                    </ul>
+                </div>
+                
+                <div class="clear"></div>
+                <div class="lines-dotted-short"></div>
+                <div class="left"><a href=""><img src="images/forms/icon_plus.gif" width="21" height="21" alt="" /></a></div>
+                <div class="right">
+                    <h5>Clienti</h5>
+                    Per verificare o aggiungere clienti:
+                    <ul class="greyarrow">
+                        <li><a href="/customers">Elenco clienti</a></li> 
+                        <li><a href="/customer">Nuovo cliente</a> </li>
+                    </ul>
+                </div>
+                
+                <div class="clear"></div>
+                
+            </div>
+            <!-- end related-act-inner -->
+            <div class="clear"></div>
+        
+        </div>
+        <!-- end related-act-bottom -->
+    
+    </div>
+    <!-- end related-activities -->
+
+</td>
+</tr>
+<tr>
+<td><img src="images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+<td></td>
+</tr>
+</table>
+ 
+<div class="clear"></div>
+ 
+
+</div>
+<!--  end content-table-inner  -->
+</td>
+<td id="tbl-border-right"></td>
+</tr>
+<tr>
+    <th class="sized bottomleft"></th>
+    <td id="tbl-border-bottom">&nbsp;</td>
+    <th class="sized bottomright"></th>
+</tr>
+</table>
+
+
+
+<div class="clear">&nbsp;</div>
+
+</div>
+<!--  end content -->
+<div class="clear">&nbsp;</div>
+</div>
+<!--  end content-outer -->
+
+ 
+
+<div class="clear">&nbsp;</div>
+
+
+
+</wicket:extend>
+
+
+
